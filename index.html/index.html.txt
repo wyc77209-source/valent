@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Jagiya, Open Me! ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;400;700&family=Dancing+Script:wght@700&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Noto Sans KR', sans-serif; user-select: none; -webkit-user-select: none; }
+        canvas { display: block; width: 100vw; height: 100dvh; outline: none; }
+
+        /* UI 交互层 */
+        #ui-layer {
+            position: absolute; inset: 0; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 20; padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* 启动按钮 */
+        .btn-magic {
+            pointer-events: auto; padding: 22px 60px;
+            background: rgba(0, 255, 255, 0.05); border: 2px solid #00ffff; border-radius: 12px;
+            color: #00ffff; font-family: 'Orbitron', sans-serif; font-size: 18px; letter-spacing: 4px;
+            cursor: pointer; box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); transition: all 0.4s;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* 文字展示层 */
+        .overlay-text {
+            position: absolute; width: 90%; text-align: center;
+            opacity: 0; transition: all 1.2s ease-in-out; pointer-events: none; top: 15%;
+        }
+        .overlay-text.visible { opacity: 1; transform: translateY(-10px); }
+        .script-font { font-family: 'Dancing Script', cursive; text-shadow: 0 0 20px currentColor; }
+
+        /* 接收玫瑰按钮 */
+        #btn-receive {
+            pointer-events: auto; opacity: 0; transform: translateY(20px);
+            position: absolute; bottom: 15%; padding: 16px 45px;
+            background: linear-gradient(45deg, #ff0055, #cc0033); border: none; border-radius: 50px;
+            color: white; font-weight: bold; letter-spacing: 2px;
+            box-shadow: 0 0 30px #ff0055; transition: all 0.8s; cursor: pointer;
+        }
+        #btn-receive.visible { opacity: 1; transform: translateY(0); }
+
+        /* HUD 状态 */
+        #hud {
+            position: absolute; bottom: 30px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+            opacity: 0; transition: opacity 1s;
+        }
+        .bar-bg { width: 180px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .bar-fill { width: 0%; height: 100%; background: #00ff88; transition: width 0.1s; }
+
+        #video-input {
+            position: absolute; top: 20px; right: 20px; width: 80px; border-radius: 8px;
+            opacity: 0; transform: scaleX(-1); border: 1px solid rgba(255,255,255,0.2); transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <!-- 初始启动 -->
+        <div id="init-screen">
+            <button class="btn-magic" onclick="openBox()">
+                자기야, 粒子 상자 열어봐 ❤️
+                <div style="font-size: 10px; opacity: 0.6; margin-top: 5px;">(Jagiya, Open the Particle Box)</div>
+            </button>
+        </div>
+
+        <!-- 第一阶段：爱心 -->
+        <div id="text-1" class="overlay-text">
+            <div class="script-font text-5xl md:text-7xl text-pink-500">Happy Valentine's Day</div>
+            <div class="text-white/80 mt-4 text-sm font-light tracking-[0.2em]">두 손가락으로 사랑을 조절해봐 (Scale your love)</div>
+        </div>
+
+        <!-- 第二阶段：眨眼文字 -->
+        <div id="text-2" class="overlay-text">
+            <div class="script-font text-4xl md:text-5xl text-yellow-400">Has the universe ever winked at you?</div>
+            <div class="text-white/60 mt-4 text-xs tracking-widest">하트 모양을 만들어봐 (Make a heart gesture)</div>
+        </div>
+
+        <!-- 第三阶段：玫瑰 -->
+        <div id="text-3" class="overlay-text" style="top: 12%;">
+            <div class="script-font text-6xl text-red-600 mb-2">Eternal Rose</div>
+            <div class="text-white/90 text-lg font-light tracking-widest">영원히 시들지 않는 장미를 너에게</div>
+            <div class="text-white/30 text-[10px] mt-4 uppercase tracking-[0.3em] font-mono">Digitally Preserved Rose</div>
+        </div>
+
+        <button id="btn-receive" onclick="showRose()">🌹 Receive Flower</button>
+
+        <div id="hud">
+            <div id="hud-text" class="text-[10px] text-white/40 font-mono tracking-widest mb-1">SCANNING...</div>
+            <div class="bar-bg"><div id="hud-fill" class="bar-fill"></div></div>
+        </div>
+        
+        <!-- 隐形强制跳转（点左上角） -->
+        <button onclick="forceNext()" class="absolute top-0 left-0 w-20 h-20 opacity-0 pointer-events-auto z-50"></button>
+    </div>
+
+    <video id="video-input" autoplay playsinline muted></video>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+                "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/+esm"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const CONFIG = { particleCount: isMobile ? 25000 : 50000, camDist: isMobile ? 130 : 100, cubeSize: 35 };
+
+        let phase = 'BOX'; 
+        let handState = { targetScale: 1.0, currentScale: 1.0 };
+        let heartHold = 0;
+        let transitionStart = 0;
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050205, 0.002);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.z = CONFIG.camDist;
+        const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; controls.autoRotate = true; controls.enablePan = false;
+
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.4, 0.4, 0.85);
+        composer.addPass(bloom);
+
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(CONFIG.particleCount * 3);
+        const targetPos = new Float32Array(CONFIG.particleCount * 3);
+        const colors = new Float32Array(CONFIG.particleCount * 3);
+        const sizes = new Float32Array(CONFIG.particleCount);
+
+        const cCyan = new THREE.Color(0x00ffff), cPink = new THREE.Color(0xff0055), cGold = new THREE.Color(0xffcc00), cRed = new THREE.Color(0xd90429), cGreen = new THREE.Color(0x2b9348);
+
+        for(let i=0; i<CONFIG.particleCount; i++) {
+            const x = (Math.random()-0.5)*CONFIG.cubeSize, y = (Math.random()-0.5)*CONFIG.cubeSize, z = (Math.random()-0.5)*CONFIG.cubeSize;
+            positions[i*3]=x; positions[i*3+1]=y; positions[i*3+2]=z;
+            targetPos[i*3]=x; targetPos[i*3+1]=y; targetPos[i*3+2]=z;
+            colors[i*3]=cCyan.r; colors[i*3+1]=cCyan.g; colors[i*3+2]=cCyan.b;
+            sizes[i] = Math.random() * 2.0;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('targetPosition', new THREE.BufferAttribute(targetPos, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const material = new THREE.ShaderMaterial({
+            uniforms: { time: { value: 0 }, mixRatio: { value: 0 }, handScale: { value: 1.0 }, beat: { value: 0 }, pointTexture: { value: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/spark1.png') } },
+            vertexShader: `
+                uniform float time, mixRatio, handScale, beat;
+                attribute vec3 targetPosition; attribute float size; attribute vec3 color;
+                varying vec3 vColor;
+                mat2 rot(float a) { return mat2(cos(a),-sin(a),sin(a),cos(a)); }
+                void main() {
+                    vColor = color;
+                    vec3 pos = mix(position, targetPosition, mixRatio);
+                    if (beat > 0.01) pos *= (1.0 + beat * 0.1); 
+                    if (handScale < 0.1) pos.xy *= rot(time * 0.5);
+                    else pos.y += sin(time * 1.5 + pos.x * 0.05) * 0.4;
+                    pos *= handScale;
+                    vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
+                    gl_PointSize = size * (350.0 / -mvPos.z) * handScale;
+                    gl_Position = projectionMatrix * mvPos;
+                }
+            `,
+            fragmentShader: `uniform sampler2D pointTexture; varying vec3 vColor; void main() { gl_FragColor = vec4(vColor, 1.0) * texture2D(pointTexture, gl_PointCoord); }`,
+            blending: THREE.AdditiveBlending, depthTest: false, transparent: true
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        function getWinkPoints() {
+            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+            canvas.width = 1600; canvas.height = 900; ctx.fillStyle = 'black'; ctx.fillRect(0,0,1600,900);
+            ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.font = 'bold 95px "Dancing Script", cursive';
+            const lines = ["Has the universe", "ever winked at you?"];
+            lines.forEach((l, i) => ctx.fillText(l, 800, 420 + i * 140));
+            const data = ctx.getImageData(0,0,1600,900).data, pts = [], step = isMobile ? 8 : 4;
+            for(let y=0; y<900; y+=step) for(let x=0; x<1600; x+=step) if(data[(y*1600+x)*4] > 128) pts.push({x: (x-800)*0.12, y: -(y-450)*0.12});
+            return pts;
+        }
+        const winkPoints = getWinkPoints();
+
+        function getRosePoints() {
+            const pts = [];
+            for(let i=0; i<CONFIG.particleCount; i++) {
+                if (i < CONFIG.particleCount * 0.85) {
+                    const k = i / (CONFIG.particleCount * 0.85), theta = k * Math.PI * 25;
+                    const r = 28 * Math.pow(Math.sin(theta * 0.75), 4) + 5; 
+                    const y = 10 * Math.sin(theta) * Math.sin(Math.acos(2 * Math.random() - 1)) + (theta * 0.45);
+                    const d = r * (0.9 + 0.2 * Math.random());
+                    pts.push({x: d*Math.cos(theta), y: y-10, z: d*Math.sin(theta), c: Math.random()>0.4?cRed:cPink});
+                } else {
+                    pts.push({x: (Math.random()-0.5)*3, y: -10-Math.random()*80, z: (Math.random()-0.5)*3, c: cGreen});
+                }
+            }
+            return pts;
+        }
+        const rosePoints = getRosePoints();
+
+        window.openBox = async () => {
+            document.getElementById('init-screen').style.display='none';
+            await initVision();
+            setPhase('HEART');
+        };
+
+        window.showRose = () => {
+            document.getElementById('btn-receive').classList.remove('visible');
+            setPhase('ROSE');
+        };
+
+        window.forceNext = () => {
+            if(phase==='BOX') openBox(); else if(phase==='HEART') setPhase('TEXT'); else if(phase==='TEXT') showRose();
+        };
+
+        function setPhase(p) {
+            phase = p; transitionStart = performance.now(); material.uniforms.mixRatio.value = 0;
+            const pos = geometry.attributes.position, tar = geometry.attributes.targetPosition, col = geometry.attributes.color;
+            for(let i=0; i<CONFIG.particleCount*3; i++) pos.array[i] = tar.array[i];
+            pos.needsUpdate = true;
+
+            if (p === 'HEART') {
+                for(let i=0; i<CONFIG.particleCount; i++) {
+                    let t = Math.random() * Math.PI * 2;
+                    let x = 16 * Math.pow(Math.sin(t), 3), y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                    tar.setXYZ(i, x*1.6, (y+2)*1.6, (Math.random()-0.5)*6);
+                    col.setXYZ(i, Math.random()>0.7?cGold.r:cPink.r, Math.random()>0.7?cGold.g:cPink.g, Math.random()>0.7?cGold.b:cPink.b);
+                }
+                setTimeout(() => document.getElementById('text-1').classList.add('visible'), 1000);
+                document.getElementById('hud').style.opacity = 1;
+            } else if (p === 'TEXT') {
+                document.getElementById('text-1').classList.remove('visible');
+                for(let i=0; i<CONFIG.particleCount; i++) {
+                    const pt = winkPoints[Math.floor(Math.random() * winkPoints.length)];
+                    if(pt) { tar.setXYZ(i, pt.x, pt.y, (Math.random()-0.5)*2); col.setXYZ(i, cGold.r, cGold.g, cGold.b); }
+                    else { tar.setXYZ(i, (Math.random()-0.5)*300, (Math.random()-0.5)*300, -100); col.setXYZ(i, 0.1, 0.1, 0.2); }
+                }
+                setTimeout(() => document.getElementById('text-2').classList.add('visible'), 1000);
+                setTimeout(() => { document.getElementById('text-2').classList.remove('visible'); document.getElementById('btn-receive').classList.add('visible'); }, 7000);
+            } else if (p === 'ROSE') {
+                for(let i=0; i<CONFIG.particleCount; i++) {
+                    const pt = rosePoints[i % rosePoints.length];
+                    tar.setXYZ(i, pt.x, pt.y, pt.z); col.setXYZ(i, pt.c.r, pt.c.g, pt.c.b);
+                }
+                setTimeout(() => document.getElementById('text-3').classList.add('visible'), 1000);
+                controls.autoRotateSpeed = 2.0;
+            }
+            tar.needsUpdate = true; col.needsUpdate = true;
+        }
+
+        let handLandmarker; const video = document.getElementById('video-input');
+        async function initVision() {
+            try {
+                const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm");
+                handLandmarker = await HandLandmarker.createFromOptions(vision, { baseOptions: { modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`, delegate: "GPU" }, runningMode: "VIDEO", numHands: 2 });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: {ideal: 640} } });
+                video.srcObject = stream; video.addEventListener("loadeddata", predict);
+            } catch(e) { console.log(e); }
+        }
+
+        function predict() {
+            if (handLandmarker && video.readyState >= 2) {
+                const res = handLandmarker.detectForVideo(video, performance.now());
+                if (res.landmarks && res.landmarks.length > 0 && phase === 'HEART') {
+                    let d = 0;
+                    if (res.landmarks.length === 2) {
+                        d = Math.hypot(res.landmarks[0][4].x - res.landmarks[1][4].x, res.landmarks[0][4].y - res.landmarks[1][4].y);
+                        const id = Math.hypot(res.landmarks[0][8].x - res.landmarks[1][8].x, res.landmarks[0][8].y - res.landmarks[1][8].y);
+                        if (d < 0.15 && id < 0.15) { 
+                            heartHold++; document.getElementById('hud-text').innerText = `MAGIC... ${Math.min(100, heartHold*2)}%`;
+                            if (heartHold > 50) setPhase('TEXT');
+                        } else { heartHold = 0; document.getElementById('hud-text').innerText = "DUAL THUMB ZOOM"; }
+                    } else {
+                        d = Math.hypot(res.landmarks[0][4].x - res.landmarks[0][8].x, res.landmarks[0][4].y - res.landmarks[0][8].y);
+                        document.getElementById('hud-text').innerText = "PINCH ZOOM";
+                    }
+                    handState.targetScale = Math.max(0.5, Math.min(3.5, 0.5 + d * 5.0));
+                    document.getElementById('hud-fill').style.width = (handState.targetScale/3.5)*100 + "%";
+                }
+            }
+            requestAnimationFrame(predict);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate); controls.update(); const t = performance.now() * 0.001; material.uniforms.time.value = t;
+            if (material.uniforms.mixRatio.value < 1) material.uniforms.mixRatio.value = Math.min(1, (performance.now()-transitionStart)/2000);
+            if (phase === 'HEART') material.uniforms.beat.value = Math.pow(Math.sin(t * 3.0), 3);
+            handState.currentScale += (handState.targetScale - handState.currentScale) * 0.05;
+            material.uniforms.handScale.value = (phase === 'BOX') ? 0.01 : handState.currentScale;
+            composer.render();
+        }
+        animate();
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    </script>
+</body>
+</html>
