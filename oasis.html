@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oasis API Aggregator — Protocol Nodes</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Share+Tech+Mono&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Ethers.js v6 via CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -49,10 +47,7 @@
             pointer-events: none; z-index: 0;
             animation: gridShift 20s linear infinite;
         }
-        @keyframes gridShift {
-            0%   { background-position: 0 0; }
-            100% { background-position: 60px 60px; }
-        }
+        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 60px 60px; } }
         body::after {
             content: '';
             position: fixed; inset: 0;
@@ -64,10 +59,9 @@
         }
 
         #particle-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.35; }
-
         .wrapper { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 32px; }
 
-        /* ── NAV ── */
+        /* ═══════════ NAV ═══════════ */
         nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             backdrop-filter: blur(20px) saturate(180%);
@@ -85,7 +79,7 @@
             text-shadow: 0 0 20px rgba(0,229,255,0.5); text-decoration: none;
         }
         .nav-logo span { color: var(--text-muted); font-weight: 400; }
-        .nav-links { display: flex; gap: 36px; list-style: none; }
+        .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
         .nav-links a {
             font-family: var(--font-tech); font-size: 10px; font-weight: 500;
             letter-spacing: 0.2em; color: var(--text-muted); text-decoration: none;
@@ -94,28 +88,48 @@
         .nav-links a:hover { color: var(--cyan); }
         .nav-links a.active { color: var(--cyan); text-shadow: 0 0 12px rgba(0,229,255,0.6); }
 
-        /* ── WALLET STATUS BAR (top right) ── */
-        #wallet-status-bar {
-            display: flex; align-items: center; gap: 10px;
+        /* ═══════════ NAV CONNECT BUTTON ═══════════ */
+        .nav-wallet-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 18px; border-radius: 8px;
+            border: 1px solid rgba(0,229,255,0.35);
+            background: rgba(0,229,255,0.06);
             font-family: var(--font-mono); font-size: 11px;
+            color: var(--cyan); cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+            white-space: nowrap; letter-spacing: 0.05em;
         }
-        .status-dot {
+        .nav-wallet-btn:hover {
+            background: rgba(0,229,255,0.12);
+            border-color: rgba(0,229,255,0.6);
+            box-shadow: 0 0 20px rgba(0,229,255,0.15);
+            transform: translateY(-1px);
+        }
+        .nav-wallet-btn.connected {
+            border-color: rgba(0,255,136,0.4);
+            background: rgba(0,255,136,0.06);
+            color: var(--green);
+        }
+        .nav-wallet-btn.connected:hover {
+            background: rgba(0,255,136,0.1);
+            border-color: rgba(0,255,136,0.6);
+            box-shadow: 0 0 20px rgba(0,255,136,0.15);
+        }
+        .nav-dot {
             width: 6px; height: 6px; border-radius: 50%;
-            background: #00ff88; box-shadow: 0 0 8px #00ff88;
+            background: var(--red); box-shadow: 0 0 8px var(--red);
+            flex-shrink: 0;
+        }
+        .nav-dot.live {
+            background: var(--green); box-shadow: 0 0 8px var(--green);
             animation: pulse 2s ease-in-out infinite;
         }
-        .status-dot.disconnected { background: var(--red); box-shadow: 0 0 8px var(--red); animation: none; }
-        .status-dot.connecting   { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        #wallet-addr {
-            font-family: var(--font-mono); font-size: 11px;
-            color: var(--text-muted); cursor: pointer;
-            transition: color 0.3s;
-        }
-        #wallet-addr:hover { color: var(--cyan); }
+        /* MetaMask fox icon inline SVG */
+        .mm-icon { width: 16px; height: 16px; flex-shrink: 0; }
 
-        /* ── HERO ── */
+        /* ═══════════ HERO ═══════════ */
         .hero { padding: 160px 0 80px; text-align: center; }
         .hero-eyebrow {
             font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.4em;
@@ -140,22 +154,17 @@
             font-family: var(--font-tech); font-size: 28px; font-weight: 700;
             color: var(--cyan); text-shadow: 0 0 20px rgba(0,229,255,0.4);
         }
-        .metric-label {
-            font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted);
-            text-transform: uppercase; margin-top: 4px;
-        }
+        .metric-label { font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
 
-        /* ── SECTION DIVIDER ── */
-        .section-divider {
-            display: flex; align-items: center; gap: 20px; margin: 80px 0 60px;
-        }
+        /* ═══════════ SECTION DIVIDER ═══════════ */
+        .section-divider { display: flex; align-items: center; gap: 20px; margin: 80px 0 60px; }
         .divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
         .divider-label {
             font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.35em;
             color: var(--text-muted); text-transform: uppercase; white-space: nowrap;
         }
 
-        /* ── POETIC HEADER ── */
+        /* ═══════════ POETIC HEADER ═══════════ */
         .poetic-header { text-align: center; margin-bottom: 64px; }
         .poetic-header .ch-line {
             font-family: var(--font-serif); font-size: 13px; font-weight: 300;
@@ -168,11 +177,11 @@
         .poetic-header .en-line em { font-style: normal; color: var(--gold-bright); text-shadow: 0 0 16px rgba(240,201,110,0.4); }
         .poetic-header .en-line .purple-accent { color: var(--purple); text-shadow: 0 0 16px rgba(180,79,255,0.4); }
 
-        /* ── NODE CARDS GRID ── */
+        /* ═══════════ NODE CARDS GRID ═══════════ */
         .nodes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 80px; }
         @media (max-width: 900px) { .nodes-grid { grid-template-columns: 1fr; } }
 
-        /* ── GLASSMORPHISM CARD ── */
+        /* ═══════════ GLASSMORPHISM CARD ═══════════ */
         .node-card {
             position: relative; border-radius: 20px; padding: 40px 36px 36px;
             backdrop-filter: blur(24px) saturate(160%);
@@ -187,51 +196,34 @@
             pointer-events: none; border-radius: inherit;
         }
 
-        /* Cen card */
         .node-cen {
             background: linear-gradient(145deg, rgba(200,168,75,0.08) 0%, rgba(10,8,4,0.85) 40%, rgba(4,6,13,0.92) 100%);
             border: 1px solid rgba(200,168,75,0.25);
             box-shadow: 0 0 0 1px rgba(200,168,75,0.08), 0 8px 32px rgba(0,0,0,0.6), 0 0 60px rgba(200,168,75,0.06), inset 0 1px 0 rgba(240,201,110,0.15);
         }
         .node-cen:hover { box-shadow: 0 0 0 1px rgba(200,168,75,0.3), 0 20px 60px rgba(0,0,0,0.7), 0 0 80px rgba(200,168,75,0.12), inset 0 1px 0 rgba(240,201,110,0.2); }
-        .node-cen::before {
-            content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(200,168,75,0.18) 0%, transparent 70%); pointer-events: none;
-        }
+        .node-cen::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(200,168,75,0.18) 0%, transparent 70%); pointer-events: none; }
 
-        /* Danqiu card */
         .node-danqiu {
             background: linear-gradient(145deg, rgba(0,229,255,0.07) 0%, rgba(4,6,13,0.88) 35%, rgba(180,79,255,0.06) 100%);
             border: 1px solid rgba(0,229,255,0.2);
             box-shadow: 0 0 0 1px rgba(0,229,255,0.06), 0 8px 32px rgba(0,0,0,0.6), 0 0 60px rgba(0,229,255,0.05), inset 0 1px 0 rgba(0,229,255,0.12);
         }
         .node-danqiu:hover { box-shadow: 0 0 0 1px rgba(0,229,255,0.28), 0 20px 60px rgba(0,0,0,0.7), 0 0 80px rgba(180,79,255,0.1), 0 0 40px rgba(0,229,255,0.08), inset 0 1px 0 rgba(0,229,255,0.18); }
-        .node-danqiu::before {
-            content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(0,229,255,0.14) 0%, transparent 70%); pointer-events: none;
-        }
+        .node-danqiu::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(0,229,255,0.14) 0%, transparent 70%); pointer-events: none; }
 
-        /* ── CARD INNER ELEMENTS ── */
+        /* ═══════════ CARD INNER ═══════════ */
         .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
-        .card-badge {
-            font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.3em;
-            text-transform: uppercase; padding: 4px 10px; border-radius: 4px; border: 1px solid;
-        }
+        .card-badge { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; border: 1px solid; }
         .badge-cen    { color: var(--gold);  border-color: rgba(200,168,75,0.4); background: rgba(200,168,75,0.08); }
         .badge-danqiu { color: var(--cyan);  border-color: rgba(0,229,255,0.35);  background: rgba(0,229,255,0.06); }
         .card-node-id { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.6; }
 
-        .card-name-zh {
-            font-family: var(--font-serif); font-size: clamp(40px, 5vw, 56px);
-            font-weight: 600; line-height: 1; margin-bottom: 6px; letter-spacing: 0.05em;
-        }
+        .card-name-zh { font-family: var(--font-serif); font-size: clamp(40px, 5vw, 56px); font-weight: 600; line-height: 1; margin-bottom: 6px; letter-spacing: 0.05em; }
         .name-cen    { color: var(--gold-bright); text-shadow: 0 0 30px rgba(200,168,75,0.5); }
         .name-danqiu { color: var(--cyan);         text-shadow: 0 0 30px rgba(0,229,255,0.5); }
 
-        .card-name-en {
-            font-family: var(--font-tech); font-size: 11px; font-weight: 500;
-            letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 4px;
-        }
+        .card-name-en { font-family: var(--font-tech); font-size: 11px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 4px; }
         .name-en-cen    { color: var(--gold); }
         .name-en-danqiu { color: var(--cyan-dim); }
         .card-tagline { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); margin-bottom: 28px; letter-spacing: 0.05em; }
@@ -258,106 +250,140 @@
         .fill-purple { background: linear-gradient(90deg, var(--purple-dim), var(--purple)); }
         .perf-value { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); width: 32px; text-align: right; }
 
-        /* ── ACCESS STATUS PANEL (inside card) ── */
-        .access-panel {
-            border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
-            border: 1px solid; font-family: var(--font-mono); font-size: 11px;
-            display: flex; align-items: center; gap: 10px;
-            transition: all 0.4s;
+        /* ═══════════ PRICING BOX (inside card) ═══════════ */
+        .pricing-box {
+            border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid var(--border); background: rgba(255,255,255,0.02);
         }
-        .access-panel.locked-cen    { border-color: rgba(200,168,75,0.2); background: rgba(200,168,75,0.04); color: rgba(200,168,75,0.6); }
-        .access-panel.locked-danqiu { border-color: rgba(0,229,255,0.18);  background: rgba(0,229,255,0.03);  color: rgba(0,229,255,0.6); }
-        .access-panel.owner-unlocked { border-color: rgba(240,201,110,0.5); background: rgba(240,201,110,0.08); color: var(--gold-bright); }
-        .access-panel.user-unlocked  { border-color: rgba(0,255,136,0.4);   background: rgba(0,255,136,0.06);  color: var(--green); }
-        .access-panel.denied         { border-color: rgba(255,59,92,0.35);   background: rgba(255,59,92,0.05);  color: var(--red); }
-        .access-icon { font-size: 14px; flex-shrink: 0; }
+        .pricing-box .price-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; }
+        .pricing-box .price-value { font-family: var(--font-tech); font-size: 22px; font-weight: 700; }
+        .price-cen    { color: var(--gold-bright); text-shadow: 0 0 16px rgba(200,168,75,0.4); }
+        .price-danqiu { color: var(--cyan);         text-shadow: 0 0 16px rgba(0,229,255,0.4); }
+        .pricing-box .price-note { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.6; }
 
-        /* ── METAMASK BUTTON ── */
-        .btn-metamask {
-            width: 100%; padding: 16px 24px; border-radius: 12px; border: 1px solid;
-            font-family: var(--font-tech); font-size: 11px; font-weight: 600;
-            letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+        /* ═══════════ CARD BUTTONS ═══════════ */
+        .card-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+        .btn-action {
+            width: 100%; padding: 14px 24px; border-radius: 12px; border: 1px solid;
+            font-family: var(--font-tech); font-size: 10px; font-weight: 600;
+            letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
             position: relative; overflow: hidden;
             transition: all 0.35s cubic-bezier(0.23,1,0.32,1);
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-metamask::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.35s; }
-        .btn-metamask:hover::before { opacity: 1; }
-        .btn-metamask:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        .btn-cen {
-            background: rgba(200,168,75,0.08); border-color: rgba(200,168,75,0.45);
-            color: var(--gold-bright); box-shadow: 0 0 20px rgba(200,168,75,0.1);
-        }
-        .btn-cen::before { background: linear-gradient(135deg, rgba(200,168,75,0.12), rgba(200,168,75,0.04)); }
-        .btn-cen:hover:not(:disabled) { box-shadow: 0 0 40px rgba(200,168,75,0.25), 0 4px 20px rgba(0,0,0,0.4); border-color: rgba(200,168,75,0.7); transform: translateY(-1px); }
-
-        .btn-danqiu {
-            background: rgba(0,229,255,0.06); border-color: rgba(0,229,255,0.4);
-            color: var(--cyan); box-shadow: 0 0 20px rgba(0,229,255,0.08);
-        }
-        .btn-danqiu::before { background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(180,79,255,0.06)); }
-        .btn-danqiu:hover:not(:disabled) { box-shadow: 0 0 40px rgba(0,229,255,0.2), 0 0 20px rgba(180,79,255,0.1), 0 4px 20px rgba(0,0,0,0.4); border-color: rgba(0,229,255,0.65); transform: translateY(-1px); }
-
-        .btn-icon { width: 18px; height: 18px; flex-shrink: 0; }
-        .shimmer {
+        .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-action .shimmer {
             position: absolute; top: 0; left: 0; width: 40%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
             transform: translateX(-100%) skewX(-15deg);
         }
-        .btn-metamask:hover .shimmer { animation: shimmer 0.7s ease forwards; }
-        @keyframes shimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(200%) skewX(-15deg); } }
+        .btn-action:hover:not(:disabled) .shimmer { animation: shimmer 0.7s ease forwards; }
+        @keyframes shimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(300%) skewX(-15deg); } }
 
-        .card-footnote { margin-top: 16px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.5; text-align: center; letter-spacing: 0.1em; }
+        /* Connect button (per card) */
+        .btn-connect-cen {
+            background: rgba(200,168,75,0.06); border-color: rgba(200,168,75,0.35);
+            color: var(--gold-bright); box-shadow: 0 0 16px rgba(200,168,75,0.08);
+        }
+        .btn-connect-cen:hover:not(:disabled) { box-shadow: 0 0 30px rgba(200,168,75,0.2); border-color: rgba(200,168,75,0.6); transform: translateY(-1px); }
 
-        /* ── WALLET CONNECT MODAL ── */
-        #wallet-modal {
+        .btn-connect-danqiu {
+            background: rgba(0,229,255,0.05); border-color: rgba(0,229,255,0.3);
+            color: var(--cyan); box-shadow: 0 0 16px rgba(0,229,255,0.06);
+        }
+        .btn-connect-danqiu:hover:not(:disabled) { box-shadow: 0 0 30px rgba(0,229,255,0.18); border-color: rgba(0,229,255,0.55); transform: translateY(-1px); }
+
+        /* Pay button */
+        .btn-pay-cen {
+            background: linear-gradient(135deg, rgba(200,168,75,0.15), rgba(200,168,75,0.05));
+            border-color: rgba(200,168,75,0.5); color: var(--gold-bright);
+            box-shadow: 0 0 24px rgba(200,168,75,0.12);
+        }
+        .btn-pay-cen:hover:not(:disabled) { box-shadow: 0 0 40px rgba(200,168,75,0.3), 0 4px 20px rgba(0,0,0,0.4); border-color: rgba(200,168,75,0.8); transform: translateY(-2px); }
+
+        .btn-pay-danqiu {
+            background: linear-gradient(135deg, rgba(0,229,255,0.12), rgba(180,79,255,0.08));
+            border-color: rgba(0,229,255,0.45); color: var(--cyan);
+            box-shadow: 0 0 24px rgba(0,229,255,0.1);
+        }
+        .btn-pay-danqiu:hover:not(:disabled) { box-shadow: 0 0 40px rgba(0,229,255,0.25), 0 0 20px rgba(180,79,255,0.1), 0 4px 20px rgba(0,0,0,0.4); border-color: rgba(0,229,255,0.7); transform: translateY(-2px); }
+
+        .card-footnote { margin-top: 8px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.5; text-align: center; letter-spacing: 0.1em; }
+
+        /* ═══════════ MODALS (shared) ═══════════ */
+        .modal-overlay {
             display: none; position: fixed; inset: 0; z-index: 200;
-            background: rgba(4,6,13,0.85); backdrop-filter: blur(12px);
+            background: rgba(4,6,13,0.88); backdrop-filter: blur(16px);
             align-items: center; justify-content: center;
         }
-        #wallet-modal.open { display: flex; }
+        .modal-overlay.open { display: flex; }
         .modal-box {
-            background: rgba(10,12,22,0.95); border: 1px solid rgba(0,229,255,0.25);
-            border-radius: 20px; padding: 40px; max-width: 480px; width: 90%;
-            box-shadow: 0 0 60px rgba(0,229,255,0.08), 0 30px 80px rgba(0,0,0,0.8);
+            background: rgba(10,12,22,0.96); border: 1px solid rgba(0,229,255,0.2);
+            border-radius: 20px; padding: 44px 40px; max-width: 520px; width: 92%;
+            box-shadow: 0 0 80px rgba(0,229,255,0.06), 0 30px 80px rgba(0,0,0,0.8);
+            text-align: center;
         }
-        .modal-title {
-            font-family: var(--font-tech); font-size: 14px; font-weight: 700;
-            letter-spacing: 0.2em; color: var(--cyan); margin-bottom: 8px;
+
+        /* ═══════════ SUCCESS MODAL ═══════════ */
+        .success-icon {
+            width: 72px; height: 72px; margin: 0 auto 24px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: rgba(0,255,136,0.08); border: 2px solid rgba(0,255,136,0.35);
+            font-size: 32px; animation: successPulse 2s ease-in-out infinite;
         }
-        .modal-sub { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
-        .modal-addr-box {
+        @keyframes successPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.2); } 50% { box-shadow: 0 0 0 16px rgba(0,255,136,0); } }
+
+        .success-title {
+            font-family: var(--font-tech); font-size: 16px; font-weight: 700;
+            letter-spacing: 0.15em; color: var(--green); margin-bottom: 12px;
+        }
+        .success-sub { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
+
+        .tx-hash-box {
+            background: rgba(0,255,136,0.04); border: 1px solid rgba(0,255,136,0.15);
+            border-radius: 10px; padding: 14px 16px; margin-bottom: 24px;
+            font-family: var(--font-mono); font-size: 11px; word-break: break-all;
+        }
+        .tx-hash-label { font-size: 9px; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+        .tx-hash-value { color: var(--green); letter-spacing: 0.03em; }
+        .tx-hash-value a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
+
+        .api-key-gen {
             background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.15);
-            border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
-            font-family: var(--font-mono); font-size: 12px; color: var(--cyan);
-            word-break: break-all; letter-spacing: 0.05em;
+            border-radius: 10px; padding: 14px 16px; margin-bottom: 24px;
         }
-        .modal-addr-label { font-size: 9px; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
-        .modal-role-badge {
-            display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 10px;
-            letter-spacing: 0.15em; font-family: var(--font-mono); margin-bottom: 20px;
+        .api-key-label { font-size: 9px; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+        .api-key-value {
+            font-family: var(--font-mono); font-size: 13px; color: var(--cyan);
+            letter-spacing: 0.08em;
         }
-        .role-owner { background: rgba(200,168,75,0.12); border: 1px solid rgba(200,168,75,0.4); color: var(--gold-bright); }
-        .role-user  { background: rgba(0,255,136,0.08);  border: 1px solid rgba(0,255,136,0.3);  color: var(--green); }
-        .modal-nodes { margin-bottom: 24px; }
-        .modal-node-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 14px; border-radius: 8px; margin-bottom: 8px;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            font-family: var(--font-mono); font-size: 12px;
-        }
-        .node-access-yes { color: var(--green); }
-        .node-access-no  { color: var(--red); }
-        .modal-close {
+        .api-key-generating { animation: blink 0.6s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .modal-close-btn {
             width: 100%; padding: 14px; border-radius: 10px;
             background: rgba(255,255,255,0.04); border: 1px solid var(--border);
             color: var(--text-muted); font-family: var(--font-tech); font-size: 11px;
             letter-spacing: 0.2em; cursor: pointer; transition: all 0.3s;
         }
-        .modal-close:hover { background: rgba(255,255,255,0.07); color: var(--text-primary); }
+        .modal-close-btn:hover { background: rgba(255,255,255,0.07); color: var(--text-primary); }
 
-        /* ── COMPARISON TABLE ── */
+        /* ═══════════ ERROR MODAL ═══════════ */
+        .error-icon {
+            width: 72px; height: 72px; margin: 0 auto 24px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,59,92,0.08); border: 2px solid rgba(255,59,92,0.35);
+            font-size: 32px;
+        }
+        .error-title {
+            font-family: var(--font-tech); font-size: 16px; font-weight: 700;
+            letter-spacing: 0.15em; color: var(--red); margin-bottom: 12px;
+        }
+        .error-sub { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
+
+        /* ═══════════ COMPARISON TABLE ═══════════ */
         .compare-section { margin-bottom: 120px; }
         .compare-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
         .compare-table th {
@@ -374,12 +400,12 @@
         .check-cyan { color: var(--cyan); font-size: 14px; }
         .dash { color: rgba(255,255,255,0.2); }
 
-        /* ── FOOTER ── */
+        /* ═══════════ FOOTER ═══════════ */
         footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; }
         .footer-logo { font-family: var(--font-tech); font-size: 12px; font-weight: 700; letter-spacing: 0.3em; color: var(--text-muted); margin-bottom: 12px; }
         .footer-copy { font-family: var(--font-mono); font-size: 11px; color: rgba(232,234,240,0.25); letter-spacing: 0.1em; }
 
-        /* ── FADE-UP ANIMATION ── */
+        /* ═══════════ ANIMATIONS ═══════════ */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         .fade-up { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.23,1,0.32,1) forwards; }
         .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.25s; }
@@ -400,27 +426,36 @@
 
 <canvas id="particle-canvas"></canvas>
 
-<!-- ═══════════════ WALLET MODAL ═══════════════ -->
-<div id="wallet-modal">
+<!-- ═══════════════ SUCCESS MODAL ═══════════════ -->
+<div id="success-modal" class="modal-overlay">
     <div class="modal-box">
-        <div class="modal-title">// WALLET CONNECTED</div>
-        <p class="modal-sub">Your MetaMask identity has been verified on-chain via the Oasis Access Contract.</p>
-        <div class="modal-addr-box">
-            <div class="modal-addr-label">Connected Address</div>
-            <div id="modal-full-addr">—</div>
+        <div class="success-icon">&#10003;</div>
+        <div class="success-title">// PAYMENT CONFIRMED</div>
+        <p class="success-sub">
+            Transaction broadcast to the Ethereum network.<br>
+            Your Oasis API Key is generating...
+        </p>
+        <div class="tx-hash-box">
+            <div class="tx-hash-label">Transaction Hash</div>
+            <div class="tx-hash-value" id="tx-hash-display">—</div>
         </div>
-        <div id="modal-role-badge" class="modal-role-badge role-user">USER</div>
-        <div class="modal-nodes">
-            <div class="modal-node-row">
-                <span>岑夫子 · Cen-Master Node</span>
-                <span id="modal-cen-access" class="node-access-no">✗ No Access</span>
-            </div>
-            <div class="modal-node-row">
-                <span>丹丘生 · Danqiu-Alchemist Node</span>
-                <span id="modal-danqiu-access" class="node-access-no">✗ No Access</span>
+        <div class="api-key-gen">
+            <div class="api-key-label">Your Oasis API Key</div>
+            <div class="api-key-value" id="api-key-display">
+                <span class="api-key-generating">Generating...</span>
             </div>
         </div>
-        <button class="modal-close" onclick="closeModal()">CLOSE // DISCONNECT</button>
+        <button class="modal-close-btn" onclick="closeAllModals()">CLOSE</button>
+    </div>
+</div>
+
+<!-- ═══════════════ ERROR MODAL ═══════════════ -->
+<div id="error-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="error-icon">&#10007;</div>
+        <div class="error-title" id="error-title">// ERROR</div>
+        <p class="error-sub" id="error-message">An unknown error occurred.</p>
+        <button class="modal-close-btn" onclick="closeAllModals()">CLOSE</button>
     </div>
 </div>
 
@@ -434,10 +469,16 @@
             <li><a href="#">Docs</a></li>
             <li><a href="#">Analytics</a></li>
         </ul>
-        <div id="wallet-status-bar">
-            <div id="nav-dot" class="status-dot disconnected"></div>
-            <span id="wallet-addr" onclick="showModal()">NOT CONNECTED</span>
-        </div>
+        <!-- ★ TOP-RIGHT METAMASK CONNECT BUTTON ★ -->
+        <button class="nav-wallet-btn" id="nav-connect-btn" onclick="handleNavConnect()">
+            <svg class="mm-icon" viewBox="0 0 35 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32.958 1L19.198 11.3l2.52-5.944L32.958 1z" fill="#E2761B" stroke="#E2761B" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2.028 1l13.65 10.39-2.394-5.034L2.028 1zM28.126 23.533l-3.662 5.607 7.84 2.157 2.254-7.638-6.432-.126zM.47 23.659l2.24 7.638 7.84-2.157-3.661-5.607-6.419.126z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10.185 14.395l-2.184 3.3 7.784.35-.28-8.372-5.32 4.722zM24.8 14.395l-5.39-4.806-.168 8.456 7.77-.35-2.212-3.3zM10.55 29.14l4.676-2.283-4.032-3.145-.644 5.428zM19.758 26.857l4.69 2.283-.658-5.428-4.032 3.145z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="nav-dot" id="nav-dot"></div>
+            <span id="nav-btn-text">Connect MetaMask</span>
+        </button>
     </div>
 </nav>
 
@@ -481,7 +522,7 @@
 
         <div class="nodes-grid">
 
-            <!-- ── CARD 1: 岑夫子 ── -->
+            <!-- ══ CARD 1: 岑夫子 ══ -->
             <div class="node-card node-cen fade-up delay-3">
                 <div class="card-header">
                     <div class="card-badge badge-cen">DEEP REASONING</div>
@@ -509,25 +550,31 @@
                     <div class="perf-row"><span class="perf-label">Throughput</span><div class="perf-bar-bg"><div class="perf-bar-fill fill-cen" style="width:62%"></div></div><span class="perf-value">62</span></div>
                 </div>
 
-                <!-- Access status panel (dynamic) -->
-                <div id="access-cen" class="access-panel locked-cen">
-                    <span class="access-icon">🔒</span>
-                    <span id="access-cen-text">Connect MetaMask to verify on-chain access</span>
+                <!-- Pricing -->
+                <div class="pricing-box">
+                    <div>
+                        <div class="price-label">MVP Access</div>
+                        <div class="price-value price-cen">0.001 ETH</div>
+                    </div>
+                    <div class="price-note">~$3.80 USD</div>
                 </div>
 
-                <button class="btn-metamask btn-cen" id="btn-cen" onclick="connectAndCheck('Cen-Master')">
-                    <span class="shimmer"></span>
-                    <svg class="btn-icon" viewBox="0 0 35 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M32.958 1L19.198 11.3l2.52-5.944L32.958 1z" fill="#E2761B" stroke="#E2761B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2.028 1l13.65 10.39-2.394-5.034L2.028 1zM28.126 23.533l-3.662 5.607 7.84 2.157 2.254-7.638-6.432-.126zM.47 23.659l2.24 7.638 7.84-2.157-3.661-5.607-6.419.126z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M10.185 14.395l-2.184 3.3 7.784.35-.28-8.372-5.32 4.722zM24.8 14.395l-5.39-4.806-.168 8.456 7.77-.35-2.212-3.3zM10.55 29.14l4.676-2.283-4.032-3.145-.644 5.428zM19.758 26.857l4.69 2.283-.658-5.428-4.032 3.145z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span id="btn-cen-text">Connect MetaMask to Unlock</span>
-                </button>
+                <!-- Buttons -->
+                <div class="card-btns">
+                    <button class="btn-action btn-connect-cen" id="btn-connect-cen" onclick="handleNavConnect()">
+                        <span class="shimmer"></span>
+                        <svg class="mm-icon" viewBox="0 0 35 33" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32.958 1L19.198 11.3l2.52-5.944L32.958 1z" fill="#E2761B" stroke="#E2761B" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.028 1l13.65 10.39-2.394-5.034L2.028 1zM28.126 23.533l-3.662 5.607 7.84 2.157 2.254-7.638-6.432-.126zM.47 23.659l2.24 7.638 7.84-2.157-3.661-5.607-6.419.126z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span id="btn-connect-cen-text">Connect MetaMask</span>
+                    </button>
+                    <button class="btn-action btn-pay-cen" id="btn-pay-cen" onclick="payForNode('cen')" disabled>
+                        <span class="shimmer"></span>
+                        <span id="btn-pay-cen-text">&#9830; Pay 0.001 ETH — Unlock Cen-Master</span>
+                    </button>
+                </div>
                 <div class="card-footnote">Stable · Profound · Ω-Class Reasoning Protocol</div>
             </div>
 
-            <!-- ── CARD 2: 丹丘生 ── -->
+            <!-- ══ CARD 2: 丹丘生 ══ -->
             <div class="node-card node-danqiu fade-up delay-4">
                 <div class="card-header">
                     <div class="card-badge badge-danqiu">HIGH CONCURRENCY</div>
@@ -555,27 +602,33 @@
                     <div class="perf-row"><span class="perf-label">Concurrency</span><div class="perf-bar-bg"><div class="perf-bar-fill fill-danqiu" style="width:99%"></div></div><span class="perf-value">99</span></div>
                 </div>
 
-                <!-- Access status panel (dynamic) -->
-                <div id="access-danqiu" class="access-panel locked-danqiu">
-                    <span class="access-icon">🔒</span>
-                    <span id="access-danqiu-text">Connect MetaMask to verify on-chain access</span>
+                <!-- Pricing -->
+                <div class="pricing-box">
+                    <div>
+                        <div class="price-label">MVP Access</div>
+                        <div class="price-value price-danqiu">0.001 ETH</div>
+                    </div>
+                    <div class="price-note">~$3.80 USD</div>
                 </div>
 
-                <button class="btn-metamask btn-danqiu" id="btn-danqiu" onclick="connectAndCheck('Danqiu-Alchemist')">
-                    <span class="shimmer"></span>
-                    <svg class="btn-icon" viewBox="0 0 35 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M32.958 1L19.198 11.3l2.52-5.944L32.958 1z" fill="#E2761B" stroke="#E2761B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2.028 1l13.65 10.39-2.394-5.034L2.028 1zM28.126 23.533l-3.662 5.607 7.84 2.157 2.254-7.638-6.432-.126zM.47 23.659l2.24 7.638 7.84-2.157-3.661-5.607-6.419.126z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M10.185 14.395l-2.184 3.3 7.784.35-.28-8.372-5.32 4.722zM24.8 14.395l-5.39-4.806-.168 8.456 7.77-.35-2.212-3.3zM10.55 29.14l4.676-2.283-4.032-3.145-.644 5.428zM19.758 26.857l4.69 2.283-.658-5.428-4.032 3.145z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span id="btn-danqiu-text">Connect MetaMask to Unlock</span>
-                </button>
+                <!-- Buttons -->
+                <div class="card-btns">
+                    <button class="btn-action btn-connect-danqiu" id="btn-connect-danqiu" onclick="handleNavConnect()">
+                        <span class="shimmer"></span>
+                        <svg class="mm-icon" viewBox="0 0 35 33" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32.958 1L19.198 11.3l2.52-5.944L32.958 1z" fill="#E2761B" stroke="#E2761B" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.028 1l13.65 10.39-2.394-5.034L2.028 1zM28.126 23.533l-3.662 5.607 7.84 2.157 2.254-7.638-6.432-.126zM.47 23.659l2.24 7.638 7.84-2.157-3.661-5.607-6.419.126z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span id="btn-connect-danqiu-text">Connect MetaMask</span>
+                    </button>
+                    <button class="btn-action btn-pay-danqiu" id="btn-pay-danqiu" onclick="payForNode('danqiu')" disabled>
+                        <span class="shimmer"></span>
+                        <span id="btn-pay-danqiu-text">&#9830; Pay 0.001 ETH — Unlock Danqiu-Alchemist</span>
+                    </button>
+                </div>
                 <div class="card-footnote">Dynamic · Agile · Λ-Class Concurrency Protocol</div>
             </div>
 
         </div><!-- /nodes-grid -->
 
-        <!-- ── COMPARISON TABLE ── -->
+        <!-- ══ COMPARISON TABLE ══ -->
         <div class="compare-section fade-up delay-5">
             <div class="section-divider">
                 <div class="divider-line"></div>
@@ -594,11 +647,11 @@
                     <tr><td>Model Tier</td><td>Claude 4.5 Opus-class</td><td>Qwen-Max / Doubao-class</td></tr>
                     <tr><td>Primary Use Case</td><td>Quant Analysis, Code Refactor</td><td>Agentic Workflows, Creative Gen</td></tr>
                     <tr><td>Context Window</td><td>128K tokens</td><td>32K tokens</td></tr>
-                    <tr><td>Reasoning Depth</td><td><span class="check-gold">◆ Elite</span></td><td><span class="check-cyan">◆ Standard</span></td></tr>
+                    <tr><td>Reasoning Depth</td><td><span class="check-gold">&#9670; Elite</span></td><td><span class="check-cyan">&#9670; Standard</span></td></tr>
                     <tr><td>Throughput (req/s)</td><td>~120</td><td>~1,400</td></tr>
-                    <tr><td>24/7 Agentic Mode</td><td><span class="dash">—</span></td><td><span class="check-cyan">✓ Native</span></td></tr>
-                    <tr><td>Financial Quant</td><td><span class="check-gold">✓ Optimized</span></td><td><span class="dash">—</span></td></tr>
-                    <tr><td>Web3 Auth</td><td><span class="check-gold">✓ MetaMask</span></td><td><span class="check-cyan">✓ MetaMask</span></td></tr>
+                    <tr><td>24/7 Agentic Mode</td><td><span class="dash">—</span></td><td><span class="check-cyan">&#10003; Native</span></td></tr>
+                    <tr><td>Financial Quant</td><td><span class="check-gold">&#10003; Optimized</span></td><td><span class="dash">—</span></td></tr>
+                    <tr><td>Web3 Payment</td><td><span class="check-gold">&#10003; 0.001 ETH</span></td><td><span class="check-cyan">&#10003; 0.001 ETH</span></td></tr>
                     <tr><td>Visual Identity</td><td>Dark Gold Neon</td><td>Cyber-Cyan / Neon Purple</td></tr>
                 </tbody>
             </table>
@@ -612,312 +665,292 @@
     <div class="wrapper">
         <div class="footer-logo">OASIS // API AGGREGATOR</div>
         <div class="footer-copy">
-            © 2026 Oasis Protocol. All routing nodes operate under decentralized governance.
-            &nbsp;·&nbsp; 岑夫子，丹丘生，将进酒，杯莫停。
+            &copy; 2026 Oasis Protocol. All routing nodes operate under decentralized governance.
+            &nbsp;&middot;&nbsp; 岑夫子，丹丘生，将进酒，杯莫停。
         </div>
     </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════
-     WEB3 INTEGRATION — Ethers.js v6
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     WEB3 ENGINE — Pure window.ethereum + lightweight helpers
      
-     Contract: OasisNodeAccess.sol (deployed on Sepolia testnet)
-     ABI: minimal interface for isAuthorized() and owner()
-═══════════════════════════════════════════ -->
+     ★ RECEIVING ADDRESS: 0x76104C1542b0cAe1b2c34719FE0d922Ed21aD6e9 ★
+     ★ PAYMENT AMOUNT:    0.001 ETH (MVP test)                        ★
+═══════════════════════════════════════════════════════════════════════════ -->
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-// CONFIGURATION
-// Replace CONTRACT_ADDRESS with your deployed contract address after deploying
-// OasisNodeAccess.sol via Remix IDE or Hardhat.
+// CONFIGURATION — HARDCODED, DO NOT CHANGE
 // ─────────────────────────────────────────────────────────────────────────────
-const CONFIG = {
-    // ⚠️  REPLACE THIS with your actual deployed contract address
-    CONTRACT_ADDRESS: '0x0000000000000000000000000000000000000000',
+const PAY_CONFIG = {
+    // ★ STRICTLY LOCKED receiving address
+    RECEIVER: '0x76104C1542b0cAe1b2c34719FE0d922Ed21aD6e9',
 
-    // Sepolia testnet chain ID (0xaa36a7 = 11155111)
-    // Change to 0x1 for Ethereum mainnet
-    REQUIRED_CHAIN_ID: '0xaa36a7',
-    REQUIRED_CHAIN_NAME: 'Sepolia Testnet',
+    // Payment amount in ETH (string for hex conversion)
+    AMOUNT_ETH: '0.001',
 
-    // Node name strings must match the Solidity constants exactly
-    NODE_CEN:    'Cen-Master',
-    NODE_DANQIU: 'Danqiu-Alchemist',
+    // Etherscan base URL for tx links (mainnet)
+    EXPLORER_BASE: 'https://etherscan.io/tx/',
 };
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CONTRACT ABI — minimal interface (read-only calls only, no gas needed)
-// ─────────────────────────────────────────────────────────────────────────────
-const CONTRACT_ABI = [
-    // Returns the contract owner address
-    {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    // Returns true if _user has access to _node
-    {
-        "inputs": [
-            { "internalType": "address", "name": "_user",  "type": "address" },
-            { "internalType": "string",  "name": "_node",  "type": "string"  }
-        ],
-        "name": "isAuthorized",
-        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-        "stateMutability": "view",
-        "type": "function"
-    }
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────────────────────────────────────
-let state = {
-    provider:      null,
-    signer:        null,
-    contract:      null,
-    address:       null,
-    isOwner:       false,
-    cenAccess:     false,
-    danqiuAccess:  false,
-    connected:     false,
+let wallet = {
+    connected: false,
+    address:   null,
+    chainId:   null,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// UTILITY: shorten address for display
+// UTILITY FUNCTIONS
 // ─────────────────────────────────────────────────────────────────────────────
 function shortAddr(addr) {
+    if (!addr) return '—';
     return addr.slice(0, 6) + '...' + addr.slice(-4);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STEP 1: Connect MetaMask and get signer
-// ─────────────────────────────────────────────────────────────────────────────
-async function connectWallet() {
-    if (typeof window.ethereum === 'undefined') {
-        alert('MetaMask is not installed.\nPlease install it from https://metamask.io/download/');
-        window.open('https://metamask.io/download/', '_blank');
-        return false;
-    }
-
-    // Request account access
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    if (!accounts || accounts.length === 0) throw new Error('No accounts returned.');
-
-    // Check / switch chain
-    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-    if (chainId !== CONFIG.REQUIRED_CHAIN_ID) {
-        try {
-            await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: CONFIG.REQUIRED_CHAIN_ID }],
-            });
-        } catch (switchErr) {
-            // Chain not added yet — add Sepolia
-            if (switchErr.code === 4902) {
-                await window.ethereum.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [{
-                        chainId: CONFIG.REQUIRED_CHAIN_ID,
-                        chainName: 'Sepolia Testnet',
-                        nativeCurrency: { name: 'SepoliaETH', symbol: 'ETH', decimals: 18 },
-                        rpcUrls: ['https://rpc.sepolia.org'],
-                        blockExplorerUrls: ['https://sepolia.etherscan.io'],
-                    }],
-                });
-            } else {
-                throw switchErr;
-            }
-        }
-    }
-
-    // Build Ethers.js provider + signer
-    state.provider = new ethers.BrowserProvider(window.ethereum);
-    state.signer   = await state.provider.getSigner();
-    state.address  = await state.signer.getAddress();
-
-    // Instantiate contract (read-only via provider is fine for view calls)
-    state.contract = new ethers.Contract(
-        CONFIG.CONTRACT_ADDRESS,
-        CONTRACT_ABI,
-        state.provider
-    );
-
-    state.connected = true;
-    return true;
+function ethToWei(ethAmount) {
+    // Convert ETH string to Wei hex without external library
+    const parts = ethAmount.split('.');
+    let whole = parts[0] || '0';
+    let frac  = (parts[1] || '').padEnd(18, '0').slice(0, 18);
+    const weiStr = (BigInt(whole) * BigInt('1000000000000000000') + BigInt(frac)).toString(16);
+    return '0x' + weiStr;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STEP 2: Query on-chain access rights
-// NOTE: If CONTRACT_ADDRESS is the zero address (not yet deployed),
-//       we fall back to a demo mode so the UI still works for testing.
-// ─────────────────────────────────────────────────────────────────────────────
-async function queryAccess() {
-    const addr = state.address;
-
-    // Demo / fallback mode when contract is not yet deployed
-    if (CONFIG.CONTRACT_ADDRESS === '0x0000000000000000000000000000000000000000') {
-        console.warn('[Oasis] Contract not deployed yet — running in DEMO mode.');
-        // In demo mode: the first wallet to connect is treated as "owner"
-        state.isOwner      = true;
-        state.cenAccess    = true;
-        state.danqiuAccess = true;
-        return;
-    }
-
-    try {
-        const ownerAddr    = await state.contract.owner();
-        state.isOwner      = addr.toLowerCase() === ownerAddr.toLowerCase();
-        state.cenAccess    = await state.contract.isAuthorized(addr, CONFIG.NODE_CEN);
-        state.danqiuAccess = await state.contract.isAuthorized(addr, CONFIG.NODE_DANQIU);
-    } catch (err) {
-        console.error('[Oasis] Contract query failed:', err);
-        state.isOwner = state.cenAccess = state.danqiuAccess = false;
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// STEP 3: Update all UI elements based on state
-// ─────────────────────────────────────────────────────────────────────────────
-function updateUI() {
-    const addr = state.address;
-
-    // ── Nav bar ──
-    document.getElementById('nav-dot').className = 'status-dot';
-    document.getElementById('wallet-addr').textContent = shortAddr(addr);
-
-    // ── Cen-Master card ──
-    const cenPanel = document.getElementById('access-cen');
-    const cenText  = document.getElementById('access-cen-text');
-    const btnCen   = document.getElementById('btn-cen');
-    const btnCenTx = document.getElementById('btn-cen-text');
-
-    if (state.isOwner) {
-        cenPanel.className = 'access-panel owner-unlocked';
-        cenText.textContent = '⚡ Owner Access — Full Protocol Control';
-        btnCenTx.textContent = '✓ Owner — Node Unlocked';
-        btnCen.disabled = true;
-    } else if (state.cenAccess) {
-        cenPanel.className = 'access-panel user-unlocked';
-        cenText.textContent = '✓ Access Granted — Node Active';
-        btnCenTx.textContent = '✓ ' + shortAddr(addr) + ' — Unlocked';
-        btnCen.disabled = true;
-    } else {
-        cenPanel.className = 'access-panel denied';
-        cenText.textContent = '✗ No on-chain access — Contact owner to request';
-        btnCenTx.textContent = 'Access Denied — Request Required';
-        btnCen.disabled = false;
-    }
-
-    // ── Danqiu-Alchemist card ──
-    const dqPanel = document.getElementById('access-danqiu');
-    const dqText  = document.getElementById('access-danqiu-text');
-    const btnDq   = document.getElementById('btn-danqiu');
-    const btnDqTx = document.getElementById('btn-danqiu-text');
-
-    if (state.isOwner) {
-        dqPanel.className = 'access-panel owner-unlocked';
-        dqText.textContent = '⚡ Owner Access — Full Protocol Control';
-        btnDqTx.textContent = '✓ Owner — Node Unlocked';
-        btnDq.disabled = true;
-    } else if (state.danqiuAccess) {
-        dqPanel.className = 'access-panel user-unlocked';
-        dqText.textContent = '✓ Access Granted — Node Active';
-        btnDqTx.textContent = '✓ ' + shortAddr(addr) + ' — Unlocked';
-        btnDq.disabled = true;
-    } else {
-        dqPanel.className = 'access-panel denied';
-        dqText.textContent = '✗ No on-chain access — Contact owner to request';
-        btnDqTx.textContent = 'Access Denied — Request Required';
-        btnDq.disabled = false;
-    }
-
-    // ── Modal ──
-    document.getElementById('modal-full-addr').textContent = addr;
-    const roleBadge = document.getElementById('modal-role-badge');
-    if (state.isOwner) {
-        roleBadge.className = 'modal-role-badge role-owner';
-        roleBadge.textContent = '⚡ OWNER — PRIORITY ACCESS';
-    } else {
-        roleBadge.className = 'modal-role-badge role-user';
-        roleBadge.textContent = 'USER';
-    }
-    const cenAccEl = document.getElementById('modal-cen-access');
-    const dqAccEl  = document.getElementById('modal-danqiu-access');
-    cenAccEl.className = state.cenAccess || state.isOwner ? 'node-access-yes' : 'node-access-no';
-    cenAccEl.textContent = state.cenAccess || state.isOwner ? '✓ Access Granted' : '✗ No Access';
-    dqAccEl.className  = state.danqiuAccess || state.isOwner ? 'node-access-yes' : 'node-access-no';
-    dqAccEl.textContent = state.danqiuAccess || state.isOwner ? '✓ Access Granted' : '✗ No Access';
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MAIN ENTRY: called by both card buttons
-// ─────────────────────────────────────────────────────────────────────────────
-async function connectAndCheck(nodeHint) {
-    const btnId  = nodeHint === CONFIG.NODE_CEN ? 'btn-cen-text' : 'btn-danqiu-text';
-    const btnEl  = document.getElementById(btnId);
-    const origTx = btnEl.textContent;
-
-    btnEl.textContent = 'Connecting...';
-
-    try {
-        if (!state.connected) {
-            const ok = await connectWallet();
-            if (!ok) { btnEl.textContent = origTx; return; }
-        }
-        await queryAccess();
-        updateUI();
-        showModal();
-    } catch (err) {
-        console.error('[Oasis] Connection error:', err);
-        btnEl.textContent = err.code === 4001 ? 'Rejected by User' : 'Error — Retry';
-        setTimeout(() => { btnEl.textContent = origTx; }, 3000);
-    }
+function generateApiKey() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let key = 'oasis_';
+    for (let i = 0; i < 48; i++) key += chars.charAt(Math.floor(Math.random() * chars.length));
+    return key;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MODAL HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
-function showModal() {
-    if (state.connected) document.getElementById('wallet-modal').classList.add('open');
+function closeAllModals() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
 }
-function closeModal() {
-    document.getElementById('wallet-modal').classList.remove('open');
+
+function showSuccessModal(txHash) {
+    const hashEl = document.getElementById('tx-hash-display');
+    hashEl.innerHTML = '<a href="' + PAY_CONFIG.EXPLORER_BASE + txHash + '" target="_blank" rel="noopener">' + txHash + '</a>';
+
+    const keyEl = document.getElementById('api-key-display');
+    keyEl.innerHTML = '<span class="api-key-generating">Generating...</span>';
+
+    document.getElementById('success-modal').classList.add('open');
+
+    // Simulate API key generation after 2.5 seconds
+    setTimeout(() => {
+        keyEl.textContent = generateApiKey();
+        keyEl.style.letterSpacing = '0.02em';
+    }, 2500);
 }
-document.getElementById('wallet-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
+
+function showErrorModal(title, message) {
+    document.getElementById('error-title').textContent = '// ' + title;
+    document.getElementById('error-message').textContent = message;
+    document.getElementById('error-modal').classList.add('open');
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+        if (e.target === this) closeAllModals();
+    });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LISTEN FOR ACCOUNT / CHAIN CHANGES
+// STEP 1: CONNECT WALLET (via nav button or card buttons)
+// ─────────────────────────────────────────────────────────────────────────────
+async function handleNavConnect() {
+    // If already connected, show address info
+    if (wallet.connected) {
+        // Toggle disconnect
+        if (confirm('Disconnect wallet ' + shortAddr(wallet.address) + '?')) {
+            disconnectWallet();
+        }
+        return;
+    }
+
+    // Check MetaMask
+    if (typeof window.ethereum === 'undefined') {
+        showErrorModal('METAMASK NOT FOUND', 'MetaMask is not installed in this browser. Please install MetaMask from metamask.io/download to continue.');
+        return;
+    }
+
+    // Update UI to "connecting" state
+    const navBtnText = document.getElementById('nav-btn-text');
+    navBtnText.textContent = 'Connecting...';
+
+    try {
+        // Request accounts
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (!accounts || accounts.length === 0) {
+            throw new Error('No accounts returned from MetaMask.');
+        }
+
+        // Get chain ID
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+
+        // Update state
+        wallet.connected = true;
+        wallet.address   = accounts[0];
+        wallet.chainId   = chainId;
+
+        // Update all UI
+        updateWalletUI();
+
+        console.log('[Oasis] Wallet connected:', wallet.address, 'Chain:', chainId);
+
+    } catch (err) {
+        console.error('[Oasis] Connection error:', err);
+
+        if (err.code === 4001) {
+            // User rejected
+            showErrorModal('REQUEST REJECTED', 'You rejected the MetaMask connection request. Click the Connect button again when ready.');
+        } else {
+            showErrorModal('CONNECTION FAILED', err.message || 'Failed to connect to MetaMask. Please try again.');
+        }
+
+        navBtnText.textContent = 'Connect MetaMask';
+    }
+}
+
+function disconnectWallet() {
+    wallet = { connected: false, address: null, chainId: null };
+    updateWalletUI();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 2: UPDATE ALL UI ELEMENTS
+// ─────────────────────────────────────────────────────────────────────────────
+function updateWalletUI() {
+    const navBtn     = document.getElementById('nav-connect-btn');
+    const navBtnText = document.getElementById('nav-btn-text');
+    const navDot     = document.getElementById('nav-dot');
+
+    if (wallet.connected) {
+        navBtn.classList.add('connected');
+        navBtnText.textContent = shortAddr(wallet.address);
+        navDot.classList.add('live');
+
+        // Enable pay buttons
+        document.getElementById('btn-pay-cen').disabled = false;
+        document.getElementById('btn-pay-danqiu').disabled = false;
+
+        // Update card connect buttons
+        document.getElementById('btn-connect-cen-text').textContent = shortAddr(wallet.address) + ' — Connected';
+        document.getElementById('btn-connect-danqiu-text').textContent = shortAddr(wallet.address) + ' — Connected';
+        document.getElementById('btn-connect-cen').disabled = false;
+        document.getElementById('btn-connect-danqiu').disabled = false;
+
+    } else {
+        navBtn.classList.remove('connected');
+        navBtnText.textContent = 'Connect MetaMask';
+        navDot.classList.remove('live');
+
+        // Disable pay buttons
+        document.getElementById('btn-pay-cen').disabled = true;
+        document.getElementById('btn-pay-danqiu').disabled = true;
+
+        // Reset card connect buttons
+        document.getElementById('btn-connect-cen-text').textContent = 'Connect MetaMask';
+        document.getElementById('btn-connect-danqiu-text').textContent = 'Connect MetaMask';
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 3: EXECUTE PAYMENT TRANSACTION
+// ─────────────────────────────────────────────────────────────────────────────
+async function payForNode(nodeType) {
+    if (!wallet.connected) {
+        showErrorModal('WALLET NOT CONNECTED', 'Please connect your MetaMask wallet first before making a payment.');
+        return;
+    }
+
+    const btnId  = nodeType === 'cen' ? 'btn-pay-cen-text' : 'btn-pay-danqiu-text';
+    const btnEl  = document.getElementById(btnId);
+    const payBtn = btnEl.closest('button');
+    const origText = btnEl.innerHTML;
+
+    // Set loading state
+    btnEl.textContent = 'Awaiting MetaMask...';
+    payBtn.disabled = true;
+
+    try {
+        // Convert ETH to Wei hex
+        const valueHex = ethToWei(PAY_CONFIG.AMOUNT_ETH);
+
+        console.log('[Oasis] Initiating payment:', {
+            from:  wallet.address,
+            to:    PAY_CONFIG.RECEIVER,
+            value: PAY_CONFIG.AMOUNT_ETH + ' ETH',
+            hex:   valueHex,
+            node:  nodeType,
+        });
+
+        // ★ SEND TRANSACTION via window.ethereum
+        const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+                from:  wallet.address,
+                to:    PAY_CONFIG.RECEIVER,
+                value: valueHex,
+                // gas is auto-estimated by MetaMask
+            }],
+        });
+
+        console.log('[Oasis] Transaction hash:', txHash);
+
+        // ★ SHOW SUCCESS MODAL
+        showSuccessModal(txHash);
+
+        // Update button to success state
+        btnEl.innerHTML = '&#10003; Payment Sent — ' + txHash.slice(0, 10) + '...';
+        payBtn.disabled = true;
+
+    } catch (err) {
+        console.error('[Oasis] Payment error:', err);
+
+        if (err.code === 4001) {
+            showErrorModal('TRANSACTION REJECTED', 'You rejected the transaction in MetaMask. No funds were sent. You can try again when ready.');
+            btnEl.innerHTML = origText;
+            payBtn.disabled = false;
+        } else if (err.code === -32603) {
+            showErrorModal('INSUFFICIENT FUNDS', 'Your wallet does not have enough ETH to complete this transaction. Please ensure you have at least 0.001 ETH plus gas fees.');
+            btnEl.innerHTML = origText;
+            payBtn.disabled = false;
+        } else {
+            showErrorModal('TRANSACTION FAILED', err.message || 'An unexpected error occurred during the transaction. Please try again.');
+            btnEl.innerHTML = origText;
+            payBtn.disabled = false;
+        }
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LISTEN FOR METAMASK EVENTS
 // ─────────────────────────────────────────────────────────────────────────────
 if (typeof window.ethereum !== 'undefined') {
-    window.ethereum.on('accountsChanged', async (accounts) => {
+    // Account changed
+    window.ethereum.on('accountsChanged', (accounts) => {
         if (accounts.length === 0) {
-            // User disconnected
-            state = { provider: null, signer: null, contract: null, address: null, isOwner: false, cenAccess: false, danqiuAccess: false, connected: false };
-            document.getElementById('nav-dot').className = 'status-dot disconnected';
-            document.getElementById('wallet-addr').textContent = 'NOT CONNECTED';
-            ['access-cen', 'access-danqiu'].forEach((id, i) => {
-                const panel = document.getElementById(id);
-                panel.className = 'access-panel ' + (i === 0 ? 'locked-cen' : 'locked-danqiu');
-                document.getElementById(id + '-text').textContent = 'Connect MetaMask to verify on-chain access';
-            });
-            document.getElementById('btn-cen-text').textContent = 'Connect MetaMask to Unlock';
-            document.getElementById('btn-danqiu-text').textContent = 'Connect MetaMask to Unlock';
-            document.getElementById('btn-cen').disabled = false;
-            document.getElementById('btn-danqiu').disabled = false;
-            closeModal();
+            disconnectWallet();
         } else {
-            state.address = accounts[0];
-            state.signer  = await state.provider.getSigner();
-            await queryAccess();
-            updateUI();
+            wallet.address = accounts[0];
+            wallet.connected = true;
+            updateWalletUI();
+            console.log('[Oasis] Account switched to:', accounts[0]);
         }
     });
 
-    window.ethereum.on('chainChanged', () => {
-        window.location.reload();
+    // Chain changed
+    window.ethereum.on('chainChanged', (chainId) => {
+        wallet.chainId = chainId;
+        console.log('[Oasis] Chain switched to:', chainId);
+        // Optionally reload, but we keep it smooth
     });
 }
 
