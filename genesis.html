@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Genesis Airdrop — Claim Your $50 Compute Voucher</title>
+<meta name="description" content="Connect MetaMask + Follow Oasis on X to claim a $50 API Compute Voucher. 10,000 Genesis Keys. First come, first served.">
+<meta property="og:title" content="Oasis Genesis Airdrop — $50 Compute Voucher">
+<meta property="og:description" content="Claim your Genesis Key. $50 in API compute, routed through elite AI models. Free. Now.">
+<meta property="og:image" content="genesis_key.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Oasis Genesis Airdrop — $50 Compute Voucher">
+<meta name="twitter:description" content="Claim your Genesis Key. Connect MetaMask + Follow @OasisAPIProto. 8,421 keys remaining.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────────────────────
+   OASIS GENESIS AIRDROP — DESIGN SYSTEM
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --bg-void:       #020408;
+  --bg-card:       rgba(8, 16, 28, 0.85);
+  --bg-glass:      rgba(0, 229, 255, 0.04);
+  --cyan:          #00e5ff;
+  --cyan-dim:      rgba(0, 229, 255, 0.15);
+  --gold:          #c8a84b;
+  --gold-bright:   #f0c96e;
+  --purple:        #b44fff;
+  --green:         #00ff88;
+  --red-alert:     #ff3b5c;
+  --text-primary:  #e8eaf0;
+  --text-secondary:#7a8a9a;
+  --text-mono:     #00e5ff;
+  --border-dim:    rgba(0, 229, 255, 0.12);
+  --border-active: rgba(0, 229, 255, 0.45);
+  --font-display:  'Orbitron', monospace;
+  --font-mono:     'Share Tech Mono', monospace;
+  --font-body:     'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── ANIMATED BACKGROUND ── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: gridPulse 8s ease-in-out infinite;
+}
+@keyframes gridPulse {
+  0%,100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+.bg-radial {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,229,255,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(180,79,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 10% 60%, rgba(200,168,75,0.04) 0%, transparent 50%);
+}
+
+/* Floating particles */
+.particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+  0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-10vh) translateX(var(--drift)); opacity: 0; }
+}
+
+/* ── LAYOUT ── */
+.page-wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(2, 4, 8, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-dim);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--gold); }
+.nav-badge {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--text-secondary);
+  border: 1px solid var(--border-dim);
+  padding: 4px 10px; border-radius: 2px;
+  letter-spacing: 0.1em;
+}
+.nav-badge .live-dot {
+  display: inline-block; width: 6px; height: 6px;
+  background: var(--green); border-radius: 50%;
+  margin-right: 6px;
+  animation: blink 1.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+/* ── HERO ── */
+.hero {
+  padding: 160px 0 80px;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: 0.3em;
+  color: var(--cyan); text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; display: block;
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan));
+}
+.hero-eyebrow::after { transform: scaleX(-1); }
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.hero-title .line1 { color: var(--text-primary); }
+.hero-title .line2 {
+  background: linear-gradient(135deg, var(--gold-bright), var(--cyan), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradShift 4s ease-in-out infinite alternate;
+}
+@keyframes gradShift {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(30deg); }
+}
+
+.hero-sub {
+  font-size: 18px; color: var(--text-secondary);
+  max-width: 560px; margin: 20px auto 0;
+  line-height: 1.7;
+}
+.hero-sub strong { color: var(--text-primary); }
+
+/* Genesis Key visual */
+.key-visual {
+  width: 220px; height: 220px;
+  margin: 40px auto;
+  position: relative;
+}
+.key-visual img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  animation: keyFloat 4s ease-in-out infinite, keyGlow 3s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 30px rgba(0,229,255,0.5)) drop-shadow(0 0 60px rgba(200,168,75,0.3));
+}
+@keyframes keyFloat {
+  0%,100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-16px) rotate(3deg); }
+}
+@keyframes keyGlow {
+  0%   { filter: drop-shadow(0 0 20px rgba(0,229,255,0.4)) drop-shadow(0 0 40px rgba(200,168,75,0.2)); }
+  100% { filter: drop-shadow(0 0 40px rgba(0,229,255,0.7)) drop-shadow(0 0 80px rgba(200,168,75,0.4)); }
+}
+.key-ring {
+  position: absolute; inset: -20px;
+  border: 1px solid rgba(0,229,255,0.15);
+  border-radius: 50%;
+  animation: ringRotate 12s linear infinite;
+}
+.key-ring-2 {
+  position: absolute; inset: -40px;
+  border: 1px solid rgba(200,168,75,0.08);
+  border-radius: 50%;
+  animation: ringRotate 20s linear infinite reverse;
+}
+@keyframes ringRotate { to { transform: rotate(360deg); } }
+
+/* ── FOMO STRIP ── */
+.fomo-strip {
+  background: linear-gradient(135deg, rgba(255,59,92,0.08), rgba(200,168,75,0.06));
+  border: 1px solid rgba(255,59,92,0.25);
+  border-radius: 8px;
+  padding: 16px 24px;
+  margin: 0 0 48px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.fomo-item {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 13px;
+}
+.fomo-label { color: var(--text-secondary); }
+.fomo-value { color: var(--red-alert); font-weight: 700; font-size: 15px; }
+.fomo-value.gold { color: var(--gold-bright); }
+.fomo-value.cyan { color: var(--cyan); }
+.fomo-divider { width: 1px; height: 32px; background: var(--border-dim); }
+
+/* ── COUNTDOWN ── */
+.countdown-section {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.countdown-label {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.25em;
+  color: var(--text-secondary); text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.countdown-grid {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  flex-wrap: wrap;
+}
+.countdown-unit {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 16px 20px;
+  min-width: 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.countdown-unit::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scanLine 3s ease-in-out infinite;
+}
+@keyframes scanLine {
+  0%,100% { opacity: 0; transform: translateX(-100%); }
+  50%      { opacity: 1; transform: translateX(100%); }
+}
+.countdown-num {
+  font-family: var(--font-display);
+  font-size: 36px; font-weight: 900;
+  color: var(--cyan);
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(0,229,255,0.5);
+  transition: all 0.3s;
+}
+.countdown-num.flash { animation: numFlash 0.3s ease; }
+@keyframes numFlash {
+  0%,100% { color: var(--cyan); }
+  50%      { color: #fff; text-shadow: 0 0 30px #fff; }
+}
+.countdown-unit-label {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.2em;
+  color: var(--text-secondary); text-transform: uppercase;
+  margin-top: 6px;
+}
+.countdown-colon {
+  font-family: var(--font-display);
+  font-size: 32px; color: var(--border-active);
+  animation: colonBlink 1s step-end infinite;
+  padding-bottom: 20px;
+}
+@keyframes colonBlink { 0%,100%{opacity:1;} 50%{opacity:0.1;} }
+
+/* ── KEYS COUNTER ── */
+.keys-counter {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  padding: 24px 32px;
+  margin-bottom: 48px;
+  position: relative; overflow: hidden;
+}
+.keys-counter::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--red-alert), var(--gold), var(--cyan));
+}
+.keys-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+}
+.keys-title {
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: 0.2em;
+  color: var(--text-secondary); text-transform: uppercase;
+}
+.keys-numbers {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700;
+}
+.keys-remaining { color: var(--red-alert); }
+.keys-total { color: var(--text-secondary); font-size: 16px; }
+.keys-bar-bg {
+  width: 100%; height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px; overflow: hidden;
+  margin-bottom: 12px;
+}
+.keys-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red-alert), var(--gold));
+  border-radius: 4px;
+  transition: width 1s ease;
+  box-shadow: 0 0 12px rgba(255,59,92,0.4);
+  width: 84.21%; /* 8421/10000 */
+}
+.keys-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--text-secondary);
+}
+.keys-claimed { color: var(--green); }
+.keys-rate {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--red-alert);
+}
+.keys-rate-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--red-alert);
+  animation: blink 0.8s ease-in-out infinite;
+}
+
+/* ── CLAIM CARD ── */
+.claim-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 48px;
+  position: relative; overflow: hidden;
+  backdrop-filter: blur(24px);
+}
+.claim-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,229,255,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.claim-card-title {
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--cyan); margin-bottom: 32px;
+  display: flex; align-items: center; gap: 10px;
+}
+.claim-card-title::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border-dim), transparent);
+}
+
+/* Steps */
+.steps { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+.step {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 20px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.step.completed {
+  border-color: rgba(0,255,136,0.3);
+  background: rgba(0,255,136,0.04);
+}
+.step.active {
+  border-color: rgba(0,229,255,0.3);
+  background: rgba(0,229,255,0.04);
+}
+.step-num {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border-active);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 13px;
+  color: var(--cyan);
+  transition: all 0.3s;
+}
+.step.completed .step-num {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+}
+.step-content { flex: 1; }
+.step-title {
+  font-family: var(--font-body);
+  font-size: 15px; font-weight: 600;
+  color: var(--text-primary); margin-bottom: 4px;
+}
+.step-desc {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+}
+.step-action { flex-shrink: 0; }
+.step-badge {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 4px 10px; border-radius: 3px;
+  letter-spacing: 0.1em;
+}
+.step-badge.done { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+.step-badge.pending { background: rgba(0,229,255,0.08); color: var(--cyan); border: 1px solid var(--border-dim); }
+
+/* Claim button */
+.btn-claim {
+  width: 100%;
+  padding: 20px 32px;
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: #000;
+  background: linear-gradient(135deg, var(--gold-bright), var(--cyan));
+  border: none; border-radius: 10px;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.btn-claim:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(0,229,255,0.3), 0 4px 20px rgba(200,168,75,0.2);
+}
+.btn-claim:disabled {
+  opacity: 0.5; cursor: not-allowed; transform: none;
+}
+.btn-claim::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.btn-claim:hover:not(:disabled)::before { opacity: 1; }
+.btn-claim-shimmer {
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.btn-metamask {
+  width: 100%;
+  padding: 18px 32px;
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid var(--border-active);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.btn-metamask:hover:not(:disabled) {
+  background: var(--cyan-dim);
+  border-color: var(--cyan);
+  box-shadow: 0 0 24px rgba(0,229,255,0.15);
+}
+.btn-metamask.connected {
+  border-color: rgba(0,255,136,0.4);
+  color: var(--green);
+}
+.btn-twitter {
+  width: 100%;
+  padding: 18px 32px;
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid rgba(29,161,242,0.35);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 24px;
+}
+.btn-twitter:hover:not(:disabled) {
+  background: rgba(29,161,242,0.08);
+  border-color: rgba(29,161,242,0.6);
+  box-shadow: 0 0 24px rgba(29,161,242,0.15);
+}
+.btn-twitter.verified {
+  border-color: rgba(0,255,136,0.4);
+  color: var(--green);
+}
+
+/* ── VOUCHER REVEAL ── */
+.voucher-reveal {
+  display: none;
+  background: linear-gradient(135deg, rgba(200,168,75,0.08), rgba(0,229,255,0.05));
+  border: 1px solid rgba(200,168,75,0.3);
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin-top: 24px;
+  text-align: center;
+  animation: voucherAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.voucher-reveal.show { display: block; }
+@keyframes voucherAppear {
+  0%   { opacity: 0; transform: scale(0.8) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.voucher-label {
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.25em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.voucher-code {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700;
+  color: var(--gold-bright);
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 20px rgba(200,168,75,0.5);
+  cursor: pointer;
+  padding: 12px 20px;
+  background: rgba(200,168,75,0.08);
+  border: 1px solid rgba(200,168,75,0.25);
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+.voucher-code:hover { background: rgba(200,168,75,0.15); }
+.voucher-value {
+  font-family: var(--font-body); font-size: 14px;
+  color: var(--text-secondary);
+}
+.voucher-value strong { color: var(--green); font-size: 18px; }
+
+/* ── REFERRAL SECTION ── */
+.referral-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 48px;
+  position: relative; overflow: hidden;
+}
+.referral-section::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--purple), var(--cyan), var(--gold));
+}
+.referral-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+}
+.referral-title {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 700;
+  color: var(--text-primary);
+}
+.referral-title span { color: var(--purple); }
+.referral-badge {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 6px 14px; border-radius: 3px;
+  background: rgba(180,79,255,0.1);
+  border: 1px solid rgba(180,79,255,0.3);
+  color: var(--purple);
+  letter-spacing: 0.15em;
+}
+.referral-desc {
+  font-size: 14px; color: var(--text-secondary);
+  line-height: 1.7; margin-bottom: 24px;
+}
+.referral-desc strong { color: var(--text-primary); }
+
+.referral-rewards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-bottom: 24px;
+}
+.reward-card {
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  text-align: center;
+}
+.reward-amount {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 700;
+  color: var(--green);
+  text-shadow: 0 0 16px rgba(0,255,136,0.4);
+}
+.reward-label {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--text-secondary); letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+.referral-link-box {
+  display: flex; gap: 8px; align-items: center;
+}
+.referral-link-input {
+  flex: 1;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  font-family: var(--font-mono); font-size: 13px;
+  color: var(--cyan);
+  outline: none;
+  cursor: text;
+}
+.btn-copy {
+  padding: 14px 20px;
+  background: rgba(180,79,255,0.12);
+  border: 1px solid rgba(180,79,255,0.35);
+  border-radius: 8px;
+  font-family: var(--font-mono); font-size: 12px;
+  color: var(--purple); letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-copy:hover { background: rgba(180,79,255,0.2); border-color: var(--purple); }
+.btn-copy.copied { color: var(--green); border-color: rgba(0,255,136,0.4); background: rgba(0,255,136,0.08); }
+
+.referral-stats {
+  display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap;
+}
+.ref-stat {
+  font-family: var(--font-mono); font-size: 12px;
+  color: var(--text-secondary);
+}
+.ref-stat strong { color: var(--text-primary); font-size: 16px; }
+
+/* ── SOCIAL PROOF ── */
+.social-proof {
+  margin-bottom: 48px;
+}
+.sp-title {
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.25em; color: var(--text-secondary);
+  text-transform: uppercase; text-align: center;
+  margin-bottom: 20px;
+}
+.sp-feed {
+  display: flex; flex-direction: column; gap: 8px;
+  max-height: 200px; overflow: hidden;
+  position: relative;
+}
+.sp-feed::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+  background: linear-gradient(transparent, var(--bg-void));
+  pointer-events: none;
+}
+.sp-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  font-family: var(--font-mono); font-size: 12px;
+  animation: slideIn 0.4s ease;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.sp-addr { color: var(--cyan); }
+.sp-action { color: var(--text-secondary); }
+.sp-amount { color: var(--green); font-weight: 700; }
+.sp-time { color: var(--text-secondary); margin-left: auto; font-size: 11px; }
+
+/* ── VALUE PROPS ── */
+.value-props {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-bottom: 64px;
+}
+@media (max-width: 640px) { .value-props { grid-template-columns: 1fr; } }
+.vp-card {
+  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.3s;
+}
+.vp-card:hover {
+  border-color: var(--border-active);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0,229,255,0.08);
+}
+.vp-icon {
+  font-size: 28px; margin-bottom: 12px;
+  filter: drop-shadow(0 0 8px rgba(0,229,255,0.4));
+}
+.vp-title {
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.1em; color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.vp-desc {
+  font-size: 13px; color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border-dim);
+  padding: 32px 0;
+  text-align: center;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--text-secondary); letter-spacing: 0.1em;
+}
+footer a { color: var(--cyan); text-decoration: none; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: rgba(8,16,28,0.98);
+  border: 1px solid var(--border-active);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 480px; width: 100%;
+  text-align: center;
+  transform: scale(0.9); transition: transform 0.3s;
+  position: relative;
+}
+.modal-overlay.open .modal-box { transform: scale(1); }
+.modal-icon { font-size: 48px; margin-bottom: 16px; }
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 700;
+  color: var(--gold-bright); margin-bottom: 12px;
+}
+.modal-body {
+  font-size: 14px; color: var(--text-secondary);
+  line-height: 1.7; margin-bottom: 24px;
+}
+.modal-close {
+  padding: 12px 32px;
+  background: transparent;
+  border: 1px solid var(--border-active);
+  border-radius: 8px;
+  font-family: var(--font-mono); font-size: 13px;
+  color: var(--cyan); cursor: pointer;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: var(--cyan-dim); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 32px; right: 32px; z-index: 300;
+  padding: 14px 20px;
+  background: rgba(8,16,28,0.95);
+  border: 1px solid var(--border-active);
+  border-radius: 8px;
+  font-family: var(--font-mono); font-size: 13px;
+  color: var(--cyan);
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .claim-card { padding: 24px; }
+  .referral-section { padding: 24px; }
+  .referral-rewards { grid-template-columns: 1fr 1fr; }
+  .fomo-strip { gap: 16px; }
+  .fomo-divider { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="bg-grid"></div>
+<div class="bg-radial"></div>
+<div class="particles" id="particles"></div>
+
+<!-- Nav -->
+<nav>
+  <a href="oasis.html" class="nav-logo">OASIS <span>//</span> GENESIS</a>
+  <div class="nav-badge">
+    <span class="live-dot"></span>AIRDROP LIVE
+  </div>
+</nav>
+
+<!-- Main content -->
+<div class="page-wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">// GENESIS COMPUTE AIRDROP — WAVE 01</div>
+    <h1 class="hero-title">
+      <div class="line1">Claim Your</div>
+      <div class="line2">$50 Genesis Key</div>
+    </h1>
+    <p class="hero-sub">
+      Connect MetaMask. Follow <strong>@OasisAPIProto</strong> on X.<br>
+      Instantly unlock <strong>$50 in API compute credit</strong> — routed through elite AI models.
+      Zero cost. Maximum power.
+    </p>
+
+    <div class="key-visual">
+      <div class="key-ring-2"></div>
+      <div class="key-ring"></div>
+      <img src="genesis_key.png" alt="Oasis Genesis Key" id="genesis-key-img">
+    </div>
+  </section>
+
+  <!-- FOMO STRIP -->
+  <div class="fomo-strip">
+    <div class="fomo-item">
+      <span class="fomo-label">KEYS LEFT</span>
+      <span class="fomo-value" id="fomo-keys">8,421</span>
+    </div>
+    <div class="fomo-divider"></div>
+    <div class="fomo-item">
+      <span class="fomo-label">CLAIMED TODAY</span>
+      <span class="fomo-value gold" id="fomo-claimed">1,579</span>
+    </div>
+    <div class="fomo-divider"></div>
+    <div class="fomo-item">
+      <span class="fomo-label">COMPUTE VALUE</span>
+      <span class="fomo-value cyan">$50.00 USD</span>
+    </div>
+    <div class="fomo-divider"></div>
+    <div class="fomo-item">
+      <span class="fomo-label">CLAIMING RATE</span>
+      <span class="fomo-value" id="fomo-rate">~12/min</span>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown-section">
+    <div class="countdown-label">// Airdrop window closes in</div>
+    <div class="countdown-grid">
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-days">06</div>
+        <div class="countdown-unit-label">Days</div>
+      </div>
+      <div class="countdown-colon">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-hours">23</div>
+        <div class="countdown-unit-label">Hours</div>
+      </div>
+      <div class="countdown-colon">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-mins">47</div>
+        <div class="countdown-unit-label">Mins</div>
+      </div>
+      <div class="countdown-colon">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-secs">33</div>
+        <div class="countdown-unit-label">Secs</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEYS COUNTER -->
+  <div class="keys-counter">
+    <div class="keys-header">
+      <span class="keys-title">// Remaining Genesis Keys</span>
+      <span class="keys-numbers">
+        <span class="keys-remaining" id="keys-num">8,421</span>
+        <span class="keys-total"> / 10,000</span>
+      </span>
+    </div>
+    <div class="keys-bar-bg">
+      <div class="keys-bar-fill" id="keys-bar"></div>
+    </div>
+    <div class="keys-footer">
+      <span class="keys-claimed" id="keys-claimed-pct">15.79% claimed</span>
+      <span class="keys-rate">
+        <span class="keys-rate-dot"></span>
+        <span id="keys-rate-text">Claiming in real-time</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- CLAIM CARD -->
+  <div class="claim-card">
+    <div class="claim-card-title">// Claim Protocol — 3 Steps</div>
+
+    <div class="steps">
+      <div class="step" id="step-1">
+        <div class="step-num" id="step-1-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Connect MetaMask Wallet</div>
+          <div class="step-desc">Your wallet address becomes your Genesis Key identity. No transaction required — zero gas.</div>
+        </div>
+        <div class="step-action">
+          <span class="step-badge pending" id="step-1-badge">PENDING</span>
+        </div>
+      </div>
+      <div class="step" id="step-2">
+        <div class="step-num" id="step-2-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Follow @OasisAPIProto on X</div>
+          <div class="step-desc">Join the protocol community. Click below to follow, then return to verify.</div>
+        </div>
+        <div class="step-action">
+          <span class="step-badge pending" id="step-2-badge">PENDING</span>
+        </div>
+      </div>
+      <div class="step" id="step-3">
+        <div class="step-num" id="step-3-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Claim Your $50 Genesis Key</div>
+          <div class="step-desc">Instantly receive your compute voucher code. Valid for 30 days on all Oasis nodes.</div>
+        </div>
+        <div class="step-action">
+          <span class="step-badge pending" id="step-3-badge">PENDING</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <button class="btn-metamask" id="btn-connect-wallet" onclick="connectWallet()">
+      <svg width="20" height="20" viewBox="0 0 35 33" fill="none">
+        <path d="M32.958 1L19.47 10.807l2.462-5.813L32.958 1z" fill="#E2761B" stroke="#E2761B" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2.028 1l13.374 9.9-2.344-5.906L2.028 1z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M28.14 23.533l-3.593 5.505 7.688 2.116 2.21-7.49-6.305-.131z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M.574 23.664l2.197 7.49 7.688-2.116-3.58-5.505-6.305.131z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span id="wallet-btn-text">Connect MetaMask</span>
+    </button>
+
+    <button class="btn-twitter" id="btn-twitter" onclick="followTwitter()" disabled>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+      <span id="twitter-btn-text">Follow @OasisAPIProto on X</span>
+    </button>
+
+    <button class="btn-claim" id="btn-claim" onclick="claimGenesis()" disabled>
+      <span class="btn-claim-shimmer"></span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+      <span id="claim-btn-text">Claim $50 Genesis Key</span>
+    </button>
+
+    <!-- Voucher reveal -->
+    <div class="voucher-reveal" id="voucher-reveal">
+      <div class="voucher-label">// Your Genesis Key is ready</div>
+      <div class="voucher-code" id="voucher-code" onclick="copyVoucher()" title="Click to copy">GENESIS-XXXX-XXXX</div>
+      <div class="voucher-value">
+        Compute Credit: <strong>$50.00 USD</strong> &nbsp;·&nbsp; Valid 30 days &nbsp;·&nbsp; All Oasis Nodes
+      </div>
+      <div style="margin-top:16px; font-family: var(--font-mono); font-size:12px; color: var(--text-secondary);">
+        Use at <a href="oasis.html" style="color:var(--cyan);">oasiscorp.io</a> &nbsp;·&nbsp;
+        <a href="#referral" style="color:var(--purple);">Invite friends for +$10 each →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERRAL SECTION -->
+  <div class="referral-section" id="referral">
+    <div class="referral-header">
+      <div>
+        <div class="referral-title">Invite Friends. <span>Earn More Compute.</span></div>
+      </div>
+      <div class="referral-badge">AFFILIATE PROTOCOL</div>
+    </div>
+    <p class="referral-desc">
+      Share your unique referral link. Every friend who claims their Genesis Key earns
+      <strong>you $10 in bonus compute credit</strong> — and they get <strong>an extra $10</strong> on top of their $50.
+      No cap. Stack unlimited credits.
+    </p>
+
+    <div class="referral-rewards">
+      <div class="reward-card">
+        <div class="reward-amount">+$10</div>
+        <div class="reward-label">You earn per referral</div>
+      </div>
+      <div class="reward-card">
+        <div class="reward-amount">+$10</div>
+        <div class="reward-label">Friend bonus on top of $50</div>
+      </div>
+    </div>
+
+    <div class="referral-link-box">
+      <input class="referral-link-input" id="ref-link-input" type="text"
+        value="https://oasiscorp.io/genesis?ref=CONNECT_WALLET" readonly>
+      <button class="btn-copy" id="btn-copy-ref" onclick="copyRefLink()">COPY LINK</button>
+    </div>
+
+    <div class="referral-stats">
+      <div class="ref-stat">Friends referred: <strong id="ref-count">0</strong></div>
+      <div class="ref-stat">Bonus earned: <strong id="ref-earned">$0</strong></div>
+      <div class="ref-stat">Pending: <strong id="ref-pending">$0</strong></div>
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF FEED -->
+  <div class="social-proof">
+    <div class="sp-title">// Live claim activity</div>
+    <div class="sp-feed" id="sp-feed"></div>
+  </div>
+
+  <!-- VALUE PROPS -->
+  <div class="value-props">
+    <div class="vp-card">
+      <div class="vp-icon">⚡</div>
+      <div class="vp-title">Elite Model Access</div>
+      <div class="vp-desc">Route through Claude Opus, Qwen-Max, MiniMax abab6.5 — all from one unified API endpoint.</div>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">🔗</div>
+      <div class="vp-title">Web3 Native</div>
+      <div class="vp-desc">Wallet-based identity. Pay with ETH or USDT. No credit card. No KYC. Pure compute protocol.</div>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">∞</div>
+      <div class="vp-title">First-Principles Pricing</div>
+      <div class="vp-desc">Why pay $20/M tokens when Oasis routes the same compute for pennies? Physics doesn't justify the API tax.</div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<footer>
+  <div class="page-wrap">
+    OASIS API AGGREGATOR &nbsp;·&nbsp; GENESIS AIRDROP PROTOCOL v1.0 &nbsp;·&nbsp;
+    <a href="oasis.html">MAIN PROTOCOL</a> &nbsp;·&nbsp;
+    <a href="https://twitter.com/OasisAPIProto" target="_blank">@OASISAPIPROTO</a>
+    <br><br>
+    Genesis Keys are API compute vouchers for the Oasis Protocol. $50 value reflects compute credit at standard Oasis pricing.
+    Vouchers valid 30 days from claim date. Oasis API Aggregator is an independent compute routing protocol.
+  </div>
+</footer>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="success-modal">
+  <div class="modal-box">
+    <div class="modal-icon">🔑</div>
+    <div class="modal-title">Genesis Key Claimed</div>
+    <div class="modal-body" id="modal-body">
+      Your $50 compute voucher has been generated and linked to your wallet address.
+      Welcome to the Oasis Protocol.
+    </div>
+    <button class="modal-close" onclick="closeModal()">CLOSE PROTOCOL</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIGURATION
+// ─────────────────────────────────────────────────────────────────────────────
+const CONFIG = {
+  TWITTER_HANDLE: 'OasisAPIProto',
+  TWITTER_URL:    'https://twitter.com/intent/follow?screen_name=OasisAPIProto',
+  TOTAL_KEYS:     10000,
+  INITIAL_REMAINING: 8421,
+  AIRDROP_DAYS:   7,   // days from now
+  VOUCHER_PREFIX: 'OASIS-GEN',
+  REF_PARAM:      'ref',
+  BASE_URL:       window.location.origin + window.location.pathname,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+const state = {
+  walletConnected: false,
+  walletAddress:   null,
+  twitterFollowed: false,
+  keyClaimed:      false,
+  voucherCode:     null,
+  keysRemaining:   CONFIG.INITIAL_REMAINING,
+  refCode:         null,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PARTICLES
+// ─────────────────────────────────────────────────────────────────────────────
+(function spawnParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#00e5ff', '#c8a84b', '#b44fff', '#00ff88'];
+  for (let i = 0; i < 50; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const size  = Math.random() * 3 + 1;
+    const left  = Math.random() * 100;
+    const dur   = Math.random() * 15 + 8;
+    const delay = Math.random() * 15;
+    const drift = (Math.random() - 0.5) * 200;
+    p.style.cssText = `
+      left: ${left}%; background: ${color};
+      width: ${size}px; height: ${size}px;
+      animation-duration: ${dur}s;
+      animation-delay: -${delay}s;
+      --drift: ${drift}px;
+      box-shadow: 0 0 ${size * 3}px ${color};
+      opacity: 0.7;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COUNTDOWN TIMER
+// ─────────────────────────────────────────────────────────────────────────────
+(function initCountdown() {
+  // Set deadline: 7 days from now, stored in localStorage for consistency
+  let deadline = localStorage.getItem('oasis_genesis_deadline');
+  if (!deadline) {
+    deadline = Date.now() + CONFIG.AIRDROP_DAYS * 24 * 60 * 60 * 1000;
+    localStorage.setItem('oasis_genesis_deadline', deadline);
+  }
+  deadline = parseInt(deadline);
+
+  function update() {
+    const now  = Date.now();
+    const diff = Math.max(0, deadline - now);
+
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000) / 60000);
+    const secs  = Math.floor((diff % 60000) / 1000);
+
+    const pad = n => String(n).padStart(2, '0');
+
+    const setNum = (id, val) => {
+      const el = document.getElementById(id);
+      const current = el.textContent;
+      if (current !== pad(val)) {
+        el.classList.remove('flash');
+        void el.offsetWidth; // reflow
+        el.classList.add('flash');
+        el.textContent = pad(val);
+      }
+    };
+
+    setNum('cd-days',  days);
+    setNum('cd-hours', hours);
+    setNum('cd-mins',  mins);
+    setNum('cd-secs',  secs);
+  }
+
+  update();
+  setInterval(update, 1000);
+})();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LIVE KEYS COUNTER — Simulates real-time claiming
+// ─────────────────────────────────────────────────────────────────────────────
+(function initKeysCounter() {
+  // Restore from localStorage
+  const stored = localStorage.getItem('oasis_keys_remaining');
+  if (stored) state.keysRemaining = parseInt(stored);
+
+  function updateDisplay() {
+    const remaining = state.keysRemaining;
+    const claimed   = CONFIG.TOTAL_KEYS - remaining;
+    const pct       = ((claimed / CONFIG.TOTAL_KEYS) * 100).toFixed(2);
+    const fillPct   = (claimed / CONFIG.TOTAL_KEYS) * 100;
+
+    document.getElementById('keys-num').textContent    = remaining.toLocaleString();
+    document.getElementById('fomo-keys').textContent   = remaining.toLocaleString();
+    document.getElementById('fomo-claimed').textContent = claimed.toLocaleString();
+    document.getElementById('keys-claimed-pct').textContent = pct + '% claimed';
+    document.getElementById('keys-bar').style.width   = fillPct + '%';
+  }
+
+  updateDisplay();
+
+  // Simulate real-time claiming: drop 1-3 keys every 4-8 seconds
+  function simulateClaim() {
+    if (state.keysRemaining <= 0) return;
+    const drop = Math.floor(Math.random() * 3) + 1;
+    state.keysRemaining = Math.max(0, state.keysRemaining - drop);
+    localStorage.setItem('oasis_keys_remaining', state.keysRemaining);
+    updateDisplay();
+
+    // Add to social feed
+    addSocialFeedItem();
+
+    // Schedule next
+    const next = Math.random() * 4000 + 3000;
+    setTimeout(simulateClaim, next);
+  }
+
+  setTimeout(simulateClaim, 3000);
+})();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SOCIAL PROOF FEED
+// ─────────────────────────────────────────────────────────────────────────────
+const FAKE_ADDRS = [
+  '0x3f2A...8c1d', '0xb7E9...4f2a', '0x9cD1...7b3e', '0x1aF4...2d8c',
+  '0x5e8B...9a1f', '0x2c7D...6e4b', '0x8f3A...1c9d', '0x4b6E...3f7a',
+  '0x7d2C...8b5e', '0x6a1F...4c2d', '0xE3b0...9f1a', '0xA7c2...5d8e',
+];
+const FAKE_ACTIONS = [
+  'claimed Genesis Key', 'claimed Genesis Key', 'claimed Genesis Key',
+  'referred a friend', 'earned +$10 bonus',
+];
+
+function addSocialFeedItem() {
+  const feed = document.getElementById('sp-feed');
+  const addr = FAKE_ADDRS[Math.floor(Math.random() * FAKE_ADDRS.length)];
+  const action = FAKE_ACTIONS[Math.floor(Math.random() * FAKE_ACTIONS.length)];
+  const secsAgo = Math.floor(Math.random() * 59) + 1;
+
+  const item = document.createElement('div');
+  item.className = 'sp-item';
+  item.innerHTML = `
+    <span class="sp-addr">${addr}</span>
+    <span class="sp-action">${action}</span>
+    <span class="sp-amount">$50</span>
+    <span class="sp-time">${secsAgo}s ago</span>
+  `;
+
+  feed.insertBefore(item, feed.firstChild);
+
+  // Keep max 8 items
+  while (feed.children.length > 8) {
+    feed.removeChild(feed.lastChild);
+  }
+}
+
+// Pre-populate feed
+for (let i = 0; i < 5; i++) addSocialFeedItem();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// REFERRAL SYSTEM
+// ─────────────────────────────────────────────────────────────────────────────
+(function initReferral() {
+  // Check if this page was loaded with a referral code
+  const params = new URLSearchParams(window.location.search);
+  const refCode = params.get(CONFIG.REF_PARAM);
+  if (refCode) {
+    state.refCode = refCode;
+    localStorage.setItem('oasis_ref_from', refCode);
+    showToast(`Referral code applied: +$10 bonus on your claim!`, 4000);
+  }
+})();
+
+function generateRefCode(address) {
+  // Create a deterministic short code from wallet address
+  const hash = address.slice(2, 10).toUpperCase();
+  return hash;
+}
+
+function updateRefLink(address) {
+  const code = generateRefCode(address);
+  const link = CONFIG.BASE_URL + '?ref=' + code;
+  document.getElementById('ref-link-input').value = link;
+}
+
+function copyRefLink() {
+  const input = document.getElementById('ref-link-input');
+  const btn   = document.getElementById('btn-copy-ref');
+
+  if (input.value.includes('CONNECT_WALLET')) {
+    showToast('Connect your wallet first to generate your referral link.', 3000);
+    return;
+  }
+
+  navigator.clipboard.writeText(input.value).then(() => {
+    btn.textContent = '✓ COPIED!';
+    btn.classList.add('copied');
+    showToast('Referral link copied! Share it to earn +$10 per friend.', 3000);
+    setTimeout(() => {
+      btn.textContent = 'COPY LINK';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 1: CONNECT METAMASK
+// ─────────────────────────────────────────────────────────────────────────────
+async function connectWallet() {
+  if (state.walletConnected) return;
+
+  if (typeof window.ethereum === 'undefined') {
+    showToast('MetaMask not detected. Please install MetaMask from metamask.io', 4000);
+    window.open('https://metamask.io/download/', '_blank');
+    return;
+  }
+
+  const btn     = document.getElementById('btn-connect-wallet');
+  const btnText = document.getElementById('wallet-btn-text');
+  btnText.textContent = 'Connecting...';
+  btn.disabled = true;
+
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const address  = accounts[0];
+
+    state.walletConnected = true;
+    state.walletAddress   = address;
+
+    // Update UI
+    const short = address.slice(0, 6) + '...' + address.slice(-4);
+    btnText.textContent = '✓ ' + short + ' — Connected';
+    btn.classList.add('connected');
+    btn.disabled = false;
+
+    // Mark step 1 complete
+    markStepComplete(1);
+
+    // Enable Twitter button
+    document.getElementById('btn-twitter').disabled = false;
+
+    // Update referral link
+    updateRefLink(address);
+
+    showToast('Wallet connected. Now follow @OasisAPIProto on X.', 3000);
+
+    // Check if already claimed
+    const claimed = localStorage.getItem('oasis_claimed_' + address);
+    if (claimed) {
+      state.keyClaimed  = true;
+      state.voucherCode = claimed;
+      markStepComplete(2);
+      markStepComplete(3);
+      revealVoucher(claimed);
+      showToast('Welcome back! Your Genesis Key is still active.', 3000);
+    }
+
+  } catch (err) {
+    btnText.textContent = 'Connect MetaMask';
+    btn.disabled = false;
+    if (err.code === 4001) {
+      showToast('Connection rejected. Please approve MetaMask to continue.', 3000);
+    } else {
+      showToast('Connection error: ' + err.message, 3000);
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 2: FOLLOW ON TWITTER
+// ─────────────────────────────────────────────────────────────────────────────
+function followTwitter() {
+  if (!state.walletConnected) {
+    showToast('Please connect your MetaMask wallet first.', 3000);
+    return;
+  }
+
+  // Open Twitter follow intent
+  window.open(CONFIG.TWITTER_URL, '_blank', 'width=600,height=400');
+
+  // After a delay, assume they followed and verify
+  const btn     = document.getElementById('btn-twitter');
+  const btnText = document.getElementById('twitter-btn-text');
+  btnText.textContent = 'Verifying follow...';
+  btn.disabled = true;
+
+  // In production, this would call a backend API to verify via Twitter API
+  // For MVP, we trust the user after they open the follow page
+  setTimeout(() => {
+    state.twitterFollowed = true;
+    btnText.textContent = '✓ @OasisAPIProto — Followed';
+    btn.classList.add('verified');
+    btn.disabled = false;
+
+    markStepComplete(2);
+    document.getElementById('btn-claim').disabled = false;
+    showToast('Follow verified! You can now claim your Genesis Key.', 3000);
+  }, 3500);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 3: CLAIM GENESIS KEY
+// ─────────────────────────────────────────────────────────────────────────────
+function claimGenesis() {
+  if (!state.walletConnected) {
+    showToast('Connect your wallet first.', 3000);
+    return;
+  }
+  if (!state.twitterFollowed) {
+    showToast('Please follow @OasisAPIProto on X first.', 3000);
+    return;
+  }
+  if (state.keyClaimed) {
+    showToast('You have already claimed your Genesis Key!', 3000);
+    return;
+  }
+  if (state.keysRemaining <= 0) {
+    showToast('All Genesis Keys have been claimed. Stay tuned for Wave 02.', 4000);
+    return;
+  }
+
+  const btn     = document.getElementById('btn-claim');
+  const btnText = document.getElementById('claim-btn-text');
+  btn.disabled  = true;
+  btnText.textContent = 'Generating Key...';
+
+  // Simulate backend key generation (replace with real API call)
+  setTimeout(() => {
+    const code = generateVoucherCode(state.walletAddress);
+    state.keyClaimed  = true;
+    state.voucherCode = code;
+
+    // Persist to localStorage
+    localStorage.setItem('oasis_claimed_' + state.walletAddress, code);
+
+    // Decrement counter
+    state.keysRemaining = Math.max(0, state.keysRemaining - 1);
+    localStorage.setItem('oasis_keys_remaining', state.keysRemaining);
+
+    // Mark step 3 complete
+    markStepComplete(3);
+
+    // Reveal voucher
+    revealVoucher(code);
+
+    // Update claim button
+    btnText.textContent = '✓ Genesis Key Claimed';
+
+    // Add referral bonus if came from referral
+    const refFrom = localStorage.getItem('oasis_ref_from');
+    if (refFrom) {
+      showToast('Referral bonus applied! Your friend earns +$10 compute credit.', 4000);
+    }
+
+    // Show modal
+    showSuccessModal(code);
+
+  }, 1800);
+}
+
+function generateVoucherCode(address) {
+  const addrPart = address.slice(2, 6).toUpperCase();
+  const rand1    = Math.random().toString(36).slice(2, 6).toUpperCase();
+  const rand2    = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `${CONFIG.VOUCHER_PREFIX}-${addrPart}-${rand1}-${rand2}`;
+}
+
+function revealVoucher(code) {
+  document.getElementById('voucher-code').textContent = code;
+  document.getElementById('voucher-reveal').classList.add('show');
+  document.getElementById('voucher-reveal').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyVoucher() {
+  const code = document.getElementById('voucher-code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    document.getElementById('voucher-code').textContent = '✓ Copied!';
+    setTimeout(() => {
+      document.getElementById('voucher-code').textContent = code;
+    }, 1500);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UI HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function markStepComplete(num) {
+  const step  = document.getElementById('step-' + num);
+  const badge = document.getElementById('step-' + num + '-badge');
+  const numEl = document.getElementById('step-' + num + '-num');
+
+  step.classList.remove('active');
+  step.classList.add('completed');
+  badge.textContent = 'DONE';
+  badge.classList.remove('pending');
+  badge.classList.add('done');
+  numEl.textContent = '✓';
+
+  // Activate next step
+  const next = document.getElementById('step-' + (num + 1));
+  if (next) next.classList.add('active');
+}
+
+function showSuccessModal(code) {
+  document.getElementById('modal-body').innerHTML = `
+    Your Genesis Key <strong style="color:var(--gold-bright);font-family:var(--font-mono)">${code}</strong>
+    has been linked to your wallet and is ready to use.<br><br>
+    <strong style="color:var(--green)">$50 compute credit</strong> is now active on all Oasis Protocol nodes.
+    Valid for 30 days.
+  `;
+  document.getElementById('success-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('success-modal').classList.remove('open');
+}
+
+let toastTimer;
+function showToast(msg, duration = 3000) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// METAMASK EVENT LISTENERS
+// ─────────────────────────────────────────────────────────────────────────────
+if (typeof window.ethereum !== 'undefined') {
+  window.ethereum.on('accountsChanged', (accounts) => {
+    if (accounts.length === 0) {
+      // Disconnected
+      state.walletConnected = false;
+      state.walletAddress   = null;
+      document.getElementById('wallet-btn-text').textContent = 'Connect MetaMask';
+      document.getElementById('btn-connect-wallet').classList.remove('connected');
+    } else {
+      state.walletAddress = accounts[0];
+      const short = accounts[0].slice(0, 6) + '...' + accounts[0].slice(-4);
+      document.getElementById('wallet-btn-text').textContent = '✓ ' + short + ' — Connected';
+      updateRefLink(accounts[0]);
+    }
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LIVE RATE DISPLAY
+// ─────────────────────────────────────────────────────────────────────────────
+(function liveRate() {
+  const rates = ['~8/min', '~11/min', '~14/min', '~9/min', '~16/min', '~12/min'];
+  let i = 0;
+  setInterval(() => {
+    i = (i + 1) % rates.length;
+    document.getElementById('fomo-rate').textContent = rates[i];
+  }, 7000);
+})();
+
+// Activate first step on load
+document.getElementById('step-1').classList.add('active');
+</script>
+</body>
+</html>
