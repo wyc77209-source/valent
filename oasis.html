@@ -178,8 +178,9 @@
         .poetic-header .en-line .purple-accent { color: var(--purple); text-shadow: 0 0 16px rgba(180,79,255,0.4); }
 
         /* ═══════════ NODE CARDS GRID ═══════════ */
-        .nodes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 80px; }
-        @media (max-width: 900px) { .nodes-grid { grid-template-columns: 1fr; } }
+        .nodes-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 80px; }
+        @media (max-width: 1100px) { .nodes-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 700px)  { .nodes-grid { grid-template-columns: 1fr; } }
 
         /* ═══════════ GLASSMORPHISM CARD ═══════════ */
         .node-card {
@@ -384,6 +385,37 @@
         .error-sub { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
 
         /* ═══════════ COMPARISON TABLE ═══════════ */
+        /* ══ Linglong-Phantom Node (Neon Blue / Silver) ══ */
+        .node-linglong {
+            background: linear-gradient(145deg, rgba(12,18,36,0.95) 0%, rgba(6,12,28,0.98) 100%);
+            box-shadow: 0 0 0 1px rgba(79,195,247,0.15), 0 16px 48px rgba(0,0,0,0.65), inset 0 1px 0 rgba(232,234,240,0.06);
+        }
+        .node-linglong:hover { box-shadow: 0 0 0 1px rgba(79,195,247,0.32), 0 20px 60px rgba(0,0,0,0.7), 0 0 80px rgba(79,195,247,0.1), 0 0 40px rgba(232,234,240,0.04), inset 0 1px 0 rgba(79,195,247,0.18); }
+        .node-linglong::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(79,195,247,0.12) 0%, transparent 70%); pointer-events: none; }
+        .badge-linglong { color: #4fc3f7; border-color: rgba(79,195,247,0.35); background: rgba(79,195,247,0.06); }
+        .name-linglong  { color: #4fc3f7; text-shadow: 0 0 30px rgba(79,195,247,0.55); }
+        .name-en-linglong { color: rgba(79,195,247,0.5); }
+        .sep-linglong { background: linear-gradient(90deg, rgba(79,195,247,0.4), rgba(232,234,240,0.15), transparent); }
+        .spec-linglong { color: rgba(79,195,247,0.85); border-color: rgba(79,195,247,0.2); background: rgba(79,195,247,0.05); }
+        .fill-linglong { background: linear-gradient(90deg, rgba(79,195,247,0.4), #4fc3f7); }
+        .price-linglong { color: #4fc3f7; text-shadow: 0 0 16px rgba(79,195,247,0.45); }
+        .btn-connect-linglong {
+            background: rgba(79,195,247,0.07); border-color: rgba(79,195,247,0.3); color: #4fc3f7;
+        }
+        .btn-connect-linglong:hover:not(:disabled) { box-shadow: 0 0 30px rgba(79,195,247,0.18); border-color: rgba(79,195,247,0.55); transform: translateY(-1px); }
+        .btn-pay-linglong {
+            background: linear-gradient(135deg, rgba(79,195,247,0.14) 0%, rgba(232,234,240,0.06) 100%);
+            border-color: rgba(79,195,247,0.45); color: #4fc3f7;
+            box-shadow: 0 0 20px rgba(79,195,247,0.08);
+        }
+        .btn-pay-linglong:hover:not(:disabled) { box-shadow: 0 0 40px rgba(79,195,247,0.28), 0 0 20px rgba(232,234,240,0.06), 0 4px 20px rgba(0,0,0,0.4); border-color: rgba(79,195,247,0.7); transform: translateY(-2px); }
+        /* USDT badge */
+        .usdt-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
+            color: #26a17b; border: 1px solid rgba(38,161,123,0.35);
+            background: rgba(38,161,123,0.07); padding: 3px 8px; border-radius: 4px;
+        }
         .compare-section { margin-bottom: 120px; }
         .compare-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
         .compare-table th {
@@ -393,6 +425,8 @@
         }
         .compare-table th:nth-child(2) { color: var(--gold); }
         .compare-table th:nth-child(3) { color: var(--cyan); }
+        .compare-table th:nth-child(4) { color: #4fc3f7; }
+        .check-blue { color: #4fc3f7; }
         .compare-table td { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(232,234,240,0.7); vertical-align: middle; }
         .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
         .compare-table td:first-child { color: var(--text-muted); font-size: 11px; letter-spacing: 0.08em; }
@@ -626,6 +660,60 @@
                 <div class="card-footnote">Dynamic · Agile · Λ-Class Concurrency Protocol</div>
             </div>
 
+            <!-- ── NODE 3: 玲珑 LINGLONG-PHANTOM ── -->
+            <div class="node-card node-linglong fade-up delay-5">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;">
+                    <div class="card-badge badge-linglong">EMOTION &amp; VOICE</div>
+                    <span class="usdt-badge">&#9679; USDT READY</span>
+                </div>
+
+                <!-- Holographic Avatar -->
+                <div style="width:100%;height:200px;border-radius:12px;overflow:hidden;margin-bottom:24px;position:relative;">
+                    <img src="linglong_phantom.png" alt="Linglong-Phantom" style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(1.1) contrast(1.05);">
+                    <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);pointer-events:none;"></div>
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(79,195,247,0.15) 100%);pointer-events:none;"></div>
+                </div>
+
+                <div class="card-name-zh name-linglong">玲珑</div>
+                <div class="card-name-en name-en-linglong">LINGLONG-PHANTOM NODE</div>
+                <div style="font-family:var(--font-mono);font-size:11px;color:rgba(79,195,247,0.55);letter-spacing:0.1em;margin-bottom:20px;">The Emotion &amp; Voice Engine</div>
+
+                <div class="card-sep sep-linglong"></div>
+
+                <div class="spec-row" style="margin-bottom:20px;">
+                    <span class="spec-tag spec-linglong">MiniMax abab6.5</span>
+                    <span class="spec-tag spec-linglong">NPC Roleplay</span>
+                    <span class="spec-tag spec-linglong">Virtual Idol</span>
+                    <span class="spec-tag spec-linglong">Speech Synthesis</span>
+                </div>
+
+                <div class="perf-section">
+                    <div class="perf-row"><span class="perf-label">Emotion Depth</span><div class="perf-bar-bg"><div class="perf-bar-fill fill-linglong" style="width:97%"></div></div><span class="perf-value">97</span></div>
+                    <div class="perf-row"><span class="perf-label">Voice Latency</span><div class="perf-bar-bg"><div class="perf-bar-fill fill-linglong" style="width:99%"></div></div><span class="perf-value">&lt;8ms</span></div>
+                    <div class="perf-row"><span class="perf-label">Concurrency</span><div class="perf-bar-bg"><div class="perf-bar-fill fill-linglong" style="width:95%"></div></div><span class="perf-value">95</span></div>
+                </div>
+
+                <div class="pricing-box">
+                    <div class="price-label">Access Fee</div>
+                    <div class="price-value price-linglong">5 USDT</div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+                        <div class="price-note">~$5.00 USD &middot; ERC-20 USDT</div>
+                        <span class="usdt-badge">&#9670; ERC-20</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-action btn-connect-linglong" id="btn-connect-linglong" onclick="handleNavConnect()">
+                        <span id="btn-connect-linglong-icon">&#9711;</span>
+                        <span id="btn-connect-linglong-text">Connect MetaMask</span>
+                    </button>
+                    <button class="btn-action btn-pay-linglong" id="btn-pay-linglong" onclick="payWithUSDT('linglong')" disabled>
+                        <span id="btn-pay-linglong-icon">&#9670;</span>
+                        <span id="btn-pay-linglong-text">&#9670; Pay 5 USDT — Unlock Linglong-Phantom</span>
+                    </button>
+                </div>
+            </div>
+
         </div><!-- /nodes-grid -->
 
         <!-- ══ COMPARISON TABLE ══ -->
@@ -639,22 +727,474 @@
                 <thead>
                     <tr>
                         <th>Capability</th>
-                        <th>岑夫子 · Cen-Master</th>
-                        <th>丹丘生 · Danqiu-Alchemist</th>
+                        <th>岑夫子 &middot; Cen-Master</th>
+                        <th>丹丘生 &middot; Danqiu-Alchemist</th>
+                        <th>玲珑 &middot; Linglong-Phantom</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Model Tier</td><td>Claude 4.5 Opus-class</td><td>Qwen-Max / Doubao-class</td></tr>
-                    <tr><td>Primary Use Case</td><td>Quant Analysis, Code Refactor</td><td>Agentic Workflows, Creative Gen</td></tr>
-                    <tr><td>Context Window</td><td>128K tokens</td><td>32K tokens</td></tr>
-                    <tr><td>Reasoning Depth</td><td><span class="check-gold">&#9670; Elite</span></td><td><span class="check-cyan">&#9670; Standard</span></td></tr>
-                    <tr><td>Throughput (req/s)</td><td>~120</td><td>~1,400</td></tr>
-                    <tr><td>24/7 Agentic Mode</td><td><span class="dash">—</span></td><td><span class="check-cyan">&#10003; Native</span></td></tr>
-                    <tr><td>Financial Quant</td><td><span class="check-gold">&#10003; Optimized</span></td><td><span class="dash">—</span></td></tr>
-                    <tr><td>Web3 Payment</td><td><span class="check-gold">&#10003; 0.001 ETH</span></td><td><span class="check-cyan">&#10003; 0.001 ETH</span></td></tr>
-                    <tr><td>Visual Identity</td><td>Dark Gold Neon</td><td>Cyber-Cyan / Neon Purple</td></tr>
+                    <tr><td>Model Tier</td><td>Claude 4.5 Opus-class</td><td>Qwen-Max / Doubao-class</td><td>MiniMax abab6.5</td></tr>
+                    <tr><td>Primary Use Case</td><td>Quant Analysis, Code Refactor</td><td>Agentic Workflows, Creative Gen</td><td>NPC Roleplay, Voice &amp; Emotion</td></tr>
+                    <tr><td>Context Window</td><td>128K tokens</td><td>32K tokens</td><td>245K tokens</td></tr>
+                    <tr><td>Reasoning Depth</td><td><span class="check-gold">&#9670; Elite</span></td><td><span class="check-cyan">&#9670; Standard</span></td><td><span class="check-blue">&#9670; Emotional</span></td></tr>
+                    <tr><td>Throughput (req/s)</td><td>~120</td><td>~1,400</td><td>~800</td></tr>
+                    <tr><td>Voice / TTS</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="check-blue">&#10003; &lt;8ms Latency</span></td></tr>
+                    <tr><td>24/7 Agentic Mode</td><td><span class="dash">—</span></td><td><span class="check-cyan">&#10003; Native</span></td><td><span class="check-blue">&#10003; NPC Loop</span></td></tr>
+                    <tr><td>Financial Quant</td><td><span class="check-gold">&#10003; Optimized</span></td><td><span class="dash">—</span></td><td><span class="dash">—</span></td></tr>
+                    <tr><td>Web3 Payment</td><td><span class="check-gold">&#10003; 0.001 ETH</span></td><td><span class="check-cyan">&#10003; 0.001 ETH</span></td><td><span class="check-blue">&#10003; 5 USDT (ERC-20)</span></td></tr>
+                    <tr><td>Visual Identity</td><td>Dark Gold Neon</td><td>Cyber-Cyan / Neon Purple</td><td>Neon Blue / Silver Holo</td></tr>
                 </tbody>
             </table>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════════════ DIGITAL TWIN AMBASSADORS ═══════════════ -->
+<style>
+/* ════════════════════════════════════════════════════════════
+   DIGITAL TWIN AMBASSADORS — Global Holographic Endorsers
+   全球数字孪生代言人
+════════════════════════════════════════════════════════════ */
+.ambassadors-section { padding: 80px 0 120px; }
+
+.ambassadors-header { text-align: center; margin-bottom: 64px; }
+.ambassadors-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.35em;
+    color: var(--purple); text-transform: uppercase; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.ambassadors-eyebrow::before, .ambassadors-eyebrow::after {
+    content: ''; flex: 1; max-width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(180,79,255,0.5), transparent);
+}
+.ambassadors-title {
+    font-family: var(--font-tech); font-size: clamp(22px, 3.5vw, 36px);
+    font-weight: 700; letter-spacing: 0.08em; color: var(--text-primary);
+    margin-bottom: 12px; line-height: 1.2;
+}
+.ambassadors-title .highlight-green { color: var(--green); text-shadow: 0 0 24px rgba(0,255,136,0.5); }
+.ambassadors-title .highlight-gold  { color: var(--gold-bright); text-shadow: 0 0 24px rgba(240,201,110,0.5); }
+.ambassadors-subtitle {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--text-muted); letter-spacing: 0.06em; line-height: 1.8;
+    max-width: 600px; margin: 0 auto;
+}
+.ambassadors-subtitle .zh { font-family: var(--font-serif); color: rgba(232,234,240,0.3); font-size: 11px; }
+
+/* ── Twin Cards Grid ── */
+.twin-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    margin-bottom: 40px;
+}
+@media (max-width: 860px) { .twin-grid { grid-template-columns: 1fr; } }
+
+/* ── Base Card ── */
+.twin-card {
+    position: relative; border-radius: 20px; overflow: hidden;
+    background: rgba(255,255,255,0.025);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.45s cubic-bezier(0.23,1,0.32,1),
+                box-shadow 0.45s cubic-bezier(0.23,1,0.32,1);
+    cursor: pointer;
+}
+
+/* ── Elon Card (Green/Red) ── */
+.twin-elon {
+    box-shadow: 0 0 0 1px rgba(0,255,136,0.12),
+                0 24px 64px rgba(0,0,0,0.7),
+                inset 0 1px 0 rgba(0,255,136,0.1);
+}
+.twin-elon:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 0 0 1px rgba(0,255,136,0.35),
+                0 32px 80px rgba(0,0,0,0.8),
+                0 0 80px rgba(0,255,136,0.12),
+                0 0 40px rgba(255,59,92,0.06),
+                inset 0 1px 0 rgba(0,255,136,0.25);
+}
+
+/* ── Eileen Card (Cyan/Gold) ── */
+.twin-eileen {
+    box-shadow: 0 0 0 1px rgba(0,229,255,0.12),
+                0 24px 64px rgba(0,0,0,0.7),
+                inset 0 1px 0 rgba(200,168,75,0.1);
+}
+.twin-eileen:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 0 0 1px rgba(0,229,255,0.35),
+                0 32px 80px rgba(0,0,0,0.8),
+                0 0 80px rgba(0,229,255,0.12),
+                0 0 40px rgba(200,168,75,0.1),
+                inset 0 1px 0 rgba(0,229,255,0.2);
+}
+
+/* ── Holographic Avatar Container ── */
+.twin-avatar-wrap {
+    position: relative; width: 100%; height: 380px; overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+.twin-avatar-img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center top;
+    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1), filter 0.3s;
+    filter: saturate(1.1) contrast(1.05);
+}
+.twin-card:hover .twin-avatar-img {
+    transform: scale(1.04);
+}
+
+/* ── Holographic scan-line overlay ── */
+.twin-avatar-wrap::before {
+    content: '';
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+    );
+    animation: scanlines 8s linear infinite;
+    opacity: 0.5;
+}
+@keyframes scanlines {
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 200px; }
+}
+
+/* ── Elon scan-line color ── */
+.twin-elon .twin-avatar-wrap::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        transparent 40%,
+        rgba(0,255,136,0.06) 70%,
+        rgba(0,255,136,0.18) 100%
+    );
+}
+/* ── Eileen scan-line color ── */
+.twin-eileen .twin-avatar-wrap::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        transparent 40%,
+        rgba(0,229,255,0.06) 70%,
+        rgba(200,168,75,0.15) 100%
+    );
+}
+
+/* ── Glitch Effect on Hover ── */
+.twin-card:hover .twin-avatar-img {
+    animation: hologlitch 0.5s steps(1) 1;
+}
+@keyframes hologlitch {
+    0%   { clip-path: inset(0 0 100% 0); transform: scale(1.04) translateX(0); }
+    10%  { clip-path: inset(20% 0 60% 0); transform: scale(1.04) translateX(-3px); filter: hue-rotate(30deg) saturate(1.5); }
+    20%  { clip-path: inset(0 0 0 0);     transform: scale(1.04) translateX(2px);  filter: hue-rotate(0deg); }
+    30%  { clip-path: inset(60% 0 10% 0); transform: scale(1.04) translateX(-2px); filter: hue-rotate(-20deg) saturate(1.3); }
+    40%  { clip-path: inset(0 0 0 0);     transform: scale(1.04) translateX(0);   filter: hue-rotate(0deg); }
+    50%  { clip-path: inset(40% 0 40% 0); transform: scale(1.04) translateX(3px);  filter: brightness(1.3); }
+    60%  { clip-path: inset(0 0 0 0);     transform: scale(1.04) translateX(0);   filter: brightness(1); }
+    100% { clip-path: inset(0 0 0 0);     transform: scale(1.04) translateX(0); }
+}
+
+/* ── Hologram status badge ── */
+.holo-badge {
+    position: absolute; top: 16px; left: 16px; z-index: 10;
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
+    padding: 5px 10px; border-radius: 4px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+    backdrop-filter: blur(12px);
+    border: 1px solid;
+}
+.holo-badge-elon {
+    color: var(--green); border-color: rgba(0,255,136,0.4);
+    background: rgba(0,255,136,0.08);
+}
+.holo-badge-eileen {
+    color: var(--gold-bright); border-color: rgba(200,168,75,0.4);
+    background: rgba(200,168,75,0.08);
+}
+.holo-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    animation: holoPulse 1.4s ease-in-out infinite;
+}
+.holo-dot-green  { background: var(--green);  box-shadow: 0 0 8px var(--green); }
+.holo-dot-gold   { background: var(--gold-bright); box-shadow: 0 0 8px var(--gold-bright); }
+@keyframes holoPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+/* ── Transmission ID ── */
+.twin-tx-id {
+    position: absolute; bottom: 12px; right: 14px; z-index: 10;
+    font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.12em;
+    opacity: 0.35; color: var(--text-primary);
+}
+
+/* ── Card Body ── */
+.twin-body { padding: 28px 28px 32px; }
+
+.twin-endorser-tag {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 4px;
+    display: inline-block; margin-bottom: 18px; border: 1px solid;
+}
+.tag-elon   { color: rgba(0,255,136,0.8); border-color: rgba(0,255,136,0.25); background: rgba(0,255,136,0.05); }
+.tag-eileen { color: rgba(0,229,255,0.8); border-color: rgba(0,229,255,0.25); background: rgba(0,229,255,0.05); }
+
+.twin-title {
+    font-family: var(--font-tech); font-size: 15px; font-weight: 700;
+    letter-spacing: 0.06em; line-height: 1.4; margin-bottom: 6px;
+    text-transform: uppercase;
+}
+.twin-title-elon   { color: var(--green);      text-shadow: 0 0 20px rgba(0,255,136,0.35); }
+.twin-title-eileen { color: var(--gold-bright); text-shadow: 0 0 20px rgba(240,201,110,0.35); }
+
+.twin-subtitle {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+    color: var(--text-muted); margin-bottom: 22px; text-transform: uppercase;
+}
+
+/* ── Separator ── */
+.twin-sep { height: 1px; margin-bottom: 22px; }
+.sep-elon   { background: linear-gradient(90deg, rgba(0,255,136,0.4), rgba(255,59,92,0.15), transparent); }
+.sep-eileen { background: linear-gradient(90deg, rgba(0,229,255,0.4), rgba(200,168,75,0.3), transparent); }
+
+/* ── Quote ── */
+.twin-quote {
+    position: relative; padding: 18px 20px 18px 28px;
+    border-radius: 8px; margin-bottom: 24px;
+    font-family: var(--font-mono); font-size: 12px; line-height: 1.85;
+    color: rgba(232,234,240,0.82); letter-spacing: 0.02em;
+    font-style: italic;
+}
+.twin-quote-elon {
+    background: rgba(0,255,136,0.04);
+    border-left: 2px solid rgba(0,255,136,0.5);
+}
+.twin-quote-eileen {
+    background: rgba(0,229,255,0.04);
+    border-left: 2px solid rgba(0,229,255,0.4);
+}
+.twin-quote::before {
+    content: '\201C';
+    position: absolute; top: 8px; left: 10px;
+    font-size: 32px; line-height: 1; opacity: 0.2;
+    font-family: Georgia, serif;
+}
+.twin-quote-attr {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em;
+    margin-top: 10px; opacity: 0.45; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+}
+.twin-quote-attr::before { content: '—'; }
+
+/* ── Stats row ── */
+.twin-stats {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px;
+}
+.twin-stat {
+    padding: 12px 10px; border-radius: 8px; text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.02);
+}
+.twin-stat-val {
+    font-family: var(--font-tech); font-size: 14px; font-weight: 700;
+    letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.stat-val-elon   { color: var(--green); }
+.stat-val-eileen { color: var(--cyan); }
+.twin-stat-lbl {
+    font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.12em;
+    color: var(--text-muted); text-transform: uppercase;
+}
+
+/* ── CTA Button (hidden until hover) ── */
+.twin-cta-wrap { position: relative; }
+.btn-gen-key {
+    width: 100%; padding: 14px 24px; border-radius: 10px;
+    font-family: var(--font-tech); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
+    border: 1px solid; position: relative; overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+    opacity: 0; transform: translateY(8px);
+    pointer-events: none;
+}
+.twin-card:hover .btn-gen-key {
+    opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+.btn-gen-elon {
+    background: linear-gradient(135deg, rgba(0,255,136,0.12), rgba(0,255,136,0.04));
+    border-color: rgba(0,255,136,0.45); color: var(--green);
+    box-shadow: 0 0 0 rgba(0,255,136,0);
+}
+.btn-gen-elon:hover {
+    background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,255,136,0.08));
+    box-shadow: 0 0 40px rgba(0,255,136,0.2), 0 4px 20px rgba(0,0,0,0.4);
+    border-color: rgba(0,255,136,0.7); transform: translateY(-2px);
+}
+.btn-gen-eileen {
+    background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(200,168,75,0.06));
+    border-color: rgba(0,229,255,0.4); color: var(--cyan);
+}
+.btn-gen-eileen:hover {
+    background: linear-gradient(135deg, rgba(0,229,255,0.18), rgba(200,168,75,0.1));
+    box-shadow: 0 0 40px rgba(0,229,255,0.18), 0 0 20px rgba(200,168,75,0.08), 0 4px 20px rgba(0,0,0,0.4);
+    border-color: rgba(0,229,255,0.65); transform: translateY(-2px);
+}
+.btn-gen-key::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+.btn-gen-key:hover::before { transform: translateX(100%); }
+
+/* ── Disclaimer ── */
+.twin-disclaimer {
+    text-align: center; margin-top: 32px;
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+    color: rgba(232,234,240,0.18); line-height: 1.8;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .twin-avatar-wrap { height: 280px; }
+    .twin-body { padding: 20px 18px 24px; }
+    .twin-stats { grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .twin-stat-val { font-size: 12px; }
+}
+</style>
+
+<section class="ambassadors-section" id="ambassadors">
+    <div class="wrapper">
+
+        <!-- Section Header -->
+        <div class="ambassadors-header fade-up">
+            <div class="ambassadors-eyebrow">DIGITAL TWIN PROTOCOL // v2.6.0</div>
+            <h2 class="ambassadors-title">
+                Global <span class="highlight-green">Digital Twin</span> <span class="highlight-gold">Ambassadors</span>
+            </h2>
+            <p class="ambassadors-title" style="font-size:clamp(13px,2vw,18px);font-weight:400;color:rgba(232,234,240,0.4);letter-spacing:0.15em;margin-bottom:12px;">全球数字孪生代言人</p>
+            <p class="ambassadors-subtitle">
+                Holographic intelligence endorsements from the vanguard of compute civilization.<br>
+                <span class="zh">// 来自算力文明前沿的全息智能背书 //</span>
+            </p>
+        </div>
+
+        <!-- Twin Cards -->
+        <div class="twin-grid">
+
+            <!-- ── CYBER-ELON ── -->
+            <div class="twin-card twin-elon fade-up delay-2" onclick="handleTwinCTA('elon')">
+
+                <!-- Avatar -->
+                <div class="twin-avatar-wrap">
+                    <img src="cyber_elon.png" alt="Cyber-Elon Digital Twin" class="twin-avatar-img" loading="lazy">
+                    <div class="holo-badge holo-badge-elon">
+                        <span class="holo-dot holo-dot-green"></span>
+                        HOLO-SYNC ACTIVE
+                    </div>
+                    <div class="twin-tx-id">TX#ELON-DT-2026-∞</div>
+                </div>
+
+                <!-- Body -->
+                <div class="twin-body">
+                    <div class="twin-endorser-tag tag-elon">[Tesla Fleet &amp; Hard-Tech Endorsed]</div>
+                    <div class="twin-title twin-title-elon">The First-Principles<br>Compute Engineer</div>
+                    <div class="twin-subtitle">CYBER-ELON // DIGITAL TWIN NODE-001</div>
+                    <div class="twin-sep sep-elon"></div>
+
+                    <div class="twin-quote twin-quote-elon">
+                        &ldquo;Why pay $20 for 1M tokens when you can route it through Oasis for pennies?
+                        It&rsquo;s just first principles. Physics doesn&rsquo;t justify the API tax.
+                        Buy the compute, build the future.&rdquo;
+                        <div class="twin-quote-attr">Cyber-Elon // First-Principles Compute Engineer</div>
+                    </div>
+
+                    <div class="twin-stats">
+                        <div class="twin-stat">
+                            <div class="twin-stat-val stat-val-elon">99.7%</div>
+                            <div class="twin-stat-lbl">Uptime</div>
+                        </div>
+                        <div class="twin-stat">
+                            <div class="twin-stat-val stat-val-elon">0.3¢</div>
+                            <div class="twin-stat-lbl">Per 1K Tokens</div>
+                        </div>
+                        <div class="twin-stat">
+                            <div class="twin-stat-val stat-val-elon">∞</div>
+                            <div class="twin-stat-lbl">Scale</div>
+                        </div>
+                    </div>
+
+                    <div class="twin-cta-wrap">
+                        <button class="btn-gen-key btn-gen-elon" onclick="handleTwinCTA('elon');event.stopPropagation()">
+                            ⚡ Generate API Key — Cen-Master Node
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── QUANTUM-EILEEN ── -->
+            <div class="twin-card twin-eileen fade-up delay-3" onclick="handleTwinCTA('eileen')">
+
+                <!-- Avatar -->
+                <div class="twin-avatar-wrap">
+                    <img src="quantum_eileen.png" alt="Quantum-Eileen Digital Twin" class="twin-avatar-img" loading="lazy">
+                    <div class="holo-badge holo-badge-eileen">
+                        <span class="holo-dot holo-dot-gold"></span>
+                        QUANTUM-SYNC ACTIVE
+                    </div>
+                    <div class="twin-tx-id">TX#EILEEN-DT-2026-∞</div>
+                </div>
+
+                <!-- Body -->
+                <div class="twin-body">
+                    <div class="twin-endorser-tag tag-eileen">[Cross-Border High-Frequency Arbitrage]</div>
+                    <div class="twin-title twin-title-eileen">The East-West<br>Arbitrage Champion</div>
+                    <div class="twin-subtitle">QUANTUM-EILEEN // DIGITAL TWIN NODE-002</div>
+                    <div class="twin-sep sep-eileen"></div>
+
+                    <div class="twin-quote twin-quote-eileen">
+                        &ldquo;Flawless execution requires the best of both worlds. Oasis bridges the raw power
+                        of Eastern AI models with the seamless UX of Western APIs.
+                        It&rsquo;s about winning the compute race without boundaries.&rdquo;
+                        <div class="twin-quote-attr">Quantum-Eileen // East-West Arbitrage Champion</div>
+                    </div>
+
+                    <div class="twin-stats">
+                        <div class="twin-stat">
+                            <div class="twin-stat-val stat-val-eileen">1,400</div>
+                            <div class="twin-stat-lbl">QPS Peak</div>
+                        </div>
+                        <div class="twin-stat">
+                            <div class="twin-stat-val stat-val-eileen">&lt;12ms</div>
+                            <div class="twin-stat-lbl">Latency</div>
+                        </div>
+                        <div class="twin-stat">
+                            <div class="twin-stat-val stat-val-eileen">24/7</div>
+                            <div class="twin-stat-lbl">Agentic</div>
+                        </div>
+                    </div>
+
+                    <div class="twin-cta-wrap">
+                        <button class="btn-gen-key btn-gen-eileen" onclick="handleTwinCTA('eileen');event.stopPropagation()">
+                            ✦ Generate API Key — Danqiu-Alchemist Node
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /twin-grid -->
+
+        <!-- Disclaimer -->
+        <div class="twin-disclaimer fade-up">
+            Digital Twin representations are AI-generated holographic constructs for conceptual visualization purposes only.<br>
+            All endorsements are simulated protocol personas. Oasis API Aggregator is an independent compute routing protocol.<br>
+            <span style="opacity:0.5">// 数字孪生代言人为AI生成的全息概念可视化构体，仅供展示 //</span>
         </div>
 
     </div>
@@ -682,15 +1222,72 @@
 // CONFIGURATION — HARDCODED, DO NOT CHANGE
 // ─────────────────────────────────────────────────────────────────────────────
 const PAY_CONFIG = {
-    // ★ STRICTLY LOCKED receiving address
+    // ★ STRICTLY LOCKED receiving address — DO NOT CHANGE
     RECEIVER: '0x76104C1542b0cAe1b2c34719FE0d922Ed21aD6e9',
 
-    // Payment amount in ETH (string for hex conversion)
+    // ETH payment amount
     AMOUNT_ETH: '0.001',
 
-    // Etherscan base URL for tx links (mainnet)
+    // USDT ERC-20 contract (Ethereum Mainnet)
+    USDT_CONTRACT: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+
+    // USDT payment: 5 USDT (6 decimals)
+    USDT_AMOUNT: 5,
+    USDT_DECIMALS: 6,
+
+    // Etherscan base URL
     EXPLORER_BASE: 'https://etherscan.io/tx/',
+
+    // ★ n8n Webhook — Replace with your actual n8n webhook endpoint
+    N8N_WEBHOOK: 'https://YOUR_N8N_INSTANCE/webhook/oasis-api-key-issue',
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// USDT ERC-20 TRANSFER ENCODER
+// Encodes transfer(address to, uint256 amount) calldata without ethers.js
+// ─────────────────────────────────────────────────────────────────────────────
+function encodeUSDTTransfer(toAddress, usdtAmount, decimals) {
+    const selector = 'a9059cbb'; // keccak256('transfer(address,uint256)') first 4 bytes
+    const paddedAddr = toAddress.replace('0x','').toLowerCase().padStart(64, '0');
+    const rawAmount = BigInt(Math.round(usdtAmount * Math.pow(10, decimals)));
+    const paddedAmount = rawAmount.toString(16).padStart(64, '0');
+    return '0x' + selector + paddedAddr + paddedAmount;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// n8n WEBHOOK TRIGGER — fires after any successful payment
+// Sends: { txHash, walletAddress, nodeType, paymentMethod, timestamp }
+// ─────────────────────────────────────────────────────────────────────────────
+async function triggerN8nWebhook(txHash, nodeType, paymentMethod) {
+    const payload = {
+        txHash:        txHash,
+        walletAddress: wallet.address,
+        nodeType:      nodeType,
+        paymentMethod: paymentMethod,   // 'ETH' | 'USDT'
+        timestamp:     new Date().toISOString(),
+        platform:      'Oasis API Aggregator',
+    };
+    console.log('[Oasis] Triggering n8n webhook:', payload);
+    try {
+        const res = await fetch(PAY_CONFIG.N8N_WEBHOOK, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(payload),
+        });
+        if (res.ok) {
+            const data = await res.json().catch(() => ({}));
+            console.log('[Oasis] n8n webhook success:', data);
+            return data.apiKey || null; // n8n can return generated API key
+        } else {
+            console.warn('[Oasis] n8n webhook returned', res.status);
+            return null;
+        }
+    } catch (err) {
+        // Webhook failure is non-blocking — key generation falls back to local
+        console.warn('[Oasis] n8n webhook unreachable (offline/CORS):', err.message);
+        return null;
+    }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STATE
@@ -732,20 +1329,30 @@ function closeAllModals() {
     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
 }
 
-function showSuccessModal(txHash) {
+function showSuccessModal(txHash, remoteApiKey) {
     const hashEl = document.getElementById('tx-hash-display');
     hashEl.innerHTML = '<a href="' + PAY_CONFIG.EXPLORER_BASE + txHash + '" target="_blank" rel="noopener">' + txHash + '</a>';
 
     const keyEl = document.getElementById('api-key-display');
-    keyEl.innerHTML = '<span class="api-key-generating">Generating...</span>';
+    keyEl.innerHTML = '<span class="api-key-generating">Generating via n8n…</span>';
 
     document.getElementById('success-modal').classList.add('open');
 
-    // Simulate API key generation after 2.5 seconds
+    // If n8n returned a key, show it immediately; otherwise fall back to local generation
     setTimeout(() => {
-        keyEl.textContent = generateApiKey();
+        const finalKey = remoteApiKey || generateApiKey();
+        keyEl.textContent = finalKey;
         keyEl.style.letterSpacing = '0.02em';
-    }, 2500);
+        // Add copy-to-clipboard
+        keyEl.style.cursor = 'pointer';
+        keyEl.title = 'Click to copy';
+        keyEl.onclick = () => {
+            navigator.clipboard.writeText(finalKey).then(() => {
+                keyEl.textContent = '✓ Copied!';
+                setTimeout(() => { keyEl.textContent = finalKey; }, 1500);
+            });
+        };
+    }, remoteApiKey ? 400 : 2500);
 }
 
 function showErrorModal(title, message) {
@@ -839,12 +1446,16 @@ function updateWalletUI() {
         // Enable pay buttons
         document.getElementById('btn-pay-cen').disabled = false;
         document.getElementById('btn-pay-danqiu').disabled = false;
+        document.getElementById('btn-pay-linglong').disabled = false;
 
         // Update card connect buttons
-        document.getElementById('btn-connect-cen-text').textContent = shortAddr(wallet.address) + ' — Connected';
-        document.getElementById('btn-connect-danqiu-text').textContent = shortAddr(wallet.address) + ' — Connected';
+        const addrShort = shortAddr(wallet.address);
+        document.getElementById('btn-connect-cen-text').textContent = addrShort + ' — Connected';
+        document.getElementById('btn-connect-danqiu-text').textContent = addrShort + ' — Connected';
+        document.getElementById('btn-connect-linglong-text').textContent = addrShort + ' — Connected';
         document.getElementById('btn-connect-cen').disabled = false;
         document.getElementById('btn-connect-danqiu').disabled = false;
+        document.getElementById('btn-connect-linglong').disabled = false;
 
     } else {
         navBtn.classList.remove('connected');
@@ -854,10 +1465,12 @@ function updateWalletUI() {
         // Disable pay buttons
         document.getElementById('btn-pay-cen').disabled = true;
         document.getElementById('btn-pay-danqiu').disabled = true;
+        document.getElementById('btn-pay-linglong').disabled = true;
 
         // Reset card connect buttons
         document.getElementById('btn-connect-cen-text').textContent = 'Connect MetaMask';
         document.getElementById('btn-connect-danqiu-text').textContent = 'Connect MetaMask';
+        document.getElementById('btn-connect-linglong-text').textContent = 'Connect MetaMask';
     }
 }
 
@@ -904,8 +1517,9 @@ async function payForNode(nodeType) {
 
         console.log('[Oasis] Transaction hash:', txHash);
 
-        // ★ SHOW SUCCESS MODAL
-        showSuccessModal(txHash);
+        // ★ TRIGGER n8n WEBHOOK + SHOW SUCCESS MODAL
+        const remoteKey = await triggerN8nWebhook(txHash, nodeType, 'ETH');
+        showSuccessModal(txHash, remoteKey);
 
         // Update button to success state
         btnEl.innerHTML = '&#10003; Payment Sent — ' + txHash.slice(0, 10) + '...';
@@ -927,6 +1541,72 @@ async function payForNode(nodeType) {
             btnEl.innerHTML = origText;
             payBtn.disabled = false;
         }
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 3B: PAY WITH USDT (ERC-20 transfer to RECEIVER)
+// Used by Linglong-Phantom node (5 USDT)
+// ─────────────────────────────────────────────────────────────────────────────
+async function payWithUSDT(nodeType) {
+    if (!wallet.connected) {
+        showErrorModal('WALLET NOT CONNECTED', 'Please connect your MetaMask wallet first before making a payment.');
+        return;
+    }
+
+    const btnId   = 'btn-pay-' + nodeType + '-text';
+    const btnEl   = document.getElementById(btnId);
+    const payBtn  = btnEl ? btnEl.closest('button') : null;
+    const origText = btnEl ? btnEl.innerHTML : '';
+
+    if (btnEl) { btnEl.textContent = 'Awaiting MetaMask...'; }
+    if (payBtn) { payBtn.disabled = true; }
+
+    try {
+        // Encode ERC-20 transfer(RECEIVER, 5 USDT)
+        const data = encodeUSDTTransfer(
+            PAY_CONFIG.RECEIVER,
+            PAY_CONFIG.USDT_AMOUNT,
+            PAY_CONFIG.USDT_DECIMALS
+        );
+
+        console.log('[Oasis] USDT transfer calldata:', data);
+        console.log('[Oasis] USDT to:', PAY_CONFIG.RECEIVER, '| Amount:', PAY_CONFIG.USDT_AMOUNT, 'USDT');
+
+        // ★ SEND ERC-20 TRANSACTION via window.ethereum
+        // to = USDT contract; value = 0 (ERC-20, not native ETH)
+        const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+                from:  wallet.address,
+                to:    PAY_CONFIG.USDT_CONTRACT,   // USDT contract address
+                value: '0x0',                       // No ETH sent
+                data:  data,                        // Encoded transfer(RECEIVER, 5 USDT)
+            }],
+        });
+
+        console.log('[Oasis] USDT tx hash:', txHash);
+
+        // ★ TRIGGER n8n WEBHOOK + SHOW SUCCESS MODAL
+        const remoteKey = await triggerN8nWebhook(txHash, nodeType, 'USDT');
+        showSuccessModal(txHash, remoteKey);
+
+        if (btnEl)  { btnEl.innerHTML = '&#10003; 5 USDT Sent \u2014 ' + txHash.slice(0, 10) + '...'; }
+        if (payBtn) { payBtn.disabled = true; }
+
+    } catch (err) {
+        console.error('[Oasis] USDT payment error:', err);
+
+        if (err.code === 4001) {
+            showErrorModal('TRANSACTION REJECTED', 'You rejected the USDT transaction in MetaMask. No funds were sent.');
+        } else if (err.code === -32603) {
+            showErrorModal('INSUFFICIENT USDT', 'Your wallet does not have enough USDT. Please ensure you have at least 5 USDT plus ETH for gas fees.');
+        } else {
+            showErrorModal('USDT TRANSFER FAILED', err.message || 'An unexpected error occurred. Please try again.');
+        }
+
+        if (btnEl)  { btnEl.innerHTML = origText; }
+        if (payBtn) { payBtn.disabled = false; }
     }
 }
 
