@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis — NemoClaw Gateway Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #010306; --cyan: #00e5ff; --cyan-d: rgba(0,229,255,0.08);
+  --gold: #c8a84b; --gold-b: #f0c96e; --purple: #b44fff;
+  --green: #00ff88; --red: #ff3b5c; --orange: #ff9800;
+  --text: #e2e8f0; --text-d: #475569; --text-m: #94a3b8;
+  --border: rgba(0,229,255,0.1); --border-h: rgba(0,229,255,0.35);
+  --bg-card: rgba(8,16,28,0.95); --bg-panel: rgba(4,10,20,0.98);
+  --font-d: 'Orbitron', monospace; --font-m: 'Share Tech Mono', monospace;
+  --font-b: 'Inter', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--void); color: var(--text);
+  font-family: var(--font-b); min-height: 100vh;
+  background-image: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,255,0.06) 0%, transparent 70%);
+}
+
+/* ── NAV ── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 40px; border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+.nav-logo { font-family: var(--font-d); font-size: 13px; font-weight: 900; letter-spacing: 0.2em; color: var(--cyan); }
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 24px; }
+.nav-links a { font-family: var(--font-m); font-size: 11px; letter-spacing: 0.15em; color: var(--text-d); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--cyan); }
+.nav-badge { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em; padding: 5px 12px; border: 1px solid rgba(0,255,136,0.3); border-radius: 3px; color: var(--green); }
+
+/* ── HERO ── */
+.hero { text-align: center; padding: 64px 40px 40px; }
+.hero-eyebrow { font-family: var(--font-m); font-size: 11px; letter-spacing: 0.3em; color: var(--text-d); text-transform: uppercase; margin-bottom: 16px; }
+.hero-title { font-family: var(--font-d); font-size: 36px; font-weight: 900; line-height: 1.2; margin-bottom: 12px; }
+.hero-title .c1 { color: var(--cyan); } .hero-title .c2 { color: var(--gold-b); } .hero-title .c3 { color: var(--purple); }
+.hero-sub { font-size: 14px; color: var(--text-m); max-width: 600px; margin: 0 auto 32px; line-height: 1.8; }
+.hero-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hb { padding: 6px 14px; border-radius: 3px; font-family: var(--font-m); font-size: 10px; letter-spacing: 0.12em; }
+.hb-cyan { background: var(--cyan-d); border: 1px solid var(--border-h); color: var(--cyan); }
+.hb-gold { background: rgba(200,168,75,0.08); border: 1px solid rgba(200,168,75,0.25); color: var(--gold-b); }
+.hb-purple { background: rgba(180,79,255,0.08); border: 1px solid rgba(180,79,255,0.25); color: var(--purple); }
+.hb-green { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.25); color: var(--green); }
+
+/* ── MAIN DEMO LAYOUT ── */
+.demo-layout {
+  max-width: 1200px; margin: 0 auto; padding: 0 40px 60px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+
+/* ── PANEL BASE ── */
+.panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.panel-header {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.15em;
+  color: var(--text-d); text-transform: uppercase;
+}
+.ph-dot { width: 7px; height: 7px; border-radius: 50%; }
+.ph-dot.green { background: var(--green); animation: blink 1.2s ease-in-out infinite; }
+.ph-dot.red { background: var(--red); }
+.ph-dot.orange { background: var(--orange); animation: blink 1.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+.ph-right { margin-left: auto; }
+
+/* ── REST PANEL ── */
+.rest-panel .panel-header { border-left: 3px solid var(--gold); }
+.rest-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.field-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.15em; color: var(--text-d); text-transform: uppercase; margin-bottom: 6px; }
+.field-input {
+  width: 100%; padding: 10px 14px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  border-radius: 6px; font-family: var(--font-b); font-size: 13px;
+  color: var(--text); outline: none; transition: border-color 0.2s;
+}
+.field-input:focus { border-color: var(--border-h); }
+.field-input::placeholder { color: var(--text-d); }
+textarea.field-input { resize: vertical; min-height: 80px; font-family: var(--font-m); font-size: 12px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn-rest {
+  padding: 12px 20px; width: 100%;
+  background: rgba(200,168,75,0.08); border: 1px solid rgba(200,168,75,0.3);
+  border-radius: 6px; font-family: var(--font-m); font-size: 12px;
+  letter-spacing: 0.12em; color: var(--gold-b); cursor: pointer;
+  transition: all 0.2s; text-transform: uppercase;
+}
+.btn-rest:hover { background: rgba(200,168,75,0.15); box-shadow: 0 0 20px rgba(200,168,75,0.15); }
+.btn-rest:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── WS PANEL ── */
+.ws-panel .panel-header { border-left: 3px solid var(--cyan); }
+.ws-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.ws-controls { display: flex; gap: 10px; }
+.btn-ws-connect {
+  flex: 1; padding: 10px 16px;
+  background: var(--cyan-d); border: 1px solid var(--border-h);
+  border-radius: 6px; font-family: var(--font-m); font-size: 11px;
+  letter-spacing: 0.12em; color: var(--cyan); cursor: pointer;
+  transition: all 0.2s; text-transform: uppercase;
+}
+.btn-ws-connect:hover { background: rgba(0,229,255,0.15); }
+.btn-ws-connect.disconnect { background: rgba(255,59,92,0.08); border-color: rgba(255,59,92,0.3); color: var(--red); }
+.btn-ws-send {
+  flex: 1; padding: 10px 16px;
+  background: rgba(180,79,255,0.08); border: 1px solid rgba(180,79,255,0.3);
+  border-radius: 6px; font-family: var(--font-m); font-size: 11px;
+  letter-spacing: 0.12em; color: var(--purple); cursor: pointer;
+  transition: all 0.2s; text-transform: uppercase;
+}
+.btn-ws-send:hover { background: rgba(180,79,255,0.15); }
+.btn-ws-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── LOG PANELS ── */
+.log-panel { grid-column: 1 / -1; }
+.log-panel .panel-header { border-left: 3px solid var(--purple); }
+.log-body {
+  padding: 16px; height: 300px; overflow-y: auto;
+  font-family: var(--font-m); font-size: 12px; line-height: 1.8;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.log-body::-webkit-scrollbar { width: 4px; }
+.log-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.log-entry { display: flex; gap: 10px; align-items: flex-start; }
+.log-time { color: var(--text-d); flex-shrink: 0; font-size: 10px; padding-top: 2px; }
+.log-type { flex-shrink: 0; font-size: 10px; padding: 1px 6px; border-radius: 2px; }
+.log-type.info  { background: var(--cyan-d); color: var(--cyan); border: 1px solid var(--border); }
+.log-type.send  { background: rgba(200,168,75,0.08); color: var(--gold-b); border: 1px solid rgba(200,168,75,0.2); }
+.log-type.recv  { background: rgba(0,255,136,0.06); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+.log-type.error { background: rgba(255,59,92,0.08); color: var(--red); border: 1px solid rgba(255,59,92,0.2); }
+.log-type.ws    { background: rgba(180,79,255,0.08); color: var(--purple); border: 1px solid rgba(180,79,255,0.2); }
+.log-msg { color: var(--text-m); flex: 1; word-break: break-all; }
+.log-msg .key { color: var(--cyan); }
+.log-msg .val { color: var(--green); }
+.log-msg .str { color: var(--gold-b); }
+
+/* ── USS_TASK VIEWER ── */
+.task-viewer { grid-column: 1 / -1; }
+.task-viewer .panel-header { border-left: 3px solid var(--green); }
+.task-body { padding: 20px; }
+.task-json {
+  background: rgba(0,0,0,0.5); border: 1px solid rgba(0,255,136,0.1);
+  border-radius: 6px; padding: 16px;
+  font-family: var(--font-m); font-size: 12px; line-height: 1.9;
+  color: var(--text-m); white-space: pre-wrap; word-break: break-all;
+  max-height: 320px; overflow-y: auto;
+}
+.task-json::-webkit-scrollbar { width: 4px; }
+.task-json::-webkit-scrollbar-thumb { background: var(--border); }
+.tj-key { color: var(--cyan); } .tj-str { color: var(--gold-b); }
+.tj-num { color: var(--purple); } .tj-bool { color: var(--green); }
+.tj-null { color: var(--text-d); }
+
+/* ── ARCH DIAGRAM ── */
+.arch-section { grid-column: 1 / -1; padding: 0 0 20px; }
+.arch-title { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em; color: var(--text-d); text-transform: uppercase; margin-bottom: 16px; }
+.arch-flow {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; flex-wrap: wrap;
+}
+.arch-node {
+  padding: 12px 18px; border-radius: 6px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.1em;
+  text-align: center; min-width: 120px;
+}
+.arch-arrow { font-size: 18px; color: var(--text-d); padding: 0 6px; }
+.an-client { background: rgba(200,168,75,0.08); border: 1px solid rgba(200,168,75,0.25); color: var(--gold-b); }
+.an-gateway { background: var(--cyan-d); border: 1px solid var(--border-h); color: var(--cyan); }
+.an-uss { background: rgba(180,79,255,0.08); border: 1px solid rgba(180,79,255,0.25); color: var(--purple); }
+.an-nemo { background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.2); color: var(--green); }
+.an-node { background: rgba(255,152,0,0.06); border: 1px solid rgba(255,152,0,0.2); color: var(--orange); }
+.arch-sub { font-size: 10px; color: var(--text-d); margin-top: 4px; }
+
+/* ── STATUS BAR ── */
+.status-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding: 8px 40px; background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 20px;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em;
+}
+.sb-item { display: flex; align-items: center; gap: 6px; color: var(--text-d); }
+.sb-dot { width: 6px; height: 6px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">OASIS <span>// NEMOCLAW GATEWAY</span></div>
+  <div class="nav-links">
+    <a href="oasis2.html">Main Site</a>
+    <a href="admin.html">Admin IDE</a>
+    <a href="genesis.html">Airdrop</a>
+  </div>
+  <div class="nav-badge">v2.0 LIVE</div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">// Oasis Protocol — NemoClaw Integration Layer</div>
+  <h1 class="hero-title">
+    <span class="c1">FastAPI</span> Gateway<br>
+    <span class="c2">USS_Task</span> <span class="c3">Protocol</span>
+  </h1>
+  <p class="hero-sub">
+    将用户 Prompt 封装为标准 <strong>USS_Task</strong> 对象，通过 NVIDIA NemoClaw 握手协议路由至最优算力轨道。支持 REST 同步调用和 WebSocket 实时流式传输。
+  </p>
+  <div class="hero-badges">
+    <div class="hb hb-cyan">REST API</div>
+    <div class="hb hb-purple">WebSocket Stream</div>
+    <div class="hb hb-gold">NemoClaw Handshake</div>
+    <div class="hb hb-green">USS_Task Object</div>
+  </div>
+</div>
+
+<div class="demo-layout">
+
+  <!-- Architecture Diagram -->
+  <div class="arch-section">
+    <div class="arch-title">// System Architecture — Request Flow</div>
+    <div class="arch-flow">
+      <div class="arch-node an-client">
+        Client<br><div class="arch-sub">Browser / SDK</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node an-gateway">
+        FastAPI Gateway<br><div class="arch-sub">REST + WebSocket</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node an-uss">
+        USS_Task<br><div class="arch-sub">Prompt Wrapper</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node an-nemo">
+        NemoClaw<br><div class="arch-sub">Agent Orchestrator</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node an-node">
+        Compute Node<br><div class="arch-sub">Groq LPU / Vera Rubin</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REST Panel -->
+  <div class="panel rest-panel">
+    <div class="panel-header">
+      <div class="ph-dot orange"></div>
+      POST /api/v1/task — REST
+      <div class="ph-right" id="rest-status" style="font-size:10px;color:var(--text-d)">IDLE</div>
+    </div>
+    <div class="rest-body">
+      <div>
+        <div class="field-label">Prompt</div>
+        <textarea class="field-input" id="rest-prompt" placeholder="分析 NVDA 过去 30 天的量化走势，并给出下周的多空建议..."></textarea>
+      </div>
+      <div class="field-row">
+        <div>
+          <div class="field-label">User ID</div>
+          <input class="field-input" id="rest-userid" type="text" placeholder="user_001">
+        </div>
+        <div>
+          <div class="field-label">Wallet Address</div>
+          <input class="field-input" id="rest-wallet" type="text" placeholder="0x76104C...">
+        </div>
+      </div>
+      <button class="btn-rest" id="btn-rest-send" onclick="sendREST()">
+        ▶ SEND USS_TASK VIA REST
+      </button>
+    </div>
+  </div>
+
+  <!-- WebSocket Panel -->
+  <div class="panel ws-panel">
+    <div class="panel-header">
+      <div class="ph-dot red" id="ws-dot"></div>
+      WS /ws/task — WebSocket Stream
+      <div class="ph-right" id="ws-status-text" style="font-size:10px;color:var(--red)">DISCONNECTED</div>
+    </div>
+    <div class="ws-body">
+      <div>
+        <div class="field-label">WebSocket Server URL</div>
+        <input class="field-input" id="ws-url" type="text" value="ws://localhost:8000/ws/task">
+      </div>
+      <div class="field-row">
+        <div>
+          <div class="field-label">User ID</div>
+          <input class="field-input" id="ws-userid" type="text" placeholder="user_001">
+        </div>
+        <div>
+          <div class="field-label">Wallet</div>
+          <input class="field-input" id="ws-wallet" type="text" placeholder="0x76104C...">
+        </div>
+      </div>
+      <div class="ws-controls">
+        <button class="btn-ws-connect" id="btn-ws-connect" onclick="toggleWS()">⚡ CONNECT</button>
+        <button class="btn-ws-send" id="btn-ws-send" onclick="sendWS()" disabled>SEND PROMPT →</button>
+      </div>
+      <div>
+        <div class="field-label">Prompt (WebSocket)</div>
+        <textarea class="field-input" id="ws-prompt" placeholder="为 NPC 角色'赤焰剑圣'生成一段战斗对话，情绪激昂，带有古典汉语风格..." style="min-height:60px;"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Panel -->
+  <div class="panel log-panel">
+    <div class="panel-header">
+      <div class="ph-dot green"></div>
+      Live Protocol Log
+      <div class="ph-right">
+        <button onclick="clearLog()" style="background:transparent;border:1px solid var(--border);color:var(--text-d);padding:3px 8px;border-radius:3px;cursor:pointer;font-family:var(--font-m);font-size:10px;">CLEAR</button>
+      </div>
+    </div>
+    <div class="log-body" id="log-body"></div>
+  </div>
+
+  <!-- USS_Task Viewer -->
+  <div class="panel task-viewer">
+    <div class="panel-header">
+      <div class="ph-dot green"></div>
+      USS_Task Object — Last Generated
+    </div>
+    <div class="task-body">
+      <div class="task-json" id="task-json">
+<span style="color:var(--text-d)">// 发送一个 REST 请求或 WebSocket 消息后，USS_Task 对象将在此处实时显示。</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Status Bar -->
+<div class="status-bar">
+  <div class="sb-item"><div class="sb-dot" style="background:var(--green)"></div>FastAPI Gateway</div>
+  <div class="sb-item"><div class="sb-dot" id="sb-ws-dot" style="background:var(--red)"></div>WebSocket</div>
+  <div class="sb-item"><div class="sb-dot" style="background:var(--orange)"></div>NemoClaw Protocol</div>
+  <div class="sb-item" style="margin-left:auto;color:var(--text-d)">Oasis Protocol v2.0 — USS_Task Gateway</div>
+</div>
+
+<script>
+/* ─── UTILITIES ─── */
+function now() {
+  return new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function addLog(type, msg) {
+  const body = document.getElementById('log-body');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${now()}</span><span class="log-type ${type}">${type.toUpperCase()}</span><span class="log-msg">${msg}</span>`;
+  body.appendChild(entry);
+  body.scrollTop = body.scrollHeight;
+}
+
+function clearLog() { document.getElementById('log-body').innerHTML = ''; }
+
+function syntaxHighlight(json) {
+  return JSON.stringify(json, null, 2)
+    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g, (match) => {
+      let cls = 'tj-num';
+      if (/^"/.test(match)) { cls = /:$/.test(match) ? 'tj-key' : 'tj-str'; }
+      else if (/true|false/.test(match)) { cls = 'tj-bool'; }
+      else if (/null/.test(match)) { cls = 'tj-null'; }
+      return `<span class="${cls}">${match}</span>`;
+    });
+}
+
+function showTask(taskObj) {
+  document.getElementById('task-json').innerHTML = syntaxHighlight(taskObj);
+}
+
+/* ─── MOCK USS_TASK GENERATOR ─── */
+function generateUSSTask(prompt, userId, wallet) {
+  return {
+    metadata: {
+      task_id: 'uss-' + Math.random().toString(36).substr(2, 9),
+      timestamp_utc: new Date().toISOString(),
+      source_ip: '127.0.0.1',
+      user_id: userId || null,
+      wallet_address: wallet || null,
+      priority: 'high',
+      required_track: prompt.toLowerCase().includes('医疗') || prompt.toLowerCase().includes('clinical') ? 'clara_tee'
+                    : prompt.toLowerCase().includes('量化') || prompt.toLowerCase().includes('quant') ? 'vera_rubin'
+                    : 'groq_lpu'
+    },
+    prompt: prompt,
+    params: {
+      temperature: 0.7,
+      max_tokens: 2048,
+      stream: false
+    },
+    target_agent: prompt.toLowerCase().includes('量化') ? 'QuantAlpha'
+                : prompt.toLowerCase().includes('npc') || prompt.toLowerCase().includes('角色') ? 'NPCEngine'
+                : prompt.toLowerCase().includes('医疗') ? 'ClinicalMonitor'
+                : null
+  };
+}
+
+/* ─── REST ─── */
+async function sendREST() {
+  const prompt = document.getElementById('rest-prompt').value.trim();
+  const userId = document.getElementById('rest-userid').value.trim();
+  const wallet = document.getElementById('rest-wallet').value.trim();
+
+  if (!prompt) { addLog('error', 'Prompt 不能为空。'); return; }
+
+  const btn = document.getElementById('btn-rest-send');
+  btn.disabled = true; btn.textContent = '⏳ PROCESSING...';
+  document.getElementById('rest-status').textContent = 'SENDING';
+  document.getElementById('rest-status').style.color = 'var(--orange)';
+
+  addLog('send', `POST /api/v1/task — Prompt: "${prompt.slice(0, 60)}..."`);
+  addLog('info', 'NemoClaw 握手协议启动 → 验证请求头 → 生成 task_id...');
+
+  // Simulate REST call (in production: fetch('http://localhost:8000/api/v1/task', {...}))
+  await new Promise(r => setTimeout(r, 800));
+
+  const task = generateUSSTask(prompt, userId, wallet);
+  task.params.stream = false;
+
+  addLog('recv', `HTTP 200 OK — USS_Task 已创建: <span class="key">task_id</span>=<span class="val">"${task.metadata.task_id}"</span>`);
+  addLog('info', `路由决策: <span class="key">required_track</span>=<span class="val">"${task.metadata.required_track}"</span>, <span class="key">target_agent</span>=<span class="val">"${task.target_agent || 'auto'}"</span>`);
+  addLog('recv', `NemoClaw 握手完成 → 任务已分派至 <span class="val">${task.metadata.required_track}</span> 轨道`);
+
+  showTask(task);
+
+  // Simulate agent response
+  await new Promise(r => setTimeout(r, 600));
+  addLog('recv', `Agent 响应: 任务 <span class="val">${task.metadata.task_id}</span> 已被 <span class="val">${task.target_agent || 'DefaultRouter'}</span> 接受，预计完成时间 <span class="val">~2.4s</span>`);
+
+  btn.disabled = false; btn.textContent = '▶ SEND USS_TASK VIA REST';
+  document.getElementById('rest-status').textContent = 'SUCCESS';
+  document.getElementById('rest-status').style.color = 'var(--green)';
+  setTimeout(() => {
+    document.getElementById('rest-status').textContent = 'IDLE';
+    document.getElementById('rest-status').style.color = 'var(--text-d)';
+  }, 3000);
+}
+
+/* ─── WEBSOCKET ─── */
+let ws = null;
+let wsConnected = false;
+
+function toggleWS() {
+  if (wsConnected) { disconnectWS(); } else { connectWS(); }
+}
+
+function connectWS() {
+  const url = document.getElementById('ws-url').value.trim();
+  const userId = document.getElementById('ws-userid').value.trim();
+  const wallet = document.getElementById('ws-wallet').value.trim();
+
+  addLog('ws', `正在连接到 <span class="val">${url}</span>...`);
+  addLog('info', 'NemoClaw 握手协议启动 → 发送 UPGRADE 请求...');
+
+  // In production: ws = new WebSocket(`${url}?user_id=${userId}&wallet_address=${wallet}`);
+  // For demo, we simulate the WebSocket behavior:
+  simulateWSConnect(url, userId, wallet);
+}
+
+function simulateWSConnect(url, userId, wallet) {
+  // Simulate connection establishment
+  setTimeout(() => {
+    wsConnected = true;
+    updateWSUI(true);
+    addLog('ws', `WebSocket 连接已建立 ✓`);
+    addLog('recv', `服务器握手消息: <span class="str">"Oasis-NemoClaw Gateway 已连接。准备接收 USS_Task。"</span>`);
+    addLog('info', `NemoClaw 握手完成 → 会话已激活，等待 Prompt 输入...`);
+  }, 600);
+}
+
+function disconnectWS() {
+  wsConnected = false;
+  updateWSUI(false);
+  addLog('ws', 'WebSocket 连接已断开。');
+}
+
+function updateWSUI(connected) {
+  const dot = document.getElementById('ws-dot');
+  const statusText = document.getElementById('ws-status-text');
+  const sbDot = document.getElementById('sb-ws-dot');
+  const connectBtn = document.getElementById('btn-ws-connect');
+  const sendBtn = document.getElementById('btn-ws-send');
+
+  if (connected) {
+    dot.className = 'ph-dot green'; statusText.textContent = 'CONNECTED'; statusText.style.color = 'var(--green)';
+    sbDot.style.background = 'var(--green)';
+    connectBtn.textContent = '✕ DISCONNECT'; connectBtn.className = 'btn-ws-connect disconnect';
+    sendBtn.disabled = false;
+  } else {
+    dot.className = 'ph-dot red'; statusText.textContent = 'DISCONNECTED'; statusText.style.color = 'var(--red)';
+    sbDot.style.background = 'var(--red)';
+    connectBtn.textContent = '⚡ CONNECT'; connectBtn.className = 'btn-ws-connect';
+    sendBtn.disabled = true;
+  }
+}
+
+async function sendWS() {
+  if (!wsConnected) { addLog('error', '请先连接 WebSocket。'); return; }
+  const prompt = document.getElementById('ws-prompt').value.trim();
+  if (!prompt) { addLog('error', 'Prompt 不能为空。'); return; }
+
+  const userId = document.getElementById('ws-userid').value.trim();
+  const wallet = document.getElementById('ws-wallet').value.trim();
+
+  addLog('send', `WS SEND → Prompt: "${prompt.slice(0, 60)}..."`);
+
+  // Simulate server processing
+  await new Promise(r => setTimeout(r, 400));
+
+  const task = generateUSSTask(prompt, userId, wallet);
+  task.params.stream = true;
+
+  addLog('recv', `WS RECV → <span class="key">status</span>: <span class="val">"task_created"</span>, <span class="key">task_id</span>: <span class="val">"${task.metadata.task_id}"</span>`);
+  showTask(task);
+
+  // Simulate streaming response chunks
+  const chunks = [
+    '正在分析您的请求...',
+    `路由到 '${task.target_agent || 'DefaultRouter'}' Agent (${task.metadata.required_track} 轨道)...`,
+    '正在生成初步推理...',
+    '流式输出中: [Token 1/128]...',
+    '流式输出中: [Token 64/128]...',
+    '流式输出完成。任务已结算。'
+  ];
+
+  for (let i = 0; i < chunks.length; i++) {
+    await new Promise(r => setTimeout(r, 700));
+    addLog('recv', `WS STREAM [${i+1}/${chunks.length}] → <span class="str">"${chunks[i]}"</span>`);
+  }
+
+  addLog('info', `原子结算完成 → 消耗 <span class="val">~${Math.floor(Math.random()*800+200)}</span> tokens → 已记入链上账本`);
+}
+
+/* ─── INIT ─── */
+addLog('info', 'Oasis NemoClaw Gateway Demo 已初始化。');
+addLog('info', '后端服务: <span class="val">uvicorn main:app --host 0.0.0.0 --port 8000</span>');
+addLog('info', 'REST 端点: <span class="val">POST http://localhost:8000/api/v1/task</span>');
+addLog('info', 'WebSocket 端点: <span class="val">ws://localhost:8000/ws/task</span>');
+addLog('info', 'API 文档: <span class="val">http://localhost:8000/docs</span> (Swagger UI)');
+</script>
+</body>
+</html>

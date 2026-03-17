@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis 2.0 — Vibe IDE Admin Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void:     #010306;
+  --bg-panel: rgba(4, 10, 20, 0.98);
+  --bg-card:  rgba(8, 16, 28, 0.9);
+  --bg-hover: rgba(0, 229, 255, 0.04);
+  --cyan:     #00e5ff;
+  --cyan-d:   rgba(0, 229, 255, 0.12);
+  --gold:     #c8a84b;
+  --gold-b:   #f0c96e;
+  --purple:   #b44fff;
+  --green:    #00ff88;
+  --red:      #ff3b5c;
+  --blue:     #4fc3f7;
+  --orange:   #ff9800;
+  --text:     #e2e8f0;
+  --text-d:   #475569;
+  --text-m:   #94a3b8;
+  --border:   rgba(0, 229, 255, 0.08);
+  --border-h: rgba(0, 229, 255, 0.35);
+  --font-d:   'Orbitron', monospace;
+  --font-m:   'Share Tech Mono', monospace;
+  --font-b:   'Inter', sans-serif;
+  --sidebar-w: 240px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: var(--font-b);
+  display: flex; flex-direction: column;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  height: 52px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+.topbar-logo {
+  font-family: var(--font-d); font-size: 12px; font-weight: 900;
+  letter-spacing: 0.2em; color: var(--cyan);
+}
+.topbar-logo .v { color: var(--gold); font-size: 10px; }
+.topbar-center {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.15em;
+  color: var(--text-d); text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.topbar-center .live { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 1.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.tb-wallet {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.1em;
+  color: var(--green); padding: 5px 12px;
+  border: 1px solid rgba(0,255,136,0.25); border-radius: 3px;
+}
+.tb-btn {
+  padding: 6px 14px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.1em;
+  color: var(--cyan); background: transparent;
+  border: 1px solid var(--border-h); border-radius: 3px;
+  cursor: pointer; transition: all 0.2s;
+}
+.tb-btn:hover { background: var(--cyan-d); }
+
+/* ── MAIN LAYOUT ── */
+.main-layout {
+  flex: 1; display: flex; overflow: hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border-h); border-radius: 2px; }
+
+.sidebar-section { padding: 16px 0 8px; }
+.sidebar-section-label {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.25em;
+  color: var(--text-d); text-transform: uppercase;
+  padding: 0 16px; margin-bottom: 4px;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px;
+  font-size: 13px; color: var(--text-m);
+  cursor: pointer; transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+.sidebar-item:hover { background: var(--bg-hover); color: var(--text); }
+.sidebar-item.active {
+  background: rgba(0,229,255,0.06);
+  color: var(--cyan);
+  border-left-color: var(--cyan);
+}
+.sidebar-item .si-icon { font-size: 14px; flex-shrink: 0; }
+.sidebar-item .si-badge {
+  margin-left: auto; font-family: var(--font-m); font-size: 10px;
+  padding: 2px 6px; border-radius: 2px;
+  background: rgba(0,229,255,0.1); color: var(--cyan);
+}
+.sidebar-item .si-badge.alert { background: rgba(255,59,92,0.1); color: var(--red); }
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+/* ── MAIN CONTENT ── */
+.content {
+  flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--border-h); border-radius: 2px; }
+
+/* ── VIBE IDE PANEL ── */
+.vibe-layout {
+  flex: 1; display: flex; overflow: hidden;
+}
+
+/* Chat panel */
+.chat-panel {
+  width: 420px; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  background: rgba(0,0,0,0.3);
+}
+.chat-panel-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.15em;
+  color: var(--cyan); text-transform: uppercase;
+}
+.chat-panel-header .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); animation: blink 1.2s ease-in-out infinite; }
+.chat-msgs {
+  flex: 1; overflow-y: auto; padding: 16px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.chat-msgs::-webkit-scrollbar { width: 3px; }
+.chat-msgs::-webkit-scrollbar-thumb { background: var(--border); }
+.cm { display: flex; gap: 8px; align-items: flex-start; }
+.cm-av {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.cm-user .cm-av { background: rgba(200,168,75,0.15); color: var(--gold-b); border: 1px solid rgba(200,168,75,0.25); }
+.cm-ai   .cm-av { background: rgba(0,229,255,0.08); color: var(--cyan); border: 1px solid var(--border-h); }
+.cm-bubble {
+  padding: 10px 14px; border-radius: 8px;
+  font-size: 12px; line-height: 1.7;
+  max-width: calc(100% - 36px);
+}
+.cm-user .cm-bubble { background: rgba(200,168,75,0.06); border: 1px solid rgba(200,168,75,0.12); }
+.cm-ai   .cm-bubble { background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.1); color: var(--text-m); }
+.cm-ai   .cm-bubble strong { color: var(--cyan); }
+.cm-ai   .cm-bubble code { font-family: var(--font-m); font-size: 11px; background: rgba(0,0,0,0.4); padding: 1px 5px; border-radius: 2px; color: var(--green); }
+.cm-ai   .cm-bubble .tag { display: inline-block; padding: 1px 6px; border-radius: 2px; font-size: 10px; font-family: var(--font-m); background: rgba(180,79,255,0.1); color: var(--purple); border: 1px solid rgba(180,79,255,0.2); }
+.typing-indicator {
+  display: flex; gap: 4px; align-items: center; padding: 10px 14px;
+  background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.1);
+  border-radius: 8px; width: fit-content;
+}
+.typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: typingBounce 1.2s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce { 0%,100%{transform:translateY(0);opacity:0.4;} 50%{transform:translateY(-4px);opacity:1;} }
+.chat-input-area {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+.chat-input-box {
+  display: flex; gap: 8px; align-items: flex-end;
+}
+.chat-textarea {
+  flex: 1; padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-b); font-size: 13px;
+  color: var(--text); outline: none; resize: none;
+  min-height: 40px; max-height: 120px;
+  transition: border-color 0.2s;
+}
+.chat-textarea:focus { border-color: var(--border-h); }
+.chat-textarea::placeholder { color: var(--text-d); }
+.chat-send-btn {
+  padding: 10px 16px;
+  background: var(--cyan-d);
+  border: 1px solid var(--border-h);
+  border-radius: 6px;
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--cyan); cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.chat-send-btn:hover { background: rgba(0,229,255,0.2); }
+.chat-suggestions {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+}
+.chat-sug {
+  padding: 4px 10px;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.05em;
+  color: var(--text-d);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 3px; cursor: pointer;
+  transition: all 0.15s;
+}
+.chat-sug:hover { color: var(--cyan); border-color: var(--border-h); background: var(--cyan-d); }
+
+/* Right panel — editor + preview */
+.editor-panel {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+.editor-tabs {
+  display: flex; align-items: center;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
+  padding: 0 16px;
+  gap: 0;
+}
+.editor-tab {
+  padding: 12px 16px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.1em;
+  color: var(--text-d); text-transform: uppercase;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.editor-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+.editor-tab:hover:not(.active) { color: var(--text-m); }
+.editor-actions {
+  margin-left: auto; display: flex; gap: 8px; align-items: center;
+}
+.ea-btn {
+  padding: 5px 12px;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em;
+  border-radius: 3px; cursor: pointer; transition: all 0.15s;
+  text-transform: uppercase;
+}
+.ea-btn.deploy { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.25); }
+.ea-btn.deploy:hover { background: rgba(0,255,136,0.2); }
+.ea-btn.save { background: var(--cyan-d); color: var(--cyan); border: 1px solid var(--border-h); }
+.ea-btn.save:hover { background: rgba(0,229,255,0.2); }
+
+.editor-content {
+  flex: 1; overflow-y: auto; padding: 20px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; align-content: start;
+}
+.editor-content::-webkit-scrollbar { width: 4px; }
+.editor-content::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* Config editor */
+.config-editor {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,255,136,0.15);
+  border-radius: 8px; overflow: hidden;
+  border-left: 3px solid var(--green);
+}
+.ce-header {
+  padding: 10px 14px;
+  background: rgba(0,255,136,0.04);
+  border-bottom: 1px solid rgba(0,255,136,0.1);
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.15em;
+  color: var(--green); text-transform: uppercase;
+}
+.ce-body {
+  padding: 16px;
+  font-family: var(--font-m); font-size: 12px; line-height: 1.9;
+  color: var(--text-m);
+}
+.ck { color: var(--cyan); }
+.cv { color: var(--green); }
+.cs { color: var(--gold-b); }
+.cc { color: var(--text-d); }
+.cp { color: var(--purple); }
+
+/* Metrics panel */
+.metrics-panel {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.metric-card {
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.mc-label {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.15em;
+  color: var(--text-d); text-transform: uppercase; margin-bottom: 6px;
+}
+.mc-val {
+  font-family: var(--font-d); font-size: 22px; font-weight: 900;
+  line-height: 1;
+}
+.mc-sub { font-size: 11px; color: var(--text-d); margin-top: 4px; }
+.mc-trend { font-family: var(--font-m); font-size: 11px; margin-top: 4px; }
+
+/* Routing rules */
+.routing-rules {
+  grid-column: 1 / -1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+}
+.rr-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.15em;
+  color: var(--text-d); text-transform: uppercase;
+}
+.rr-add {
+  padding: 4px 10px;
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--cyan); background: var(--cyan-d);
+  border: 1px solid var(--border-h); border-radius: 3px;
+  cursor: pointer; transition: all 0.15s;
+}
+.rr-add:hover { background: rgba(0,229,255,0.2); }
+.rr-table { width: 100%; border-collapse: collapse; font-family: var(--font-m); font-size: 11px; }
+.rr-table th {
+  padding: 10px 14px; text-align: left;
+  font-size: 10px; letter-spacing: 0.15em; color: var(--text-d);
+  border-bottom: 1px solid var(--border);
+}
+.rr-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-m);
+}
+.rr-table tr:hover td { background: var(--bg-hover); }
+.rr-table td:first-child { color: var(--text); }
+.rule-tag {
+  display: inline-block; padding: 2px 7px; border-radius: 2px;
+  font-size: 10px; letter-spacing: 0.08em;
+}
+.rule-status { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+/* Agent list */
+.agent-list {
+  grid-column: 1 / -1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+}
+.al-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.15em;
+  color: var(--text-d); text-transform: uppercase;
+}
+.agent-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: background 0.15s;
+}
+.agent-row:hover { background: var(--bg-hover); }
+.agent-row:last-child { border-bottom: none; }
+.ar-status { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.ar-name { font-size: 13px; font-weight: 600; flex: 1; }
+.ar-model { font-family: var(--font-m); font-size: 11px; color: var(--text-d); }
+.ar-gen { font-family: var(--font-m); font-size: 11px; color: var(--purple); }
+.ar-cost { font-family: var(--font-m); font-size: 11px; color: var(--gold-b); }
+.ar-tokens { font-family: var(--font-m); font-size: 11px; color: var(--cyan); }
+.ar-action {
+  padding: 4px 10px;
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--text-d); background: transparent;
+  border: 1px solid var(--border); border-radius: 3px;
+  cursor: pointer; transition: all 0.15s;
+}
+.ar-action:hover { color: var(--cyan); border-color: var(--border-h); }
+
+/* ── DASHBOARD PANEL ── */
+.dashboard-panel {
+  flex: 1; overflow-y: auto; padding: 20px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; align-content: start;
+}
+.dashboard-panel::-webkit-scrollbar { width: 4px; }
+.dashboard-panel::-webkit-scrollbar-thumb { background: var(--border); }
+.kpi-card {
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  position: relative; overflow: hidden;
+}
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.kpi-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em; color: var(--text-d); text-transform: uppercase; margin-bottom: 8px; }
+.kpi-val { font-family: var(--font-d); font-size: 26px; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+.kpi-change { font-family: var(--font-m); font-size: 11px; }
+.kpi-change.up { color: var(--green); }
+.kpi-change.down { color: var(--red); }
+
+.chart-card {
+  grid-column: span 2;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.chart-title { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em; color: var(--text-d); text-transform: uppercase; margin-bottom: 16px; }
+.mini-chart {
+  height: 80px; display: flex; align-items: flex-end; gap: 4px;
+}
+.mc-bar {
+  flex: 1; border-radius: 2px 2px 0 0;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.mc-bar:hover { opacity: 0.8; }
+
+.txn-feed {
+  grid-column: span 2;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.txn-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-family: var(--font-m); font-size: 11px;
+}
+.txn-row:last-child { border-bottom: none; }
+.txn-type { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.txn-addr { color: var(--cyan); flex: 1; }
+.txn-node { color: var(--text-d); }
+.txn-amount { color: var(--green); font-weight: 700; }
+.txn-time { color: var(--text-d); font-size: 10px; }
+
+.node-health {
+  grid-column: span 4;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.nh-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+.nh-card {
+  padding: 16px;
+  border-radius: 6px;
+  display: flex; align-items: center; gap: 14px;
+}
+.nh-icon { font-size: 24px; flex-shrink: 0; }
+.nh-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.nh-stats { font-family: var(--font-m); font-size: 11px; color: var(--text-d); }
+.nh-bar-bg { margin-top: 8px; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+.nh-bar { height: 100%; border-radius: 2px; }
+
+/* ── SCROLLBAR GLOBAL ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">OASIS <span class="v">// ADMIN 2.0</span></div>
+  <div class="topbar-center">
+    <span class="live"></span>
+    Vibe IDE — Configuration Agent Active
+  </div>
+  <div class="topbar-right">
+    <div class="tb-wallet">0x76104C...D6e9</div>
+    <button class="tb-btn" onclick="window.location.href='oasis2.html'">← Main Site</button>
+    <button class="tb-btn" onclick="window.location.href='genesis.html'">Airdrop</button>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Workspace</div>
+      <div class="sidebar-item active" onclick="showPanel('vibe')">
+        <span class="si-icon">💬</span> Vibe IDE
+        <span class="si-badge">AI</span>
+      </div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">📊</span> Dashboard
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Agents</div>
+      <div class="sidebar-item" onclick="showPanel('vibe')">
+        <span class="si-icon">🤖</span> ClinicalMonitor
+        <span class="si-badge" style="background:rgba(0,255,136,0.1);color:var(--green);border:1px solid rgba(0,255,136,0.2)">LIVE</span>
+      </div>
+      <div class="sidebar-item" onclick="showPanel('vibe')">
+        <span class="si-icon">📈</span> QuantAlpha
+        <span class="si-badge" style="background:rgba(0,255,136,0.1);color:var(--green);border:1px solid rgba(0,255,136,0.2)">LIVE</span>
+      </div>
+      <div class="sidebar-item" onclick="showPanel('vibe')">
+        <span class="si-icon">🎮</span> NPCEngine
+        <span class="si-badge" style="background:rgba(255,152,0,0.1);color:var(--orange);border:1px solid rgba(255,152,0,0.2)">v3</span>
+      </div>
+      <div class="sidebar-item" onclick="showPanel('vibe')">
+        <span class="si-icon">+</span> New Agent
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Nodes</div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">🟡</span> 岑夫子 Cen
+      </div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">🔵</span> 丹丘生 Danqiu
+      </div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">🩵</span> 玲珑 Linglong
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Finance</div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">💎</span> Settlement
+        <span class="si-badge">247M</span>
+      </div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">🏆</span> OPR Rewards
+      </div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">⚠️</span> Alerts
+        <span class="si-badge alert">3</span>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Settings</div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">🔑</span> API Keys
+      </div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">🛡️</span> Security
+      </div>
+      <div class="sidebar-item" onclick="showPanel('dashboard')">
+        <span class="si-icon">⚙️</span> Protocol Config
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- VIBE IDE PANEL -->
+    <div class="vibe-layout" id="panel-vibe">
+      <!-- Chat -->
+      <div class="chat-panel">
+        <div class="chat-panel-header">
+          <span class="dot"></span> Configuration Agent — Oasis Vibe IDE
+        </div>
+        <div class="chat-msgs" id="chat-msgs">
+          <div class="cm cm-ai">
+            <div class="cm-av">⬡</div>
+            <div class="cm-bubble">
+              <strong>Oasis Vibe IDE ready.</strong> I'm your AI configuration agent. Describe what you want to build — an Agent, a routing rule, a pricing tier, or a webhook — and I'll generate the complete configuration instantly.<br><br>
+              Currently managing: <span class="tag">3 active agents</span> <span class="tag">3 nodes</span> <span class="tag">247M tokens settled</span>
+            </div>
+          </div>
+          <div class="cm cm-user">
+            <div class="cm-av">U</div>
+            <div class="cm-bubble">I want to add a new routing rule: if the request contains medical keywords AND the user's wallet has staked more than 100 OPR, route to the Clara medical node with 5x priority. Otherwise fall back to Danqiu.</div>
+          </div>
+          <div class="cm cm-ai">
+            <div class="cm-av">⬡</div>
+            <div class="cm-bubble">
+              <strong>Smart routing rule created.</strong> I've added a compound condition: <code>semantic_match(medical_keywords) AND wallet.staked_opr > 100</code>. The OPR check uses our on-chain oracle — zero latency.<br><br>
+              Fallback chain: <code>clara-tee → danqiu-alchemist → qwen-max</code><br>
+              Estimated cost delta: <strong>+$0.003/request</strong> for the OPR check overhead.<br><br>
+              Rule is staged. <strong>Deploy when ready →</strong>
+            </div>
+          </div>
+          <div class="cm cm-user">
+            <div class="cm-av">U</div>
+            <div class="cm-bubble">Deploy it. Also, set the QuantAlpha agent to use Vera Rubin track exclusively, and increase its evolution cycle to every 3 days instead of 7.</div>
+          </div>
+          <div class="cm cm-ai" id="typing-msg" style="display:none">
+            <div class="cm-av">⬡</div>
+            <div class="typing-indicator">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-input-box">
+            <textarea class="chat-textarea" id="chat-input" rows="2" placeholder="Describe your Agent, routing rule, or configuration..." onkeydown="handleChatKey(event)"></textarea>
+            <button class="chat-send-btn" onclick="sendChat()">SEND ↵</button>
+          </div>
+          <div class="chat-suggestions">
+            <div class="chat-sug" onclick="fillSug('Add a new pricing tier for medical compute at 5x OPR multiplier')">+ Pricing tier</div>
+            <div class="chat-sug" onclick="fillSug('Create a webhook that fires when any agent generates more than 1M tokens in 24h')">+ Webhook alert</div>
+            <div class="chat-sug" onclick="fillSug('Show me the current routing rules for the Cen-Master node')">Query routing</div>
+            <div class="chat-sug" onclick="fillSug('Deploy a new Agent that monitors ETH gas prices and alerts when below 10 gwei')">+ Gas monitor</div>
+            <div class="chat-sug" onclick="fillSug('Optimize all agent routing for minimum cost without sacrificing quality below 90%')">Auto-optimize</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor + Preview -->
+      <div class="editor-panel">
+        <div class="editor-tabs">
+          <div class="editor-tab active">Live Config</div>
+          <div class="editor-tab">Routing Rules</div>
+          <div class="editor-tab">Agent Registry</div>
+          <div class="editor-tab">Logs</div>
+          <div class="editor-actions">
+            <button class="ea-btn save">Save Draft</button>
+            <button class="ea-btn deploy" onclick="deployConfig()">▶ Deploy</button>
+          </div>
+        </div>
+        <div class="editor-content">
+          <!-- Config editor -->
+          <div class="config-editor">
+            <div class="ce-header">
+              <span>// oasis_protocol.config.yaml</span>
+              <span style="color:var(--green)">● LIVE</span>
+            </div>
+            <div class="ce-body">
+<span class="ck">protocol</span>:<br>
+&nbsp;&nbsp;<span class="ck">version</span>: <span class="cs">2.0.1</span><br>
+&nbsp;&nbsp;<span class="ck">settlement</span>: <span class="cv">atomic</span><br>
+&nbsp;&nbsp;<span class="ck">evolution</span>: <span class="cv">enabled</span><br><br>
+<span class="ck">nodes</span>:<br>
+&nbsp;&nbsp;<span class="ck">cen_master</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">model</span>: <span class="cs">claude-4-opus</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">track</span>: <span class="cv">vera_rubin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">status</span>: <span class="cv">active</span><br>
+&nbsp;&nbsp;<span class="ck">danqiu</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">model</span>: <span class="cs">qwen-max</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">track</span>: <span class="cv">groq_lpu</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">status</span>: <span class="cv">active</span><br>
+&nbsp;&nbsp;<span class="ck">linglong</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">model</span>: <span class="cs">minimax-abab6.5</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">track</span>: <span class="cv">groq_lpu</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">status</span>: <span class="cv">active</span><br><br>
+<span class="ck">routing_rules</span>:<br>
+&nbsp;&nbsp;- <span class="ck">name</span>: <span class="cs">medical_priority</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">condition</span>: <span class="cs">"medical AND opr > 100"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">target</span>: <span class="cv">clara_tee</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">fallback</span>: <span class="cv">danqiu</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cc"># Added by Vibe IDE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">status</span>: <span class="cp">staged</span>
+            </div>
+          </div>
+
+          <!-- Metrics -->
+          <div class="metrics-panel">
+            <div class="metric-card" style="border-left:3px solid var(--cyan)">
+              <div class="mc-label">Tokens / 24h</div>
+              <div class="mc-val" style="color:var(--cyan)" id="mc-tokens">12.4M</div>
+              <div class="mc-trend" style="color:var(--green)">↑ +18.3% vs yesterday</div>
+            </div>
+            <div class="metric-card" style="border-left:3px solid var(--green)">
+              <div class="mc-label">Revenue / 24h</div>
+              <div class="mc-val" style="color:var(--green)" id="mc-rev">$37.20</div>
+              <div class="mc-trend" style="color:var(--green)">↑ +22.1% vs yesterday</div>
+            </div>
+            <div class="metric-card" style="border-left:3px solid var(--gold)">
+              <div class="mc-label">OPR Earned</div>
+              <div class="mc-val" style="color:var(--gold-b)">2,847</div>
+              <div class="mc-trend" style="color:var(--text-d)">Medical 5x multiplier active</div>
+            </div>
+            <div class="metric-card" style="border-left:3px solid var(--purple)">
+              <div class="mc-label">Active Agents</div>
+              <div class="mc-val" style="color:var(--purple)">3</div>
+              <div class="mc-trend" style="color:var(--text-d)">Next evolution: 2d 14h</div>
+            </div>
+          </div>
+
+          <!-- Routing rules table -->
+          <div class="routing-rules">
+            <div class="rr-header">
+              <span>// Active Routing Rules</span>
+              <button class="rr-add">+ Add Rule via Vibe IDE</button>
+            </div>
+            <table class="rr-table">
+              <thead>
+                <tr>
+                  <th>Rule Name</th>
+                  <th>Condition</th>
+                  <th>Target Node</th>
+                  <th>Fallback</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>latency_first</td>
+                  <td><code style="font-family:var(--font-m);font-size:10px;color:var(--cyan)">priority == 'latency'</code></td>
+                  <td style="color:var(--cyan)">Groq LPU</td>
+                  <td style="color:var(--text-d)">danqiu</td>
+                  <td><span class="rule-tag" style="background:rgba(0,229,255,0.1);color:var(--cyan);border:1px solid rgba(0,229,255,0.2)">HIGH</span></td>
+                  <td><span class="rule-status" style="background:var(--green)"></span> Live</td>
+                </tr>
+                <tr>
+                  <td>complexity_first</td>
+                  <td><code style="font-family:var(--font-m);font-size:10px;color:var(--purple)">priority == 'complexity'</code></td>
+                  <td style="color:var(--purple)">Vera Rubin</td>
+                  <td style="color:var(--text-d)">cen_master</td>
+                  <td><span class="rule-tag" style="background:rgba(180,79,255,0.1);color:var(--purple);border:1px solid rgba(180,79,255,0.2)">HIGH</span></td>
+                  <td><span class="rule-status" style="background:var(--green)"></span> Live</td>
+                </tr>
+                <tr>
+                  <td>medical_priority</td>
+                  <td><code style="font-family:var(--font-m);font-size:10px;color:var(--green)">medical AND opr > 100</code></td>
+                  <td style="color:var(--green)">Clara TEE</td>
+                  <td style="color:var(--text-d)">danqiu</td>
+                  <td><span class="rule-tag" style="background:rgba(0,255,136,0.1);color:var(--green);border:1px solid rgba(0,255,136,0.2)">CRITICAL</span></td>
+                  <td><span class="rule-status" style="background:var(--orange)"></span> Staged</td>
+                </tr>
+                <tr>
+                  <td>cost_default</td>
+                  <td><code style="font-family:var(--font-m);font-size:10px;color:var(--text-d)">* (catch-all)</code></td>
+                  <td style="color:var(--gold-b)">qwen-max</td>
+                  <td style="color:var(--text-d)">doubao</td>
+                  <td><span class="rule-tag" style="background:rgba(200,168,75,0.1);color:var(--gold-b);border:1px solid rgba(200,168,75,0.2)">LOW</span></td>
+                  <td><span class="rule-status" style="background:var(--green)"></span> Live</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Agent list -->
+          <div class="agent-list">
+            <div class="al-header">
+              <span>// Deployed Agents — Self-Evolution Status</span>
+              <span style="color:var(--text-d)">3 active</span>
+            </div>
+            <div class="agent-row">
+              <div class="ar-status" style="background:var(--green)"></div>
+              <div class="ar-name">ClinicalTrialMonitor</div>
+              <div class="ar-model" style="color:var(--text-d)">claude-opus / qwen-max</div>
+              <div class="ar-gen" style="color:var(--purple)">Gen 4</div>
+              <div class="ar-tokens" style="color:var(--cyan)">847K tokens</div>
+              <div class="ar-cost" style="color:var(--gold-b)">$0.18/mo</div>
+              <button class="ar-action">Edit in Vibe</button>
+            </div>
+            <div class="agent-row">
+              <div class="ar-status" style="background:var(--green)"></div>
+              <div class="ar-name">QuantAlpha</div>
+              <div class="ar-model" style="color:var(--text-d)">claude-opus (Vera Rubin)</div>
+              <div class="ar-gen" style="color:var(--purple)">Gen 7</div>
+              <div class="ar-tokens" style="color:var(--cyan)">9.2M tokens</div>
+              <div class="ar-cost" style="color:var(--gold-b)">$77.28/mo</div>
+              <button class="ar-action">Edit in Vibe</button>
+            </div>
+            <div class="agent-row">
+              <div class="ar-status" style="background:var(--orange)"></div>
+              <div class="ar-name">NPCEngine</div>
+              <div class="ar-model" style="color:var(--text-d)">minimax-abab6.5 (Groq LPU)</div>
+              <div class="ar-gen" style="color:var(--orange)">Gen 3 → Evolving</div>
+              <div class="ar-tokens" style="color:var(--cyan)">2.4M tokens</div>
+              <div class="ar-cost" style="color:var(--gold-b)">$0.65/mo</div>
+              <button class="ar-action">Edit in Vibe</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD PANEL -->
+    <div class="dashboard-panel" id="panel-dashboard" style="display:none;">
+      <div class="kpi-card" style="border-left:3px solid var(--cyan)">
+        <div class="kpi-card-top" style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),transparent)"></div>
+        <div class="kpi-label">Total Tokens Settled</div>
+        <div class="kpi-val" style="color:var(--cyan)">247.3M</div>
+        <div class="kpi-change up">↑ +12.4% this week</div>
+      </div>
+      <div class="kpi-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent)"></div>
+        <div class="kpi-label">Protocol Revenue</div>
+        <div class="kpi-val" style="color:var(--green)">$742.10</div>
+        <div class="kpi-change up">↑ +8.7% this week</div>
+      </div>
+      <div class="kpi-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)"></div>
+        <div class="kpi-label">OPR Distributed</div>
+        <div class="kpi-val" style="color:var(--gold-b)">48.2K</div>
+        <div class="kpi-change up">↑ +31.2% (medical 5x)</div>
+      </div>
+      <div class="kpi-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),transparent)"></div>
+        <div class="kpi-label">Active Wallets</div>
+        <div class="kpi-val" style="color:var(--purple)">1,284</div>
+        <div class="kpi-change up">↑ +247 from Genesis Airdrop</div>
+      </div>
+
+      <!-- Token chart -->
+      <div class="chart-card">
+        <div class="chart-title">// Token Volume — Last 14 Days</div>
+        <div class="mini-chart" id="token-chart"></div>
+      </div>
+
+      <!-- Revenue chart -->
+      <div class="chart-card">
+        <div class="chart-title">// Revenue by Node — Last 14 Days</div>
+        <div class="mini-chart" id="rev-chart"></div>
+      </div>
+
+      <!-- Transaction feed -->
+      <div class="txn-feed">
+        <div class="chart-title">// Live Settlement Feed</div>
+        <div id="txn-feed-rows"></div>
+      </div>
+
+      <!-- Node health -->
+      <div class="node-health" style="grid-column:span 4;">
+        <div class="chart-title">// Node Health Monitor</div>
+        <div class="nh-grid">
+          <div class="nh-card" style="background:rgba(200,168,75,0.06);border:1px solid rgba(200,168,75,0.15)">
+            <div class="nh-icon">🟡</div>
+            <div style="flex:1">
+              <div class="nh-name" style="color:var(--gold-b)">岑夫子 Cen-Master</div>
+              <div class="nh-stats">Vera Rubin Track · 99.97% uptime · ~340ms P50</div>
+              <div class="nh-bar-bg"><div class="nh-bar" style="width:99%;background:linear-gradient(90deg,var(--gold),var(--gold-b))"></div></div>
+            </div>
+          </div>
+          <div class="nh-card" style="background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.12)">
+            <div class="nh-icon">🔵</div>
+            <div style="flex:1">
+              <div class="nh-name" style="color:var(--cyan)">丹丘生 Danqiu-Alchemist</div>
+              <div class="nh-stats">Groq LPU Track · 99.99% uptime · &lt;12ms P50</div>
+              <div class="nh-bar-bg"><div class="nh-bar" style="width:100%;background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div>
+            </div>
+          </div>
+          <div class="nh-card" style="background:rgba(79,195,247,0.04);border:1px solid rgba(79,195,247,0.12)">
+            <div class="nh-icon">🩵</div>
+            <div style="flex:1">
+              <div class="nh-name" style="color:var(--blue)">玲珑 Linglong-Phantom</div>
+              <div class="nh-stats">Groq LPU Track · 99.98% uptime · &lt;8ms P50</div>
+              <div class="nh-bar-bg"><div class="nh-bar" style="width:99%;background:linear-gradient(90deg,var(--blue),#a8b8c8)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main-layout -->
+
+<script>
+/* ─── PANEL SWITCHING ─── */
+function showPanel(name) {
+  document.getElementById('panel-vibe').style.display = name === 'vibe' ? 'flex' : 'none';
+  document.getElementById('panel-dashboard').style.display = name === 'dashboard' ? 'grid' : 'none';
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+/* ─── VIBE IDE CHAT ─── */
+const AI_RESPONSES = [
+  { match: 'pricing', reply: '<strong>Pricing tier created.</strong> Medical compute tier: <code>5x OPR multiplier</code>, minimum stake <code>100 OPR</code>. Applied to all nodes with <code>priority: privacy</code> flag. Effective immediately.' },
+  { match: 'webhook', reply: '<strong>Webhook configured.</strong> Trigger: <code>agent.tokens_24h > 1,000,000</code>. POST to your endpoint with payload: <code>{ agentId, tokens, cost, timestamp }</code>. Test ping sent — awaiting your confirmation.' },
+  { match: 'routing', reply: '<strong>Current routing rules for Cen-Master:</strong><br>1. <code>complexity</code> flag → Vera Rubin (primary)<br>2. <code>financial</code> keyword → Vera Rubin (semantic)<br>3. Default → qwen-max (cost-optimized)<br>Estimated avg cost: $8.40/1M tokens.' },
+  { match: 'gas', reply: '<strong>Gas Monitor Agent deployed.</strong> Polling Ethereum mainnet every 30s via Alchemy. Alert threshold: <code>10 gwei</code>. Notification: Slack + wallet push. Using <code>danqiu</code> node (cheapest). Est. cost: <code>$0.002/day</code>.' },
+  { match: 'optim', reply: '<strong>Auto-optimization complete.</strong> Analyzed 14 days of routing logs. Recommended changes:<br>• ClinicalMonitor: switch default to <code>doubao-pro</code> (saves 34%)<br>• NPCEngine: reduce context window to 32K (saves 18%)<br>• QuantAlpha: no changes (already optimal)<br>Apply all? <strong>[Confirm in Vibe IDE]</strong>' },
+  { match: 'deploy', reply: '<strong>Deployment initiated.</strong> Config validated. 0 errors. Staging → Production rollout: 12 seconds. All agents will hot-reload without downtime. <span class="tag">DEPLOYED</span>' },
+  { match: 'vera|rubin|complex', reply: '<strong>QuantAlpha updated.</strong> Routing locked to <code>vera_rubin</code> track exclusively. Evolution cycle changed from <code>7d → 3d</code>. Agent will be more aggressive in self-optimization. Next evolution: <code>3 days from now</code>.' },
+];
+
+function getAIReply(msg) {
+  const lower = msg.toLowerCase();
+  for (const r of AI_RESPONSES) {
+    if (new RegExp(r.match).test(lower)) return r.reply;
+  }
+  return `<strong>Processing your request.</strong> Analyzing: <code>"${msg.slice(0,40)}..."</code><br><br>Configuration generated and staged. Review in the <strong>Live Config</strong> panel on the right. Deploy when ready.`;
+}
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  const feed = document.getElementById('chat-msgs');
+
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'cm cm-user';
+  userMsg.innerHTML = `<div class="cm-av">U</div><div class="cm-bubble">${msg}</div>`;
+  feed.appendChild(userMsg);
+
+  // Show typing
+  document.getElementById('typing-msg').style.display = 'flex';
+  feed.scrollTop = feed.scrollHeight;
+
+  setTimeout(() => {
+    document.getElementById('typing-msg').style.display = 'none';
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'cm cm-ai';
+    aiMsg.innerHTML = `<div class="cm-av">⬡</div><div class="cm-bubble">${getAIReply(msg)}</div>`;
+    feed.appendChild(aiMsg);
+    feed.scrollTop = feed.scrollHeight;
+  }, 1400);
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+function fillSug(text) {
+  document.getElementById('chat-input').value = text;
+  document.getElementById('chat-input').focus();
+}
+
+function deployConfig() {
+  const feed = document.getElementById('chat-msgs');
+  const aiMsg = document.createElement('div');
+  aiMsg.className = 'cm cm-ai';
+  aiMsg.innerHTML = `<div class="cm-av">⬡</div><div class="cm-bubble"><strong>Deploying configuration...</strong> Validating YAML → Pushing to all nodes → Hot-reloading agents...<br><br><span class="tag">✓ DEPLOYED</span> All 3 nodes updated. 3 agents hot-reloaded. 0 downtime.</div>`;
+  feed.appendChild(aiMsg);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+/* ─── DASHBOARD CHARTS ─── */
+function initCharts() {
+  const tokenData = [8.2,9.1,7.8,10.4,11.2,9.8,12.1,10.9,13.4,11.8,14.2,12.4,15.1,12.4];
+  const revData   = [24.6,27.3,23.4,31.2,33.6,29.4,36.3,32.7,40.2,35.4,42.6,37.2,45.3,37.2];
+  const colors    = ['#00e5ff','#c8a84b','#b44fff','#00ff88','#4fc3f7'];
+
+  function renderChart(id, data, color) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const max = Math.max(...data);
+    data.forEach((v, i) => {
+      const bar = document.createElement('div');
+      bar.className = 'mc-bar';
+      bar.style.cssText = `height:${(v/max)*100}%;background:${colors[i%colors.length]};opacity:0.7;`;
+      bar.title = v;
+      el.appendChild(bar);
+    });
+  }
+
+  renderChart('token-chart', tokenData, '#00e5ff');
+  renderChart('rev-chart', revData, '#c8a84b');
+}
+
+/* ─── LIVE TXN FEED ─── */
+const ADDRS = ['0x3f2A...8c1d','0xb7E9...4f2a','0x9cD1...7b3e','0x1aF4...2d8c','0x5e8B...9a1f'];
+const NODES_D = ['岑夫子','丹丘生','玲珑'];
+const COLORS_D = ['#c8a84b','#00e5ff','#4fc3f7'];
+
+function addTxnRow() {
+  const feed = document.getElementById('txn-feed-rows');
+  if (!feed) return;
+  const i = Math.floor(Math.random() * NODES_D.length);
+  const tokens = Math.floor(Math.random() * 900) + 100;
+  const usd = (tokens * 0.000003).toFixed(6);
+  const addr = ADDRS[Math.floor(Math.random() * ADDRS.length)];
+  const row = document.createElement('div');
+  row.className = 'txn-row';
+  row.innerHTML = `
+    <div class="txn-type" style="background:${COLORS_D[i]}"></div>
+    <div class="txn-addr">${addr}</div>
+    <div class="txn-node">${NODES_D[i]}</div>
+    <div class="txn-amount">$${usd}</div>
+    <div class="txn-time">now</div>
+  `;
+  feed.insertBefore(row, feed.firstChild);
+  while (feed.children.length > 8) feed.removeChild(feed.lastChild);
+}
+
+initCharts();
+for (let i = 0; i < 5; i++) addTxnRow();
+setInterval(addTxnRow, 2000);
+</script>
+</body>
+</html>

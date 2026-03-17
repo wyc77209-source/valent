@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Protocol 2.0 — The Self-Evolving Compute Fabric</title>
+<meta name="description" content="Deploy self-evolving AI Agents. Route across Groq LPU and NVIDIA Rubin. Medical-grade privacy compute. Atomic per-token settlement. Oasis 2.0.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   OASIS 2.0 — DESIGN SYSTEM
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  --void:       #010306;
+  --bg-card:    rgba(6, 12, 22, 0.9);
+  --bg-glass:   rgba(0, 229, 255, 0.03);
+  --cyan:       #00e5ff;
+  --cyan-dim:   rgba(0, 229, 255, 0.12);
+  --gold:       #c8a84b;
+  --gold-b:     #f0c96e;
+  --purple:     #b44fff;
+  --green:      #00ff88;
+  --red:        #ff3b5c;
+  --blue:       #4fc3f7;
+  --silver:     #a8b8c8;
+  --text:       #e2e8f0;
+  --text-dim:   #64748b;
+  --text-mid:   #94a3b8;
+  --border:     rgba(0, 229, 255, 0.1);
+  --border-hi:  rgba(0, 229, 255, 0.4);
+  --font-d:     'Orbitron', monospace;
+  --font-m:     'Share Tech Mono', monospace;
+  --font-b:     'Inter', sans-serif;
+  --r:          12px;
+  --r-sm:       8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: var(--font-b);
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ── BACKGROUND ── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.018) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.bg-radial {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(0,229,255,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 35% at 85% 70%, rgba(180,79,255,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 30% at 5% 50%, rgba(200,168,75,0.04) 0%, transparent 55%);
+}
+#particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.pt {
+  position: absolute; border-radius: 50%;
+  animation: ptFloat linear infinite;
+}
+@keyframes ptFloat {
+  0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 0.5; }
+  100% { transform: translateY(-8vh) translateX(var(--dx)); opacity: 0; }
+}
+
+/* ── LAYOUT ── */
+.wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  background: rgba(1, 3, 6, 0.88);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--font-d); font-size: 13px; font-weight: 900;
+  letter-spacing: 0.2em; color: var(--cyan);
+}
+.nav-logo .v { color: var(--gold); font-size: 11px; }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.15em;
+  color: var(--text-dim); text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--cyan); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-wallet-btn {
+  padding: 8px 18px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.1em;
+  color: var(--cyan); text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  border-radius: 4px; cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-wallet-btn:hover { background: var(--cyan-dim); }
+.nav-wallet-btn.connected { color: var(--green); border-color: rgba(0,255,136,0.4); }
+.wallet-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--red);
+  animation: wdBlink 1.8s ease-in-out infinite;
+}
+.wallet-dot.on { background: var(--green); animation: none; }
+@keyframes wdBlink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+/* ── SECTION COMMONS ── */
+section { padding: 120px 0; }
+.sec-label {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.3em;
+  color: var(--cyan); text-transform: uppercase;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.sec-label::before, .sec-label::after {
+  content: ''; display: block; height: 1px; width: 32px;
+  background: linear-gradient(90deg, transparent, var(--cyan));
+}
+.sec-label::after { transform: scaleX(-1); }
+.sec-title {
+  font-family: var(--font-d); font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 900; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.sec-sub {
+  font-size: 16px; color: var(--text-mid); line-height: 1.8;
+  max-width: 640px; margin-bottom: 56px;
+}
+
+/* ── GLASS CARD ── */
+.glass {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  backdrop-filter: blur(24px);
+  position: relative; overflow: hidden;
+}
+.glass::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-hi), transparent);
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding-top: 64px;
+}
+.hero-inner {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+@media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; } }
+.hero-eyebrow {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.3em;
+  color: var(--cyan); text-transform: uppercase; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow .pulse {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--cyan);
+  animation: wdBlink 1.2s ease-in-out infinite;
+}
+.hero-h1 {
+  font-family: var(--font-d); font-size: clamp(38px, 5vw, 64px);
+  font-weight: 900; line-height: 1.05; letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+.hero-h1 .g1 {
+  background: linear-gradient(135deg, var(--gold-b), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-h1 .g2 {
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc {
+  font-size: 17px; color: var(--text-mid); line-height: 1.8;
+  margin-bottom: 40px;
+}
+.hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  padding: 14px 28px;
+  font-family: var(--font-d); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #000;
+  background: linear-gradient(135deg, var(--gold-b), var(--cyan));
+  border: none; border-radius: var(--r-sm); cursor: pointer;
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,229,255,0.25); }
+.btn-secondary {
+  padding: 14px 28px;
+  font-family: var(--font-d); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--cyan);
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm); cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-secondary:hover { background: var(--cyan-dim); }
+
+/* Hero right — architecture diagram */
+.hero-arch {
+  position: relative;
+}
+.arch-box {
+  padding: 20px 24px;
+  margin-bottom: 8px;
+  border-radius: var(--r-sm);
+  font-family: var(--font-m); font-size: 12px;
+  display: flex; align-items: center; gap: 12px;
+  transition: all 0.3s;
+  cursor: default;
+}
+.arch-box:hover { transform: translateX(4px); }
+.arch-box .ab-icon { font-size: 20px; flex-shrink: 0; }
+.arch-box .ab-title { font-weight: 700; margin-bottom: 2px; }
+.arch-box .ab-sub { color: var(--text-dim); font-size: 11px; }
+.ab-sdk    { background: rgba(200,168,75,0.08); border: 1px solid rgba(200,168,75,0.25); }
+.ab-sdk    .ab-title { color: var(--gold-b); }
+.ab-vibe   { background: rgba(0,229,255,0.06); border: 1px solid rgba(0,229,255,0.2); }
+.ab-vibe   .ab-title { color: var(--cyan); }
+.ab-med    { background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.2); }
+.ab-med    .ab-title { color: var(--green); }
+.ab-route  { background: rgba(180,79,255,0.06); border: 1px solid rgba(180,79,255,0.2); }
+.ab-route  .ab-title { color: var(--purple); }
+.ab-settle { background: rgba(79,195,247,0.06); border: 1px solid rgba(79,195,247,0.2); }
+.ab-settle .ab-title { color: var(--blue); }
+
+/* Connecting line */
+.arch-connector {
+  width: 2px; height: 8px; margin-left: 31px;
+  background: linear-gradient(180deg, rgba(0,229,255,0.3), transparent);
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  padding: 28px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+}
+@media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+.stat-item {
+  text-align: center;
+  padding: 0 20px;
+  border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+.stat-val {
+  font-family: var(--font-d); font-size: 28px; font-weight: 900;
+  line-height: 1; margin-bottom: 6px;
+}
+.stat-label {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em;
+  color: var(--text-dim); text-transform: uppercase;
+}
+
+/* ── SECTION 1: SDK 2.0 ── */
+.sdk-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 32px; margin-bottom: 40px;
+}
+@media (max-width: 900px) { .sdk-grid { grid-template-columns: 1fr; } }
+
+.code-terminal {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(0,229,255,0.15);
+  border-radius: var(--r);
+  overflow: hidden;
+  font-family: var(--font-m); font-size: 13px;
+}
+.terminal-bar {
+  padding: 10px 16px;
+  background: rgba(0,229,255,0.05);
+  border-bottom: 1px solid rgba(0,229,255,0.1);
+  display: flex; align-items: center; gap: 8px;
+}
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot.r { background: #ff5f57; }
+.t-dot.y { background: #febc2e; }
+.t-dot.g { background: #28c840; }
+.terminal-title {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.1em;
+  color: var(--text-dim); margin-left: 8px;
+}
+.terminal-body { padding: 20px; line-height: 1.8; }
+.tc  { color: var(--text-dim); }
+.tk  { color: var(--purple); }
+.ts  { color: var(--green); }
+.tn  { color: var(--gold-b); }
+.tf  { color: var(--cyan); }
+.te  { color: var(--red); }
+
+.agent-features { display: flex; flex-direction: column; gap: 16px; }
+.af-card {
+  padding: 20px 24px;
+  border-radius: var(--r-sm);
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.af-icon {
+  width: 40px; height: 40px; flex-shrink: 0;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.af-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.af-desc  { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+/* Evolution loop animation */
+.evolution-loop {
+  margin-top: 32px; padding: 24px;
+  border-radius: var(--r);
+  background: rgba(200,168,75,0.04);
+  border: 1px solid rgba(200,168,75,0.15);
+}
+.evo-title {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.2em;
+  color: var(--gold); text-transform: uppercase; margin-bottom: 20px;
+}
+.evo-steps {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+}
+.evo-step {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  flex: 1; min-width: 80px;
+}
+.evo-step-icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(200,168,75,0.1);
+  border: 1px solid rgba(200,168,75,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  animation: evoGlow 3s ease-in-out infinite;
+}
+@keyframes evoGlow {
+  0%,100% { box-shadow: 0 0 0 rgba(200,168,75,0); }
+  50%      { box-shadow: 0 0 16px rgba(200,168,75,0.3); }
+}
+.evo-step-label {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--text-dim); text-align: center; text-transform: uppercase;
+}
+.evo-arrow {
+  font-size: 18px; color: rgba(200,168,75,0.4);
+  animation: evoArrow 2s ease-in-out infinite;
+}
+@keyframes evoArrow {
+  0%,100% { transform: translateX(0); opacity: 0.4; }
+  50%      { transform: translateX(4px); opacity: 1; }
+}
+
+/* ── SECTION 2: VIBE IDE ── */
+.vibe-container {
+  display: grid; grid-template-columns: 1fr 1.4fr;
+  gap: 32px; align-items: start;
+}
+@media (max-width: 900px) { .vibe-container { grid-template-columns: 1fr; } }
+
+.vibe-chat {
+  border-radius: var(--r);
+  overflow: hidden;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+}
+.chat-header {
+  padding: 14px 20px;
+  background: rgba(0,229,255,0.04);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.15em;
+  color: var(--cyan);
+}
+.chat-header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); animation: wdBlink 1.2s ease-in-out infinite; }
+.chat-messages { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.msg {
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.msg-avatar {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.msg-user .msg-avatar { background: rgba(200,168,75,0.2); color: var(--gold-b); border: 1px solid rgba(200,168,75,0.3); }
+.msg-ai   .msg-avatar { background: rgba(0,229,255,0.1); color: var(--cyan); border: 1px solid var(--border-hi); }
+.msg-bubble {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px; line-height: 1.7;
+  max-width: calc(100% - 40px);
+}
+.msg-user .msg-bubble { background: rgba(200,168,75,0.08); border: 1px solid rgba(200,168,75,0.15); color: var(--text); }
+.msg-ai   .msg-bubble { background: rgba(0,229,255,0.05); border: 1px solid rgba(0,229,255,0.12); color: var(--text-mid); }
+.msg-ai   .msg-bubble strong { color: var(--cyan); }
+.msg-ai   .msg-bubble code {
+  font-family: var(--font-m); font-size: 11px;
+  background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 3px;
+  color: var(--green);
+}
+.chat-input-row {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 8px; align-items: center;
+}
+.chat-input {
+  flex: 1; padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-b); font-size: 13px;
+  color: var(--text); outline: none;
+}
+.chat-input::placeholder { color: var(--text-dim); }
+.chat-send {
+  padding: 10px 16px;
+  background: var(--cyan-dim);
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--cyan); cursor: pointer;
+  transition: all 0.2s;
+}
+.chat-send:hover { background: rgba(0,229,255,0.2); }
+
+.vibe-generated {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.vg-label {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.2em;
+  color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px;
+}
+.vg-config {
+  padding: 20px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,255,136,0.15);
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--green);
+}
+.vg-config pre {
+  font-family: var(--font-m); font-size: 12px; line-height: 1.8;
+  color: var(--text-mid); white-space: pre-wrap; word-break: break-all;
+}
+.vg-config .ck { color: var(--cyan); }
+.vg-config .cv { color: var(--green); }
+.vg-config .cs { color: var(--gold-b); }
+
+/* ── SECTION 3: MEDICAL PRIVACY ── */
+.med-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+@media (max-width: 900px) { .med-grid { grid-template-columns: 1fr; } }
+
+.med-flow {
+  padding: 32px;
+  border-radius: var(--r);
+  background: rgba(0,255,136,0.03);
+  border: 1px solid rgba(0,255,136,0.12);
+}
+.med-flow-title {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.2em;
+  color: var(--green); text-transform: uppercase; margin-bottom: 24px;
+}
+.flow-step {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding-bottom: 24px;
+  position: relative;
+}
+.flow-step:not(:last-child)::after {
+  content: '';
+  position: absolute; left: 15px; top: 36px;
+  width: 2px; height: calc(100% - 12px);
+  background: linear-gradient(180deg, rgba(0,255,136,0.3), rgba(0,255,136,0.05));
+}
+.flow-num {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(0,255,136,0.1);
+  border: 1px solid rgba(0,255,136,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-m); font-size: 12px; color: var(--green);
+  z-index: 1;
+}
+.flow-content .flow-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.flow-content .flow-desc  { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+.med-stats {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.med-stat-card {
+  padding: 24px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; gap: 20px;
+}
+.msc-icon { font-size: 32px; flex-shrink: 0; }
+.msc-val {
+  font-family: var(--font-d); font-size: 28px; font-weight: 900;
+  line-height: 1; margin-bottom: 4px;
+}
+.msc-label { font-family: var(--font-m); font-size: 11px; letter-spacing: 0.1em; color: var(--text-dim); text-transform: uppercase; }
+.msc-sub   { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+.clara-badge {
+  margin-top: 16px; padding: 16px 20px;
+  background: rgba(0,255,136,0.04);
+  border: 1px solid rgba(0,255,136,0.15);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px; color: var(--text-mid);
+}
+.clara-badge strong { color: var(--green); }
+
+/* ── SECTION 4: PROOF OF COMPUTE ── */
+.poc-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px; margin-bottom: 40px;
+}
+@media (max-width: 768px) { .poc-grid { grid-template-columns: 1fr; } }
+
+.poc-card {
+  padding: 28px 24px;
+  border-radius: var(--r);
+  text-align: center;
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.poc-card:hover { transform: translateY(-6px); }
+.poc-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%);
+  pointer-events: none;
+}
+.poc-tier {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.25em;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+.poc-icon { font-size: 36px; margin-bottom: 16px; }
+.poc-name {
+  font-family: var(--font-d); font-size: 16px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.poc-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; }
+.poc-multiplier {
+  font-family: var(--font-d); font-size: 32px; font-weight: 900;
+  line-height: 1;
+}
+.poc-mul-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 4px; }
+
+.poc-leaderboard {
+  padding: 28px 32px;
+  border-radius: var(--r);
+}
+.lb-title {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.2em;
+  color: var(--text-dim); text-transform: uppercase; margin-bottom: 20px;
+}
+.lb-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.lb-row:last-child { border-bottom: none; }
+.lb-rank {
+  font-family: var(--font-d); font-size: 14px; font-weight: 700;
+  width: 28px; flex-shrink: 0;
+}
+.lb-addr { font-family: var(--font-m); font-size: 12px; color: var(--text-mid); flex: 1; }
+.lb-type { font-family: var(--font-m); font-size: 11px; padding: 3px 8px; border-radius: 3px; flex-shrink: 0; }
+.lb-opr  { font-family: var(--font-d); font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.lb-bar-wrap { width: 80px; flex-shrink: 0; }
+.lb-bar { height: 4px; border-radius: 2px; }
+
+/* ── SECTION 5: DYNAMIC ROUTING ── */
+.routing-visual {
+  display: grid; grid-template-columns: 1fr 120px 1fr;
+  gap: 0; align-items: center; margin-bottom: 40px;
+}
+@media (max-width: 768px) { .routing-visual { grid-template-columns: 1fr; gap: 20px; } }
+
+.route-node {
+  padding: 28px;
+  border-radius: var(--r);
+  text-align: center;
+}
+.rn-icon { font-size: 40px; margin-bottom: 16px; }
+.rn-name {
+  font-family: var(--font-d); font-size: 16px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.rn-spec { font-family: var(--font-m); font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+.rn-metric {
+  margin-top: 16px; padding: 10px 16px;
+  border-radius: 6px;
+  font-family: var(--font-d); font-size: 20px; font-weight: 900;
+}
+.rn-metric-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 4px; }
+
+.route-center {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.route-center-label {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.15em;
+  color: var(--text-dim); text-transform: uppercase; text-align: center;
+}
+.route-icon {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: rgba(0,229,255,0.08);
+  border: 2px solid var(--border-hi);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  animation: routePulse 2s ease-in-out infinite;
+}
+@keyframes routePulse {
+  0%,100% { box-shadow: 0 0 0 rgba(0,229,255,0); }
+  50%      { box-shadow: 0 0 24px rgba(0,229,255,0.3); }
+}
+.route-arrows {
+  display: flex; flex-direction: column; gap: 4px; align-items: center;
+}
+.ra { font-size: 14px; color: var(--border-hi); animation: raFlow 1.5s ease-in-out infinite; }
+.ra:nth-child(2) { animation-delay: 0.3s; }
+.ra:nth-child(3) { animation-delay: 0.6s; }
+@keyframes raFlow { 0%,100%{opacity:0.2;} 50%{opacity:1;} }
+
+.routing-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--font-m); font-size: 12px;
+}
+.routing-table th {
+  padding: 12px 20px; text-align: left;
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+.routing-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-mid);
+}
+.routing-table tr:hover td { background: rgba(255,255,255,0.02); }
+.routing-table td:first-child { color: var(--text); font-weight: 600; }
+.rt-tag {
+  display: inline-block; padding: 3px 8px; border-radius: 3px;
+  font-size: 10px; letter-spacing: 0.1em; font-weight: 700;
+}
+
+/* ── SECTION 6: ATOMIC SETTLEMENT ── */
+.settle-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 32px; align-items: start;
+}
+@media (max-width: 900px) { .settle-grid { grid-template-columns: 1fr; } }
+
+.settle-flow {
+  padding: 32px;
+  border-radius: var(--r);
+  background: rgba(79,195,247,0.03);
+  border: 1px solid rgba(79,195,247,0.12);
+}
+.settle-flow-title {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.2em;
+  color: var(--blue); text-transform: uppercase; margin-bottom: 24px;
+}
+.settle-step {
+  display: flex; gap: 16px; align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.settle-step:last-child { border-bottom: none; }
+.ss-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(79,195,247,0.1);
+  border: 1px solid rgba(79,195,247,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.ss-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.ss-desc  { font-size: 12px; color: var(--text-dim); }
+
+.settle-ticker {
+  padding: 28px;
+  border-radius: var(--r);
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+}
+.ticker-title {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.2em;
+  color: var(--text-dim); text-transform: uppercase; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ticker-live {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+  animation: wdBlink 1s ease-in-out infinite;
+}
+.ticker-feed { display: flex; flex-direction: column; gap: 8px; }
+.ticker-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 6px;
+  font-family: var(--font-m); font-size: 11px;
+  animation: tickerIn 0.4s ease;
+}
+@keyframes tickerIn { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:none; } }
+.ti-addr { color: var(--cyan); }
+.ti-tokens { color: var(--text-mid); }
+.ti-amount { color: var(--green); font-weight: 700; margin-left: auto; }
+.ti-time { color: var(--text-dim); font-size: 10px; }
+
+.settle-metrics {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-top: 20px;
+}
+.sm-card {
+  padding: 16px;
+  background: rgba(79,195,247,0.04);
+  border: 1px solid rgba(79,195,247,0.12);
+  border-radius: var(--r-sm);
+  text-align: center;
+}
+.sm-val {
+  font-family: var(--font-d); font-size: 22px; font-weight: 900;
+  color: var(--blue); line-height: 1; margin-bottom: 4px;
+}
+.sm-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); text-transform: uppercase; }
+
+/* ── NODES SECTION (existing 3 nodes, updated) ── */
+.nodes-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-bottom: 48px;
+}
+@media (max-width: 1000px) { .nodes-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px)  { .nodes-grid { grid-template-columns: 1fr; } }
+
+.node-card {
+  padding: 32px 28px;
+  border-radius: var(--r);
+  position: relative; overflow: hidden;
+  transition: all 0.35s;
+}
+.node-card:hover { transform: translateY(-8px); }
+.node-badge {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; padding: 4px 10px; border-radius: 3px;
+  display: inline-block; margin-bottom: 20px;
+}
+.node-cn {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 32px; font-weight: 700; line-height: 1;
+  margin-bottom: 4px;
+}
+.node-en {
+  font-family: var(--font-d); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;
+}
+.node-tagline {
+  font-size: 13px; color: var(--text-dim); margin-bottom: 20px; line-height: 1.5;
+}
+.node-perf { margin-bottom: 24px; }
+.perf-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.perf-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); width: 80px; flex-shrink: 0; }
+.perf-bar-bg { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.perf-bar    { height: 100%; border-radius: 2px; }
+.perf-val    { font-family: var(--font-m); font-size: 10px; color: var(--text-mid); width: 40px; text-align: right; }
+.node-price {
+  padding: 16px;
+  border-radius: var(--r-sm);
+  margin-bottom: 16px;
+  text-align: center;
+}
+.price-eth { font-family: var(--font-d); font-size: 20px; font-weight: 900; }
+.price-usd { font-family: var(--font-m); font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.btn-node-pay {
+  width: 100%; padding: 14px;
+  font-family: var(--font-d); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  border: none; border-radius: var(--r-sm); cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-node-pay:hover { transform: translateY(-2px); }
+
+/* Node color themes */
+.node-cen {
+  background: linear-gradient(160deg, rgba(200,168,75,0.06) 0%, rgba(6,12,22,0.9) 60%);
+  border: 1px solid rgba(200,168,75,0.2);
+}
+.node-cen:hover { border-color: rgba(200,168,75,0.5); box-shadow: 0 16px 48px rgba(200,168,75,0.1); }
+.node-cen .node-badge { background: rgba(200,168,75,0.1); color: var(--gold-b); border: 1px solid rgba(200,168,75,0.2); }
+.node-cen .node-cn    { color: var(--gold-b); text-shadow: 0 0 24px rgba(200,168,75,0.4); }
+.node-cen .node-en    { color: var(--gold); }
+.node-cen .node-price { background: rgba(200,168,75,0.06); border: 1px solid rgba(200,168,75,0.15); }
+.node-cen .price-eth  { color: var(--gold-b); }
+.node-cen .btn-node-pay { background: linear-gradient(135deg, var(--gold), var(--gold-b)); color: #000; }
+.node-cen .btn-node-pay:hover { box-shadow: 0 8px 24px rgba(200,168,75,0.3); }
+
+.node-dan {
+  background: linear-gradient(160deg, rgba(0,229,255,0.05) 0%, rgba(180,79,255,0.04) 50%, rgba(6,12,22,0.9) 80%);
+  border: 1px solid rgba(0,229,255,0.15);
+}
+.node-dan:hover { border-color: rgba(0,229,255,0.4); box-shadow: 0 16px 48px rgba(0,229,255,0.08); }
+.node-dan .node-badge { background: rgba(0,229,255,0.08); color: var(--cyan); border: 1px solid rgba(0,229,255,0.2); }
+.node-dan .node-cn    { color: var(--cyan); text-shadow: 0 0 24px rgba(0,229,255,0.4); }
+.node-dan .node-en    { color: var(--cyan); }
+.node-dan .node-price { background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.12); }
+.node-dan .price-eth  { color: var(--cyan); }
+.node-dan .btn-node-pay { background: linear-gradient(135deg, var(--cyan), var(--purple)); color: #000; }
+.node-dan .btn-node-pay:hover { box-shadow: 0 8px 24px rgba(0,229,255,0.25); }
+
+.node-ling {
+  background: linear-gradient(160deg, rgba(79,195,247,0.05) 0%, rgba(168,184,200,0.04) 50%, rgba(6,12,22,0.9) 80%);
+  border: 1px solid rgba(79,195,247,0.15);
+}
+.node-ling:hover { border-color: rgba(79,195,247,0.4); box-shadow: 0 16px 48px rgba(79,195,247,0.08); }
+.node-ling .node-badge { background: rgba(79,195,247,0.08); color: var(--blue); border: 1px solid rgba(79,195,247,0.2); }
+.node-ling .node-cn    { color: var(--blue); text-shadow: 0 0 24px rgba(79,195,247,0.4); }
+.node-ling .node-en    { color: var(--blue); }
+.node-ling .node-price { background: rgba(79,195,247,0.04); border: 1px solid rgba(79,195,247,0.12); }
+.node-ling .price-eth  { color: var(--blue); }
+.node-ling .btn-node-pay { background: linear-gradient(135deg, var(--blue), var(--silver)); color: #000; }
+.node-ling .btn-node-pay:hover { box-shadow: 0 8px 24px rgba(79,195,247,0.25); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+@media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+.footer-brand .fb-logo {
+  font-family: var(--font-d); font-size: 14px; font-weight: 900;
+  letter-spacing: 0.2em; color: var(--cyan); margin-bottom: 12px;
+}
+.footer-brand .fb-desc { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.footer-col h4 {
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.2em;
+  color: var(--text-mid); text-transform: uppercase; margin-bottom: 16px;
+}
+.footer-col a {
+  display: block; font-size: 13px; color: var(--text-dim);
+  margin-bottom: 10px; transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--cyan); }
+.footer-bottom {
+  margin-top: 40px; padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  font-family: var(--font-m); font-size: 11px; color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+/* ── SUCCESS MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  max-width: 480px; width: 100%;
+  padding: 40px; border-radius: var(--r);
+  background: rgba(6,12,22,0.98);
+  border: 1px solid var(--border-hi);
+  text-align: center;
+  transform: scale(0.9); transition: transform 0.3s;
+}
+.modal-overlay.open .modal-box { transform: scale(1); }
+.modal-icon { font-size: 48px; margin-bottom: 16px; }
+.modal-title { font-family: var(--font-d); font-size: 20px; font-weight: 700; color: var(--gold-b); margin-bottom: 12px; }
+.modal-body  { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 24px; }
+.modal-close {
+  padding: 12px 32px;
+  background: transparent; border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  font-family: var(--font-m); font-size: 13px;
+  color: var(--cyan); cursor: pointer; transition: all 0.2s;
+}
+.modal-close:hover { background: var(--cyan-dim); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 32px; right: 32px; z-index: 600;
+  padding: 14px 20px;
+  background: rgba(6,12,22,0.96);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  font-family: var(--font-m); font-size: 13px; color: var(--cyan);
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── SCROLL REVEAL ── */
+.reveal { opacity: 0; transform: translateY(32px); transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-radial"></div>
+<div id="particles"></div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <div class="nav-logo">OASIS <span class="v">// v2.0</span></div>
+  <div class="nav-links">
+    <a href="#sdk">SDK 2.0</a>
+    <a href="#vibe">Vibe IDE</a>
+    <a href="#medical">Medical</a>
+    <a href="#routing">Routing</a>
+    <a href="#nodes">Nodes</a>
+    <a href="genesis.html">Airdrop</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-wallet-btn" id="nav-wallet-btn" onclick="connectWallet()">
+      <span class="wallet-dot" id="wallet-dot"></span>
+      <span id="nav-wallet-text">Connect Wallet</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow"><span class="pulse"></span>Oasis Protocol 2.0 — Now Live</div>
+        <h1 class="hero-h1">
+          <span class="g1">Self-Evolving</span><br>
+          <span class="g2">Compute Fabric</span>
+        </h1>
+        <p class="hero-desc">
+          Deploy autonomous AI Agents that rewrite themselves. Route across Groq LPU and NVIDIA Vera Rubin. 
+          Medical-grade privacy compute. Atomic per-token Web3 settlement. 
+          <strong style="color:var(--text)">Cash is out. Token is king.</strong>
+        </p>
+        <div class="hero-ctas">
+          <button class="btn-primary" onclick="document.getElementById('sdk').scrollIntoView({behavior:'smooth'})">Deploy Your Agent →</button>
+          <a href="Oasis_2.0_Whitepaper.md" class="btn-secondary">Read Whitepaper</a>
+        </div>
+      </div>
+      <div class="hero-arch">
+        <div class="arch-box ab-sdk glass">
+          <div class="ab-icon">🤖</div>
+          <div><div class="ab-title">Oasis SDK 2.0</div><div class="ab-sub">Self-evolving Agent deployment layer</div></div>
+        </div>
+        <div class="arch-connector"></div>
+        <div class="arch-box ab-vibe glass">
+          <div class="ab-icon">💬</div>
+          <div><div class="ab-title">Vibe IDE</div><div class="ab-sub">Conversational config — no YAML required</div></div>
+        </div>
+        <div class="arch-connector"></div>
+        <div class="arch-box ab-med glass">
+          <div class="ab-icon">🏥</div>
+          <div><div class="ab-title">Medical Privacy Compute</div><div class="ab-sub">NVIDIA Clara — zero raw data exposure</div></div>
+        </div>
+        <div class="arch-connector"></div>
+        <div class="arch-box ab-route glass">
+          <div class="ab-icon">⚡</div>
+          <div><div class="ab-title">Dynamic Routing</div><div class="ab-sub">Groq LPU ↔ NVIDIA Vera Rubin</div></div>
+        </div>
+        <div class="arch-connector"></div>
+        <div class="arch-box ab-settle glass">
+          <div class="ab-icon">💎</div>
+          <div><div class="ab-title">Atomic Settlement</div><div class="ab-sub">Per-token real-time micropayments</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-val" style="color:var(--cyan)">247M+</div>
+        <div class="stat-label">Tokens Settled</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val" style="color:var(--gold-b)">$0.000003</div>
+        <div class="stat-label">Per Token Cost</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val" style="color:var(--green)">99.97%</div>
+        <div class="stat-label">Uptime SLA</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val" style="color:var(--purple)">1,284</div>
+        <div class="stat-label">Active Agents</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val" style="color:var(--blue)">8ms</div>
+        <div class="stat-label">LPU Latency P50</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SDK 2.0 ═══════════ -->
+<section id="sdk">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">// Pillar 01</div>
+      <h2 class="sec-title">Oasis SDK 2.0: <span style="color:var(--gold-b)">The Agentic Layer</span></h2>
+      <p class="sec-sub">Inspired by OpenAI's Clawdbot/NemoClaw self-improving architecture. Deploy Agents that don't just call APIs — they evolve their own logic to better achieve your goals over time.</p>
+    </div>
+    <div class="sdk-grid reveal">
+      <div>
+        <div class="code-terminal">
+          <div class="terminal-bar">
+            <div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div>
+            <span class="terminal-title">oasis_agent_deploy.py</span>
+          </div>
+          <div class="terminal-body">
+<span class="tc"># Oasis SDK 2.0 — Deploy a self-evolving Agent</span><br>
+<span class="tk">from</span> <span class="tf">oasis</span> <span class="tk">import</span> <span class="tf">AgentBuilder, EvolutionPolicy</span><br><br>
+<span class="tc"># Define the Agent's goal and constraints</span><br>
+<span class="tf">agent</span> = <span class="tf">AgentBuilder</span>()<br>
+&nbsp;&nbsp;.<span class="tf">goal</span>(<span class="ts">"Monitor oncology papers daily"</span>)<br>
+&nbsp;&nbsp;.<span class="tf">tools</span>([<span class="ts">"arxiv_search"</span>, <span class="ts">"slack_notify"</span>])<br>
+&nbsp;&nbsp;.<span class="tf">routing</span>({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"default"</span>: <span class="ts">"qwen-max"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tc"># cheap</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"high_priority"</span>: <span class="ts">"claude-opus"</span>&nbsp;<span class="tc"># powerful</span><br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;.<span class="tf">evolution</span>(<span class="tf">EvolutionPolicy</span>.<span class="tn">AGGRESSIVE</span>)<br>
+&nbsp;&nbsp;.<span class="tf">deploy</span>()<br><br>
+<span class="tc"># Agent is now live on the Oasis fabric</span><br>
+<span class="tc"># It will self-optimize every 24h cycle</span><br>
+<span class="ts">print</span>(<span class="tf">agent</span>.<span class="tf">endpoint</span>)<br>
+<span class="tc"># → https://oasis.run/agents/clin-monitor-v1</span>
+          </div>
+        </div>
+        <div class="evolution-loop">
+          <div class="evo-title">// Self-Evolution Loop</div>
+          <div class="evo-steps">
+            <div class="evo-step">
+              <div class="evo-step-icon">🎯</div>
+              <div class="evo-step-label">Goal<br>Set</div>
+            </div>
+            <div class="evo-arrow">→</div>
+            <div class="evo-step">
+              <div class="evo-step-icon">⚙️</div>
+              <div class="evo-step-label">Agent<br>Runs</div>
+            </div>
+            <div class="evo-arrow">→</div>
+            <div class="evo-step">
+              <div class="evo-step-icon">📊</div>
+              <div class="evo-step-label">Perf<br>Log</div>
+            </div>
+            <div class="evo-arrow">→</div>
+            <div class="evo-step">
+              <div class="evo-step-icon">🧬</div>
+              <div class="evo-step-label">Evolver<br>Reviews</div>
+            </div>
+            <div class="evo-arrow">→</div>
+            <div class="evo-step">
+              <div class="evo-step-icon">🚀</div>
+              <div class="evo-step-label">New<br>Gen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="agent-features">
+        <div class="af-card glass" style="border-left:3px solid var(--gold)">
+          <div class="af-icon" style="background:rgba(200,168,75,0.1);border:1px solid rgba(200,168,75,0.2)">🧬</div>
+          <div>
+            <div class="af-title" style="color:var(--gold-b)">Self-Rewriting Logic</div>
+            <div class="af-desc">A meta-Agent ("The Evolver") periodically reviews performance logs and proposes modifications to the deployed Agent's prompt templates and routing rules. Each generation is more efficient than the last.</div>
+          </div>
+        </div>
+        <div class="af-card glass" style="border-left:3px solid var(--cyan)">
+          <div class="af-icon" style="background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2)">🔗</div>
+          <div>
+            <div class="af-title" style="color:var(--cyan)">Multi-Agent Orchestration</div>
+            <div class="af-desc">Agents can spawn sub-Agents, delegate tasks, and communicate via the Oasis message bus. Build complex autonomous workflows without writing orchestration code.</div>
+          </div>
+        </div>
+        <div class="af-card glass" style="border-left:3px solid var(--purple)">
+          <div class="af-icon" style="background:rgba(180,79,255,0.08);border:1px solid rgba(180,79,255,0.2)">🛡️</div>
+          <div>
+            <div class="af-title" style="color:var(--purple)">Sandboxed Execution</div>
+            <div class="af-desc">Every Agent runs in an isolated, cryptographically attested sandbox. Wallet-based identity ensures only authorized callers can trigger or modify your Agent's behavior.</div>
+          </div>
+        </div>
+        <div class="af-card glass" style="border-left:3px solid var(--green)">
+          <div class="af-icon" style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2)">📈</div>
+          <div>
+            <div class="af-title" style="color:var(--green)">24/7 Agentic Workflows</div>
+            <div class="af-desc">Agents run continuously on the Oasis fabric. No servers to manage. No cron jobs to maintain. Define the goal; the protocol handles the rest.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VIBE IDE ═══════════ -->
+<section id="vibe" style="background:rgba(0,229,255,0.015);">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">// Pillar 02</div>
+      <h2 class="sec-title">Vibe IDE: <span style="color:var(--cyan)">Configure by Conversation</span></h2>
+      <p class="sec-sub">No YAML. No config files. No documentation rabbit holes. Just describe what you want in plain language, and the Oasis Configuration Agent generates the complete routing logic, Agent definition, and security policies instantly.</p>
+    </div>
+    <div class="vibe-container reveal">
+      <div class="vibe-chat">
+        <div class="chat-header"><span class="dot"></span>Oasis Vibe IDE — Configuration Agent</div>
+        <div class="chat-messages">
+          <div class="msg msg-user">
+            <div class="msg-avatar">U</div>
+            <div class="msg-bubble">Create an Agent called ClinicalTrialMonitor. Scan ArXiv daily for oncology papers. If it mentions "Phase 3" AND "Metastatic Melanoma", send a high-priority Slack alert. Use cheap models for normal summaries, but Claude Opus for the critical alerts.</div>
+          </div>
+          <div class="msg msg-ai">
+            <div class="msg-avatar">⬡</div>
+            <div class="msg-bubble">
+              <strong>Understood.</strong> I'm generating your Agent configuration now.<br><br>
+              I've set up a <code>daily_cron</code> trigger at 06:00 UTC, routing to <code>qwen-max</code> for standard summaries (est. $0.002/run) and <code>claude-4-opus</code> for high-priority alerts. The keyword filter uses semantic matching, not just exact string search, so it catches related terminology.<br><br>
+              <strong>Estimated monthly cost: ~$0.18</strong> at current Oasis pricing. Shall I deploy?
+            </div>
+          </div>
+          <div class="msg msg-user">
+            <div class="msg-avatar">U</div>
+            <div class="msg-bubble">Yes, deploy it. Also add a fallback: if Claude is unavailable, use Gemini 2.5 Flash.</div>
+          </div>
+          <div class="msg msg-ai">
+            <div class="msg-avatar">⬡</div>
+            <div class="msg-bubble">
+              <strong>Fallback chain added:</strong> <code>claude-4-opus → gemini-2.5-flash → gpt-4.1</code>. Agent deployed to <code>oasis.run/agents/clinical-monitor-v1</code>. Live in 12 seconds.
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" type="text" placeholder="Describe your Agent or routing logic...">
+          <button class="chat-send">SEND</button>
+        </div>
+      </div>
+      <div class="vibe-generated">
+        <div class="vg-label">// Auto-generated configuration</div>
+        <div class="vg-config">
+<pre><span class="ck">agent</span>:
+  <span class="ck">name</span>: <span class="cv">ClinicalTrialMonitor</span>
+  <span class="ck">version</span>: <span class="cs">1.0.0</span>
+  <span class="ck">trigger</span>:
+    <span class="ck">type</span>: <span class="cv">cron</span>
+    <span class="ck">schedule</span>: <span class="cs">"0 6 * * *"</span>
+  <span class="ck">tools</span>:
+    - <span class="cv">arxiv_search</span>
+    - <span class="cv">slack_notify</span>
+  <span class="ck">routing</span>:
+    <span class="ck">default</span>:
+      <span class="ck">model</span>: <span class="cv">qwen-max</span>
+      <span class="ck">priority</span>: <span class="cv">cost</span>
+    <span class="ck">high_priority</span>:
+      <span class="ck">condition</span>: <span class="cs">"Phase 3 AND Metastatic Melanoma"</span>
+      <span class="ck">model</span>: <span class="cv">claude-4-opus</span>
+      <span class="ck">fallback</span>: [<span class="cv">gemini-2.5-flash</span>, <span class="cv">gpt-4.1</span>]
+      <span class="ck">priority</span>: <span class="cv">quality</span>
+  <span class="ck">evolution</span>:
+    <span class="ck">policy</span>: <span class="cv">conservative</span>
+    <span class="ck">review_cycle</span>: <span class="cs">7d</span>
+  <span class="ck">settlement</span>:
+    <span class="ck">mode</span>: <span class="cv">atomic</span>
+    <span class="ck">wallet</span>: <span class="cs">0x76104C...D6e9</span></pre>
+        </div>
+        <div class="glass" style="padding:20px 24px;margin-top:8px;">
+          <div style="font-family:var(--font-m);font-size:11px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;">// Deployment Status</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-m);font-size:12px;">
+              <span style="color:var(--text-dim)">Endpoint</span>
+              <span style="color:var(--cyan)">oasis.run/agents/clinical-monitor-v1</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-m);font-size:12px;">
+              <span style="color:var(--text-dim)">Status</span>
+              <span style="color:var(--green)">● LIVE</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-m);font-size:12px;">
+              <span style="color:var(--text-dim)">Est. Monthly Cost</span>
+              <span style="color:var(--gold-b)">~$0.18 USD</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-m);font-size:12px;">
+              <span style="color:var(--text-dim)">Next Evolution Review</span>
+              <span style="color:var(--purple)">7 days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ MEDICAL PRIVACY ═══════════ -->
+<section id="medical">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">// Pillar 03 + 04</div>
+      <h2 class="sec-title">Medical Privacy Compute <span style="color:var(--green)">+ Proof-of-Compute</span></h2>
+      <p class="sec-sub">In partnership with NVIDIA Clara. Hospitals contribute compute, earn Oasis Protocol Rewards. Raw patient data never leaves the secure enclave — only inference tokens flow out.</p>
+    </div>
+    <div class="med-grid reveal">
+      <div class="med-flow">
+        <div class="med-flow-title">// Privacy-Preserving Inference Flow</div>
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-content">
+            <div class="flow-title">Hospital Data Stays On-Premise</div>
+            <div class="flow-desc">Patient records, imaging data, and clinical notes remain within the hospital's NVIDIA Clara-secured environment. Zero raw data egress.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-content">
+            <div class="flow-title">Encrypted Inference Request</div>
+            <div class="flow-desc">The Oasis SDK sends an encrypted, attested inference request to the hospital's Clara node. The model runs locally inside a Trusted Execution Environment (TEE).</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-content">
+            <div class="flow-title">Only Tokens Flow Out</div>
+            <div class="flow-desc">The inference result (e.g., "High-risk: 87% probability") is the only data that leaves the secure enclave. No images, no records, no PII.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-content">
+            <div class="flow-title">Proof-of-Compute Reward Issued</div>
+            <div class="flow-desc">The hospital's node receives Oasis Protocol Rewards (OPR) for every verified inference. Medical-grade compute earns a 5x multiplier over standard compute.</div>
+          </div>
+        </div>
+        <div class="clara-badge">
+          <span style="font-size:20px">🏥</span>
+          <span>Powered by <strong>NVIDIA Clara</strong> Confidential Computing — TEE-attested inference on H100/H200 clusters</span>
+        </div>
+      </div>
+      <div class="med-stats">
+        <div class="med-stat-card glass" style="border-left:3px solid var(--green)">
+          <div class="msc-icon">🔒</div>
+          <div>
+            <div class="msc-val" style="color:var(--green)">0 bytes</div>
+            <div class="msc-label">Raw Data Egress</div>
+            <div class="msc-sub">TEE-enforced data isolation</div>
+          </div>
+        </div>
+        <div class="med-stat-card glass" style="border-left:3px solid var(--gold)">
+          <div class="msc-icon">💰</div>
+          <div>
+            <div class="msc-val" style="color:var(--gold-b)">5x</div>
+            <div class="msc-label">OPR Multiplier</div>
+            <div class="msc-sub">Medical-grade compute premium</div>
+          </div>
+        </div>
+        <div class="med-stat-card glass" style="border-left:3px solid var(--cyan)">
+          <div class="msc-icon">⚡</div>
+          <div>
+            <div class="msc-val" style="color:var(--cyan)">12ms</div>
+            <div class="msc-label">Inference Latency</div>
+            <div class="msc-sub">H100 NVL cluster, TEE mode</div>
+          </div>
+        </div>
+        <div class="poc-leaderboard glass" style="margin-top:0">
+          <div class="lb-title">// Proof-of-Compute Leaderboard</div>
+          <div class="lb-row">
+            <div class="lb-rank" style="color:var(--gold-b)">01</div>
+            <div class="lb-addr">0x3f2A...8c1d</div>
+            <div class="lb-type" style="background:rgba(0,255,136,0.1);color:var(--green);border:1px solid rgba(0,255,136,0.2)">MEDICAL</div>
+            <div class="lb-opr" style="color:var(--gold-b)">48,291 OPR</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank" style="color:var(--silver)">02</div>
+            <div class="lb-addr">0xb7E9...4f2a</div>
+            <div class="lb-type" style="background:rgba(0,229,255,0.08);color:var(--cyan);border:1px solid rgba(0,229,255,0.2)">STANDARD</div>
+            <div class="lb-opr" style="color:var(--cyan)">12,847 OPR</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank" style="color:var(--blue)">03</div>
+            <div class="lb-addr">0x9cD1...7b3e</div>
+            <div class="lb-type" style="background:rgba(0,255,136,0.1);color:var(--green);border:1px solid rgba(0,255,136,0.2)">MEDICAL</div>
+            <div class="lb-opr" style="color:var(--gold-b)">9,104 OPR</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank">04</div>
+            <div class="lb-addr">0x1aF4...2d8c</div>
+            <div class="lb-type" style="background:rgba(180,79,255,0.08);color:var(--purple);border:1px solid rgba(180,79,255,0.2)">AGENTIC</div>
+            <div class="lb-opr" style="color:var(--purple)">7,632 OPR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DYNAMIC ROUTING ═══════════ -->
+<section id="routing" style="background:rgba(180,79,255,0.015);">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">// Pillar 05</div>
+      <h2 class="sec-title">Dynamic Heterogeneous <span style="color:var(--purple)">Compute Routing</span></h2>
+      <p class="sec-sub">One flag. Infinite hardware optimization. The Oasis router automatically selects the optimal compute substrate — Groq LPU for sub-10ms latency, NVIDIA Vera Rubin for trillion-parameter reasoning.</p>
+    </div>
+    <div class="routing-visual reveal">
+      <div class="route-node glass" style="border-color:rgba(0,229,255,0.2);">
+        <div class="rn-icon">⚡</div>
+        <div class="rn-name" style="color:var(--cyan)">Groq LPU Track</div>
+        <div class="rn-spec">Language Processing Unit<br>Sequential token generation<br>Ultra-low latency architecture</div>
+        <div class="rn-metric" style="background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);color:var(--cyan)">
+          &lt;8ms
+          <div class="rn-metric-label">P50 Latency</div>
+        </div>
+        <div style="margin-top:12px;font-family:var(--font-m);font-size:11px;color:var(--text-dim)">
+          Best for: Real-time voice, streaming chat, live coding assistants
+        </div>
+      </div>
+      <div class="route-center">
+        <div class="route-center-label">Oasis<br>Smart<br>Router</div>
+        <div class="route-icon">🔀</div>
+        <div class="route-arrows">
+          <div class="ra">↑</div>
+          <div class="ra">↑</div>
+          <div class="ra">↑</div>
+        </div>
+        <div class="route-center-label" style="margin-top:4px">intent<br>detection</div>
+      </div>
+      <div class="route-node glass" style="border-color:rgba(180,79,255,0.2);">
+        <div class="rn-icon">🧠</div>
+        <div class="rn-name" style="color:var(--purple)">Vera Rubin Track</div>
+        <div class="rn-spec">NVIDIA Vera Rubin GPU<br>Next-gen NVLink fabric<br>Trillion-param reasoning</div>
+        <div class="rn-metric" style="background:rgba(180,79,255,0.08);border:1px solid rgba(180,79,255,0.2);color:var(--purple)">
+          3.6T
+          <div class="rn-metric-label">Params Accessible</div>
+        </div>
+        <div style="margin-top:12px;font-family:var(--font-m);font-size:11px;color:var(--text-dim)">
+          Best for: Financial quant, deep code refactoring, scientific simulation
+        </div>
+      </div>
+    </div>
+    <div class="glass reveal" style="overflow:hidden;">
+      <table class="routing-table">
+        <thead>
+          <tr>
+            <th>Use Case</th>
+            <th>Priority Flag</th>
+            <th>Routed To</th>
+            <th>Latency</th>
+            <th>Cost/1M Tokens</th>
+            <th>Recommended Node</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Real-time voice NPC</td>
+            <td><span class="rt-tag" style="background:rgba(0,229,255,0.1);color:var(--cyan);border:1px solid rgba(0,229,255,0.2)">latency</span></td>
+            <td style="color:var(--cyan)">Groq LPU</td>
+            <td style="color:var(--green)">&lt;8ms</td>
+            <td>$0.27</td>
+            <td style="color:var(--blue)">玲珑 Linglong</td>
+          </tr>
+          <tr>
+            <td>Streaming code completion</td>
+            <td><span class="rt-tag" style="background:rgba(0,229,255,0.1);color:var(--cyan);border:1px solid rgba(0,229,255,0.2)">latency</span></td>
+            <td style="color:var(--cyan)">Groq LPU</td>
+            <td style="color:var(--green)">&lt;12ms</td>
+            <td>$0.31</td>
+            <td style="color:var(--cyan)">丹丘生 Danqiu</td>
+          </tr>
+          <tr>
+            <td>Financial quant analysis</td>
+            <td><span class="rt-tag" style="background:rgba(180,79,255,0.1);color:var(--purple);border:1px solid rgba(180,79,255,0.2)">complexity</span></td>
+            <td style="color:var(--purple)">Vera Rubin</td>
+            <td style="color:var(--text-dim)">~340ms</td>
+            <td>$8.40</td>
+            <td style="color:var(--gold-b)">岑夫子 Cen</td>
+          </tr>
+          <tr>
+            <td>Medical imaging inference</td>
+            <td><span class="rt-tag" style="background:rgba(0,255,136,0.1);color:var(--green);border:1px solid rgba(0,255,136,0.2)">privacy</span></td>
+            <td style="color:var(--green)">Clara TEE</td>
+            <td style="color:var(--text-dim)">~12ms</td>
+            <td>$42.00</td>
+            <td style="color:var(--green)">Medical Node</td>
+          </tr>
+          <tr>
+            <td>Agentic workflow (24/7)</td>
+            <td><span class="rt-tag" style="background:rgba(200,168,75,0.1);color:var(--gold-b);border:1px solid rgba(200,168,75,0.2)">agentic</span></td>
+            <td style="color:var(--gold-b)">Auto-select</td>
+            <td style="color:var(--text-dim)">varies</td>
+            <td>$0.18 avg</td>
+            <td style="color:var(--cyan)">丹丘生 Danqiu</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ATOMIC SETTLEMENT ═══════════ -->
+<section id="settle">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">// Pillar 06</div>
+      <h2 class="sec-title">Atomic Settlement: <span style="color:var(--blue)">Pay Per Token</span></h2>
+      <p class="sec-sub">The end of subscriptions. The end of credit cards. The end of pre-purchasing. Every single token you generate triggers an atomic micropayment over a Layer 2 payment channel. Cash is out. Token is king.</p>
+    </div>
+    <div class="settle-grid reveal">
+      <div class="settle-flow">
+        <div class="settle-flow-title">// Atomic Settlement Protocol</div>
+        <div class="settle-step">
+          <div class="ss-icon">🔗</div>
+          <div>
+            <div class="ss-title">Open Payment Channel</div>
+            <div class="ss-desc">Connect MetaMask. A L2 payment channel is opened with a small ETH/USDT deposit. Zero upfront commitment required.</div>
+          </div>
+        </div>
+        <div class="settle-step">
+          <div class="ss-icon">⚡</div>
+          <div>
+            <div class="ss-title">Generate Tokens</div>
+            <div class="ss-desc">Call any Oasis API or deploy an Agent. Every token generated is tracked in real-time at the protocol level.</div>
+          </div>
+        </div>
+        <div class="settle-step">
+          <div class="ss-icon">💎</div>
+          <div>
+            <div class="ss-title">Atomic Micropayment</div>
+            <div class="ss-desc">For every token batch (configurable: 1 to 1000 tokens), a cryptographically signed micropayment is executed over the channel. No gas fees per transaction.</div>
+          </div>
+        </div>
+        <div class="settle-step">
+          <div class="ss-icon">🔐</div>
+          <div>
+            <div class="ss-title">Channel Settlement</div>
+            <div class="ss-desc">When the channel closes (manually or automatically), the final balance is settled on-chain in a single transaction. Maximum efficiency, minimum gas.</div>
+          </div>
+        </div>
+        <div class="settle-metrics">
+          <div class="sm-card">
+            <div class="sm-val">$0.000003</div>
+            <div class="sm-label">Per Token</div>
+          </div>
+          <div class="sm-card">
+            <div class="sm-val">&lt;1ms</div>
+            <div class="sm-label">Settlement Latency</div>
+          </div>
+          <div class="sm-card">
+            <div class="sm-val">L2</div>
+            <div class="sm-label">Zero Gas Per Tx</div>
+          </div>
+          <div class="sm-card">
+            <div class="sm-val">ETH/USDT</div>
+            <div class="sm-label">Accepted Tokens</div>
+          </div>
+        </div>
+      </div>
+      <div class="settle-ticker glass">
+        <div class="ticker-title">
+          <span class="ticker-live"></span>
+          Live Atomic Settlement Feed
+        </div>
+        <div class="ticker-feed" id="ticker-feed"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ NODES ═══════════ -->
+<section id="nodes">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">// API Routing Nodes</div>
+      <h2 class="sec-title">岑夫子 · 丹丘生 · 玲珑</h2>
+      <p class="sec-sub" style="font-style:italic;color:var(--text-dim)">
+        "Master Cen, Scholar Danqiu, Phantom Linglong... Let the tokens flow without end."<br>
+        <span style="font-family:var(--font-m);font-size:12px;color:rgba(200,168,75,0.6)">岑夫子，丹丘生，玲珑幻影，将进酒，杯莫停</span>
+      </p>
+    </div>
+    <div class="nodes-grid reveal">
+      <!-- CEN-MASTER -->
+      <div class="node-card node-cen">
+        <div class="node-badge">NODE-001 · DEEP REASONING</div>
+        <div class="node-cn">岑夫子</div>
+        <div class="node-en">Cen-Master Node</div>
+        <div class="node-tagline">The Sage of Deep Reasoning. Powered by Claude 4.5 Opus-class logic. Routed to Vera Rubin track for maximum reasoning depth.</div>
+        <div class="node-perf">
+          <div class="perf-row">
+            <span class="perf-label">REASONING</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:98%;background:linear-gradient(90deg,var(--gold),var(--gold-b))"></div></div>
+            <span class="perf-val">98%</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">CONTEXT</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:95%;background:linear-gradient(90deg,var(--gold),var(--gold-b))"></div></div>
+            <span class="perf-val">200K</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">LATENCY</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:45%;background:linear-gradient(90deg,var(--gold),var(--gold-b))"></div></div>
+            <span class="perf-val">~340ms</span>
+          </div>
+        </div>
+        <div class="node-price">
+          <div class="price-eth">0.001 ETH</div>
+          <div class="price-usd">≈ $3.80 · 30-day access</div>
+        </div>
+        <button class="btn-node-pay" onclick="payForNode('cen', 'Cen-Master')">Pay with ETH — Unlock Cen-Master</button>
+      </div>
+
+      <!-- DANQIU -->
+      <div class="node-card node-dan">
+        <div class="node-badge">NODE-002 · HIGH CONCURRENCY</div>
+        <div class="node-cn">丹丘生</div>
+        <div class="node-en">Danqiu-Alchemist Node</div>
+        <div class="node-tagline">The Alchemist of High Concurrency. Qwen-Max/Doubao-class speed. Routed to Groq LPU for 24/7 Agentic workflows.</div>
+        <div class="node-perf">
+          <div class="perf-row">
+            <span class="perf-label">THROUGHPUT</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:96%;background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div>
+            <span class="perf-val">96%</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">CONCURRENCY</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:99%;background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div>
+            <span class="perf-val">10K/s</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">LATENCY</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:92%;background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div>
+            <span class="perf-val">&lt;12ms</span>
+          </div>
+        </div>
+        <div class="node-price">
+          <div class="price-eth">0.001 ETH</div>
+          <div class="price-usd">≈ $3.80 · 30-day access</div>
+        </div>
+        <button class="btn-node-pay" onclick="payForNode('dan', 'Danqiu-Alchemist')">Pay with ETH — Unlock Danqiu</button>
+      </div>
+
+      <!-- LINGLONG -->
+      <div class="node-card node-ling">
+        <div class="node-badge">NODE-003 · VOICE & EMOTION</div>
+        <div class="node-cn">玲珑</div>
+        <div class="node-en">Linglong-Phantom Node</div>
+        <div class="node-tagline">The Emotion & Voice Engine. MiniMax abab6.5-class. Designed for 24/7 NPC roleplay, virtual idols, and speech interaction.</div>
+        <div class="node-perf">
+          <div class="perf-row">
+            <span class="perf-label">VOICE TTS</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:99%;background:linear-gradient(90deg,var(--blue),var(--silver))"></div></div>
+            <span class="perf-val">99%</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">EMOTION IQ</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:94%;background:linear-gradient(90deg,var(--blue),var(--silver))"></div></div>
+            <span class="perf-val">94%</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">LATENCY</span>
+            <div class="perf-bar-bg"><div class="perf-bar" style="width:98%;background:linear-gradient(90deg,var(--blue),var(--silver))"></div></div>
+            <span class="perf-val">&lt;8ms</span>
+          </div>
+        </div>
+        <div class="node-price">
+          <div class="price-eth">0.001 ETH</div>
+          <div class="price-usd">≈ $3.80 · 30-day access</div>
+        </div>
+        <button class="btn-node-pay" onclick="payForNode('ling', 'Linglong-Phantom')">Pay with ETH — Unlock Linglong</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="fb-logo">OASIS PROTOCOL 2.0</div>
+        <div class="fb-desc">The self-evolving compute fabric for the age of autonomous AI agents. Deploy, route, settle — all in one protocol. Cash is out. Token is king.</div>
+      </div>
+      <div class="footer-col">
+        <h4>Protocol</h4>
+        <a href="#sdk">SDK 2.0</a>
+        <a href="#vibe">Vibe IDE</a>
+        <a href="#medical">Medical Compute</a>
+        <a href="#routing">Dynamic Routing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Nodes</h4>
+        <a href="#nodes">岑夫子 Cen-Master</a>
+        <a href="#nodes">丹丘生 Danqiu</a>
+        <a href="#nodes">玲珑 Linglong</a>
+        <a href="genesis.html">Genesis Airdrop</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="Oasis_2.0_Whitepaper.md">Whitepaper</a>
+        <a href="backend_signature_verification.md">API Docs</a>
+        <a href="OasisNodeAccess.sol">Smart Contract</a>
+        <a href="https://twitter.com/OasisAPIProto" target="_blank">@OasisAPIProto</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>OASIS PROTOCOL 2.0 · SILKPUNK COMPUTE FABRIC · 2026</span>
+      <span style="color:var(--cyan)">RECEIVER: 0x76104C1542b0cAe1b2c34719FE0d922Ed21aD6e9</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-icon">⚡</div>
+    <div class="modal-title" id="modal-title">Payment Confirmed</div>
+    <div class="modal-body" id="modal-body">Your Oasis API Key is generating...</div>
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">CLOSE</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── PARTICLES ─── */
+(function(){
+  const c=document.getElementById('particles');
+  const cols=['#00e5ff','#c8a84b','#b44fff','#00ff88','#4fc3f7'];
+  for(let i=0;i<60;i++){
+    const p=document.createElement('div');p.className='pt';
+    const col=cols[Math.floor(Math.random()*cols.length)];
+    const sz=Math.random()*2.5+0.5;
+    p.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${col};box-shadow:0 0 ${sz*4}px ${col};animation-duration:${Math.random()*18+10}s;animation-delay:-${Math.random()*20}s;--dx:${(Math.random()-0.5)*160}px;opacity:0.6;`;
+    c.appendChild(p);
+  }
+})();
+
+/* ─── SCROLL REVEAL ─── */
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+/* ─── WALLET ─── */
+const RECEIVER='0x76104C1542b0cAe1b2c34719FE0d922Ed21aD6e9';
+let walletAddr=null;
+
+async function connectWallet(){
+  if(walletAddr){showToast('Wallet already connected: '+walletAddr.slice(0,6)+'...'+walletAddr.slice(-4));return;}
+  if(!window.ethereum){showToast('MetaMask not detected. Install from metamask.io',4000);window.open('https://metamask.io/download/','_blank');return;}
+  try{
+    const accs=await window.ethereum.request({method:'eth_requestAccounts'});
+    walletAddr=accs[0];
+    const short=walletAddr.slice(0,6)+'...'+walletAddr.slice(-4);
+    document.getElementById('nav-wallet-text').textContent=short;
+    document.getElementById('nav-wallet-btn').classList.add('connected');
+    document.getElementById('wallet-dot').classList.add('on');
+    showToast('Wallet connected: '+short,3000);
+  }catch(e){
+    if(e.code===4001)showToast('Connection rejected.',3000);
+    else showToast('Error: '+e.message,3000);
+  }
+}
+
+async function payForNode(nodeId,nodeName){
+  if(!walletAddr){showToast('Connect your wallet first.',3000);await connectWallet();return;}
+  const amtWei='0x'+Math.floor(0.001*1e18).toString(16);
+  try{
+    const txHash=await window.ethereum.request({
+      method:'eth_sendTransaction',
+      params:[{from:walletAddr,to:RECEIVER,value:amtWei,gas:'0x5208'}]
+    });
+    document.getElementById('modal-title').textContent='Payment Confirmed';
+    document.getElementById('modal-body').innerHTML=`
+      Node <strong style="color:var(--gold-b)">${nodeName}</strong> unlocked.<br>
+      TX: <span style="font-family:var(--font-m);font-size:12px;color:var(--cyan)">${txHash.slice(0,20)}...</span><br><br>
+      <strong style="color:var(--green)">Your Oasis API Key is generating...</strong><br>
+      <span style="font-family:var(--font-m);font-size:12px;color:var(--text-dim)">Check your wallet address dashboard in 30 seconds.</span>
+    `;
+    document.getElementById('modal').classList.add('open');
+  }catch(e){
+    if(e.code===4001)showToast('Transaction rejected.',3000);
+    else if(e.code===-32603)showToast('Insufficient funds. Need 0.001 ETH + gas.',4000);
+    else showToast('Error: '+e.message,3000);
+  }
+}
+
+if(window.ethereum){
+  window.ethereum.on('accountsChanged',accs=>{
+    if(!accs.length){walletAddr=null;document.getElementById('nav-wallet-text').textContent='Connect Wallet';document.getElementById('nav-wallet-btn').classList.remove('connected');document.getElementById('wallet-dot').classList.remove('on');}
+    else{walletAddr=accs[0];document.getElementById('nav-wallet-text').textContent=walletAddr.slice(0,6)+'...'+walletAddr.slice(-4);}
+  });
+}
+
+/* ─── ATOMIC SETTLEMENT TICKER ─── */
+const ADDRS=['0x3f2A...8c1d','0xb7E9...4f2a','0x9cD1...7b3e','0x1aF4...2d8c','0x5e8B...9a1f','0x2c7D...6e4b','0x8f3A...1c9d','0x4b6E...3f7a'];
+const NODES=['岑夫子','丹丘生','玲珑'];
+function addTicker(){
+  const feed=document.getElementById('ticker-feed');
+  if(!feed)return;
+  const addr=ADDRS[Math.floor(Math.random()*ADDRS.length)];
+  const node=NODES[Math.floor(Math.random()*NODES.length)];
+  const tokens=Math.floor(Math.random()*900)+100;
+  const usd=(tokens*0.000003).toFixed(6);
+  const el=document.createElement('div');
+  el.className='ticker-item';
+  el.innerHTML=`<span class="ti-addr">${addr}</span><span class="ti-tokens">${tokens} tokens · ${node}</span><span class="ti-amount">$${usd}</span><span class="ti-time">now</span>`;
+  feed.insertBefore(el,feed.firstChild);
+  while(feed.children.length>6)feed.removeChild(feed.lastChild);
+}
+for(let i=0;i<4;i++)addTicker();
+setInterval(addTicker,2200);
+
+/* ─── TOAST ─── */
+let tt;
+function showToast(msg,dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),dur);
+}
+</script>
+</body>
+</html>
