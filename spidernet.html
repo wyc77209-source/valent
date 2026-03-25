@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpiderNet OS — Weave the Future</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #010204; --red: #e63946; --red-d: rgba(230,57,70,0.08);
+  --red-b: #ff4757; --cyan: #00e5ff; --cyan-d: rgba(0,229,255,0.07);
+  --green: #00ff88; --gold: #ffd700; --purple: #b44fff;
+  --text: #e2e8f0; --text-m: #94a3b8; --text-d: #475569;
+  --border: rgba(230,57,70,0.12); --border-c: rgba(0,229,255,0.1);
+  --bg-card: rgba(8,4,12,0.96); --font-d: 'Orbitron',monospace;
+  --font-m: 'Share Tech Mono',monospace; --font-b: 'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--void);color:var(--text);font-family:var(--font-b);
+  overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse 120% 50% at 50% -5%,rgba(230,57,70,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%,rgba(0,229,255,0.04) 0%,transparent 60%);
+}
+
+/* ─── WEB CANVAS ─── */
+#web-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.18;pointer-events:none;}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 48px;
+  background:rgba(1,2,4,0.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:flex;align-items:center;gap:12px;}
+.nav-logo img{width:36px;height:36px;border-radius:6px;}
+.nav-logo-text{font-family:var(--font-d);font-size:14px;font-weight:900;letter-spacing:0.15em;}
+.nl-spider{color:var(--red-b);}
+.nl-net{color:var(--cyan);}
+.nl-os{color:var(--text-d);font-weight:400;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-family:var(--font-m);font-size:11px;letter-spacing:0.15em;color:var(--text-d);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--red-b);}
+.nav-cta{
+  padding:8px 20px;background:var(--red-d);border:1px solid rgba(230,57,70,0.4);
+  border-radius:4px;font-family:var(--font-m);font-size:11px;letter-spacing:0.12em;
+  color:var(--red-b);cursor:pointer;transition:all 0.2s;text-decoration:none;
+}
+.nav-cta:hover{background:rgba(230,57,70,0.15);box-shadow:0 0 20px rgba(230,57,70,0.2);}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;z-index:1;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:120px 40px 80px;
+}
+.hero-eyebrow{
+  font-family:var(--font-m);font-size:11px;letter-spacing:0.35em;
+  color:var(--text-d);text-transform:uppercase;margin-bottom:24px;
+}
+.hero-logo-wrap{margin-bottom:32px;position:relative;}
+.hero-logo-wrap img{width:140px;height:140px;border-radius:16px;filter:drop-shadow(0 0 40px rgba(230,57,70,0.5));}
+.hero-logo-ring{
+  position:absolute;inset:-16px;border-radius:50%;
+  border:1px solid rgba(230,57,70,0.2);
+  animation:ring-spin 8s linear infinite;
+}
+.hero-logo-ring::before{
+  content:'';position:absolute;top:50%;left:-4px;transform:translateY(-50%);
+  width:8px;height:8px;border-radius:50%;background:var(--red-b);
+  box-shadow:0 0 12px var(--red-b);
+}
+@keyframes ring-spin{to{transform:rotate(360deg);}}
+.hero-title{
+  font-family:var(--font-d);font-size:clamp(36px,6vw,72px);
+  font-weight:900;line-height:1.1;margin-bottom:16px;
+}
+.ht-spider{color:var(--red-b);text-shadow:0 0 40px rgba(230,57,70,0.5);}
+.ht-net{color:var(--cyan);text-shadow:0 0 40px rgba(0,229,255,0.4);}
+.ht-os{color:var(--text-d);font-size:0.5em;letter-spacing:0.3em;}
+.hero-tagline{
+  font-family:var(--font-m);font-size:16px;letter-spacing:0.1em;
+  color:var(--text-m);margin-bottom:12px;
+}
+.hero-tagline span{color:var(--gold);}
+.hero-manifesto{
+  max-width:680px;font-size:15px;line-height:1.9;color:var(--text-m);
+  margin-bottom:40px;
+}
+.hero-manifesto strong{color:var(--text);}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;}
+.btn-primary{
+  padding:14px 32px;background:var(--red);border:none;border-radius:6px;
+  font-family:var(--font-d);font-size:12px;font-weight:700;letter-spacing:0.15em;
+  color:#fff;cursor:pointer;transition:all 0.25s;text-decoration:none;
+  box-shadow:0 0 30px rgba(230,57,70,0.3);
+}
+.btn-primary:hover{background:var(--red-b);box-shadow:0 0 50px rgba(230,57,70,0.5);transform:translateY(-2px);}
+.btn-secondary{
+  padding:14px 32px;background:transparent;
+  border:1px solid var(--border-c);border-radius:6px;
+  font-family:var(--font-d);font-size:12px;font-weight:700;letter-spacing:0.15em;
+  color:var(--cyan);cursor:pointer;transition:all 0.25s;text-decoration:none;
+}
+.btn-secondary:hover{background:var(--cyan-d);box-shadow:0 0 30px rgba(0,229,255,0.15);}
+.hero-stats{display:flex;gap:48px;justify-content:center;flex-wrap:wrap;}
+.hs-item{text-align:center;}
+.hs-num{font-family:var(--font-d);font-size:28px;font-weight:900;color:var(--red-b);}
+.hs-label{font-family:var(--font-m);font-size:10px;letter-spacing:0.2em;color:var(--text-d);text-transform:uppercase;margin-top:4px;}
+
+/* ─── SECTION BASE ─── */
+section{position:relative;z-index:1;padding:80px 48px;}
+.section-eyebrow{
+  font-family:var(--font-m);font-size:10px;letter-spacing:0.3em;
+  color:var(--text-d);text-transform:uppercase;margin-bottom:12px;
+}
+.section-title{
+  font-family:var(--font-d);font-size:clamp(24px,4vw,40px);font-weight:900;
+  line-height:1.2;margin-bottom:16px;
+}
+.section-sub{font-size:15px;color:var(--text-m);line-height:1.8;max-width:600px;}
+.section-max{max-width:1200px;margin:0 auto;}
+
+/* ─── VILLAIN SECTION ─── */
+.villain-section{background:rgba(230,57,70,0.03);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.villain-header{text-align:center;margin-bottom:60px;}
+.villain-header .section-title span{color:var(--red-b);}
+.villain-header .section-sub{margin:0 auto;}
+.villain-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  max-width:1000px;margin:0 auto;
+}
+.villain-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;padding:28px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.villain-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--red-b),transparent);
+}
+.villain-name{
+  font-family:var(--font-d);font-size:14px;font-weight:700;
+  color:var(--red-b);margin-bottom:8px;letter-spacing:0.1em;
+}
+.villain-crime{
+  font-family:var(--font-m);font-size:10px;letter-spacing:0.15em;
+  color:var(--text-d);text-transform:uppercase;margin-bottom:12px;
+}
+.villain-desc{font-size:13px;color:var(--text-m);line-height:1.7;}
+.villain-tax{
+  margin-top:16px;padding:8px 14px;
+  background:rgba(230,57,70,0.08);border:1px solid rgba(230,57,70,0.2);
+  border-radius:4px;font-family:var(--font-m);font-size:11px;color:var(--red-b);
+}
+
+/* ─── HOW IT WORKS ─── */
+.how-section{text-align:center;}
+.how-section .section-title span{color:var(--cyan);}
+.how-section .section-sub{margin:0 auto 60px;}
+.how-flow{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;flex-wrap:wrap;max-width:1100px;margin:0 auto;
+}
+.how-node{
+  background:var(--bg-card);border:1px solid var(--border-c);
+  border-radius:12px;padding:24px 20px;min-width:160px;text-align:center;
+}
+.how-node-icon{font-size:28px;margin-bottom:10px;}
+.how-node-title{font-family:var(--font-d);font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:6px;letter-spacing:0.1em;}
+.how-node-desc{font-size:12px;color:var(--text-d);line-height:1.6;}
+.how-arrow{
+  padding:0 12px;font-size:20px;color:var(--red-b);
+  font-family:var(--font-m);
+}
+.how-web-node{
+  border-color:rgba(230,57,70,0.3);
+  background:rgba(230,57,70,0.05);
+}
+.how-web-node .how-node-title{color:var(--red-b);}
+
+/* ─── NETWORK NODES ─── */
+.network-section{background:rgba(0,229,255,0.02);border-top:1px solid var(--border-c);border-bottom:1px solid var(--border-c);}
+.network-header{text-align:center;margin-bottom:60px;}
+.network-header .section-title span{color:var(--cyan);}
+.network-header .section-sub{margin:0 auto;}
+.network-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:16px;max-width:1100px;margin:0 auto;
+}
+.net-node{
+  background:var(--bg-card);border:1px solid var(--border-c);
+  border-radius:10px;padding:20px;display:flex;align-items:center;gap:14px;
+  transition:all 0.2s;cursor:pointer;
+}
+.net-node:hover{border-color:rgba(0,229,255,0.3);background:var(--cyan-d);transform:translateY(-2px);}
+.net-node-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.net-node-info{}
+.net-node-name{font-family:var(--font-d);font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.net-node-type{font-family:var(--font-m);font-size:10px;letter-spacing:0.1em;color:var(--text-d);}
+.net-node-speed{font-family:var(--font-m);font-size:10px;color:var(--green);margin-top:2px;}
+
+/* ─── OPENWEB MODEL ─── */
+.openweb-section{}
+.openweb-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+  max-width:1100px;margin:0 auto;
+}
+.openweb-visual{position:relative;}
+.openweb-logo-big{
+  width:100%;max-width:400px;border-radius:16px;
+  box-shadow:0 0 60px rgba(230,57,70,0.3);
+  border:1px solid rgba(230,57,70,0.2);
+}
+.openweb-content .section-title span{color:var(--red-b);}
+.openweb-content .section-sub{margin-bottom:28px;}
+.openweb-features{display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
+.ow-feat{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 16px;background:var(--bg-card);
+  border:1px solid var(--border);border-radius:8px;
+}
+.ow-feat-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.ow-feat-title{font-family:var(--font-m);font-size:11px;letter-spacing:0.1em;color:var(--red-b);margin-bottom:3px;}
+.ow-feat-desc{font-size:12px;color:var(--text-d);line-height:1.6;}
+
+/* ─── MANIFESTO SECTION ─── */
+.manifesto-section{
+  background:rgba(230,57,70,0.03);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.manifesto-hero-img{
+  width:100%;max-width:900px;border-radius:16px;
+  margin:0 auto 48px;display:block;
+  box-shadow:0 0 80px rgba(0,0,0,0.8);
+  border:1px solid rgba(230,57,70,0.15);
+}
+.manifesto-quote{
+  font-family:var(--font-d);font-size:clamp(18px,3vw,28px);
+  font-weight:700;line-height:1.5;max-width:800px;margin:0 auto 32px;
+  color:var(--text);
+}
+.manifesto-quote span.r{color:var(--red-b);}
+.manifesto-quote span.c{color:var(--cyan);}
+.manifesto-quote span.g{color:var(--gold);}
+.manifesto-body{
+  max-width:700px;margin:0 auto;font-size:15px;line-height:1.9;
+  color:var(--text-m);
+}
+.manifesto-body p{margin-bottom:16px;}
+
+/* ─── DEAI SECTION ─── */
+.deai-section{text-align:center;}
+.deai-section .section-title span{color:var(--purple);}
+.deai-section .section-sub{margin:0 auto 48px;}
+.deai-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  max-width:1000px;margin:0 auto;
+}
+.deai-card{
+  background:var(--bg-card);border:1px solid rgba(180,79,255,0.15);
+  border-radius:12px;padding:28px;text-align:left;
+  position:relative;overflow:hidden;transition:all 0.25s;
+}
+.deai-card:hover{border-color:rgba(180,79,255,0.35);transform:translateY(-4px);}
+.deai-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--purple),transparent);
+}
+.deai-icon{font-size:32px;margin-bottom:14px;}
+.deai-title{font-family:var(--font-d);font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px;letter-spacing:0.08em;}
+.deai-desc{font-size:13px;color:var(--text-m);line-height:1.7;}
+
+/* ─── PRICING ─── */
+.pricing-section{background:rgba(0,0,0,0.3);border-top:1px solid var(--border);}
+.pricing-header{text-align:center;margin-bottom:60px;}
+.pricing-header .section-title span{color:var(--gold);}
+.pricing-header .section-sub{margin:0 auto;}
+.pricing-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  max-width:1000px;margin:0 auto;
+}
+.price-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:16px;padding:32px;text-align:center;
+  position:relative;overflow:hidden;transition:all 0.25s;
+}
+.price-card:hover{transform:translateY(-6px);}
+.price-card.featured{
+  border-color:rgba(230,57,70,0.4);
+  background:rgba(230,57,70,0.04);
+}
+.price-card.featured::before{
+  content:'MOST POPULAR';position:absolute;top:0;left:0;right:0;
+  padding:6px;background:var(--red);
+  font-family:var(--font-m);font-size:10px;letter-spacing:0.2em;color:#fff;
+  text-align:center;
+}
+.price-tier{font-family:var(--font-m);font-size:10px;letter-spacing:0.2em;color:var(--text-d);text-transform:uppercase;margin-bottom:12px;}
+.price-name{font-family:var(--font-d);font-size:18px;font-weight:900;color:var(--text);margin-bottom:16px;}
+.price-amount{font-family:var(--font-d);font-size:36px;font-weight:900;margin-bottom:4px;}
+.price-amount.free{color:var(--green);}
+.price-amount.pro{color:var(--red-b);}
+.price-amount.enterprise{color:var(--gold);}
+.price-unit{font-family:var(--font-m);font-size:11px;color:var(--text-d);margin-bottom:24px;}
+.price-features{list-style:none;text-align:left;margin-bottom:28px;display:flex;flex-direction:column;gap:8px;}
+.price-features li{font-size:13px;color:var(--text-m);display:flex;align-items:center;gap:8px;}
+.price-features li::before{content:'→';color:var(--red-b);font-family:var(--font-m);}
+.price-btn{
+  width:100%;padding:12px;border-radius:6px;
+  font-family:var(--font-m);font-size:11px;letter-spacing:0.12em;
+  cursor:pointer;transition:all 0.2s;text-transform:uppercase;
+}
+.price-btn.free-btn{background:transparent;border:1px solid var(--border-c);color:var(--cyan);}
+.price-btn.pro-btn{background:var(--red);border:none;color:#fff;box-shadow:0 0 20px rgba(230,57,70,0.3);}
+.price-btn.ent-btn{background:transparent;border:1px solid rgba(255,215,0,0.3);color:var(--gold);}
+
+/* ─── FOOTER ─── */
+footer{
+  position:relative;z-index:1;padding:48px;
+  border-top:1px solid var(--border);text-align:center;
+}
+.footer-logo{font-family:var(--font-d);font-size:20px;font-weight:900;margin-bottom:8px;}
+.footer-logo span.r{color:var(--red-b);}
+.footer-logo span.c{color:var(--cyan);}
+.footer-tagline{font-family:var(--font-m);font-size:11px;letter-spacing:0.2em;color:var(--text-d);margin-bottom:24px;}
+.footer-links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.footer-links a{font-family:var(--font-m);font-size:10px;letter-spacing:0.15em;color:var(--text-d);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--red-b);}
+.footer-copy{font-family:var(--font-m);font-size:10px;color:var(--text-d);letter-spacing:0.1em;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  nav{padding:12px 20px;}
+  .nav-links{display:none;}
+  section{padding:60px 20px;}
+  .villain-grid,.deai-grid,.pricing-grid{grid-template-columns:1fr;}
+  .how-flow{flex-direction:column;}
+  .how-arrow{transform:rotate(90deg);}
+  .openweb-inner{grid-template-columns:1fr;}
+  .network-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="web-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <img src="openweb_logo_icon.png" alt="OpenWeb">
+    <div class="nav-logo-text">
+      <span class="nl-spider">Spider</span><span class="nl-net">Net</span> <span class="nl-os">OS</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#network">The Web</a>
+    <a href="#openweb">OpenWeb</a>
+    <a href="#manifesto">Manifesto</a>
+    <a href="#deai">DeAI</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <a href="#pricing" class="nav-cta">JOIN THE WEB</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">// Decentralized AI Infrastructure Protocol — v2.0</div>
+  <div class="hero-logo-wrap">
+    <img src="openweb_logo_main.png" alt="OpenWeb Logo">
+    <div class="hero-logo-ring"></div>
+  </div>
+  <h1 class="hero-title">
+    <span class="ht-spider">Spider</span><span class="ht-net">Net</span><br>
+    <span class="ht-os">OPERATING SYSTEM</span>
+  </h1>
+  <p class="hero-tagline">
+    We don't build models. We <span>weave the web.</span>
+  </p>
+  <p class="hero-manifesto">
+    We connect every major AI API on the planet — <strong>DeepSeek, Groq, Claude, Gemini, Llama</strong> — into a single, unified fabric of compute. One endpoint. Zero API tax. Infinite intelligence.
+    <br><br>
+    <em>"With great compute comes great responsibility."</em>
+  </p>
+  <div class="hero-btns">
+    <a href="#pricing" class="btn-primary">⚡ WEAVE YOUR FIRST TOKEN</a>
+    <a href="#openweb" class="btn-secondary">◈ EXPLORE OPENWEB</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hs-item"><div class="hs-num" id="stat-apis">12+</div><div class="hs-label">APIs Connected</div></div>
+    <div class="hs-item"><div class="hs-num" id="stat-tokens">2.4B+</div><div class="hs-label">Tokens Routed</div></div>
+    <div class="hs-item"><div class="hs-num" id="stat-save">94%</div><div class="hs-label">Cost Reduction</div></div>
+    <div class="hs-item"><div class="hs-num" id="stat-latency">&lt;12ms</div><div class="hs-label">Avg Routing Latency</div></div>
+  </div>
+</section>
+
+<!-- VILLAIN SECTION -->
+<section class="villain-section" id="villains">
+  <div class="section-max">
+    <div class="villain-header">
+      <div class="section-eyebrow">// The Antagonists</div>
+      <h2 class="section-title">The <span>New Gods</span> Built Walls.<br>We Built a Web.</h2>
+      <p class="section-sub">They promised an open future. They delivered a walled garden. Every token you send through their gates is taxed, tracked, and monetized. This is the API Tax — and it's time to stop paying it.</p>
+    </div>
+    <div class="villain-grid">
+      <div class="villain-card">
+        <div class="villain-name">◈ Google / Gemini</div>
+        <div class="villain-crime">CRIME: MONOPOLY COMPUTE</div>
+        <p class="villain-desc">Controls the world's most powerful TPU infrastructure. Charges enterprise rates for access to models trained on your data. The search giant that indexes the world, then sells it back to you.</p>
+        <div class="villain-tax">API Tax: $15–$75 / 1M tokens</div>
+      </div>
+      <div class="villain-card">
+        <div class="villain-name">◈ OpenAI / GPT-5</div>
+        <div class="villain-crime">CRIME: MISSION BETRAYAL</div>
+        <p class="villain-desc">Founded to benefit humanity. Now a $157B closed-source empire. The original promise of "open" AI was quietly deleted from the mission statement. The most famous bait-and-switch in tech history.</p>
+        <div class="villain-tax">API Tax: $10–$60 / 1M tokens</div>
+      </div>
+      <div class="villain-card">
+        <div class="villain-name">◈ NVIDIA / H100 Cartel</div>
+        <div class="villain-crime">CRIME: HARDWARE FEUDALISM</div>
+        <p class="villain-desc">Controls the physical substrate of AI. $40,000 per GPU. Waitlists measured in months. Jensen Huang has become the most powerful man in tech by controlling the one resource everyone needs.</p>
+        <div class="villain-tax">GPU Tax: $2–$8 / GPU-hour</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-max">
+    <div class="section-eyebrow">// The Spider's Method</div>
+    <h2 class="section-title">How the <span style="color:var(--cyan)">Web</span> Works</h2>
+    <p class="section-sub">A single prompt enters the web. SpiderNet OS decomposes it, routes each component to the optimal model, and weaves the response back together in milliseconds.</p>
+    <div class="how-flow">
+      <div class="how-node">
+        <div class="how-node-icon">💬</div>
+        <div class="how-node-title">YOUR PROMPT</div>
+        <div class="how-node-desc">Any language, any task, any complexity</div>
+      </div>
+      <div class="how-arrow">→</div>
+      <div class="how-node how-web-node">
+        <div class="how-node-icon">🕷️</div>
+        <div class="how-node-title">SPIDERNET OS</div>
+        <div class="how-node-desc">Analyzes, decomposes, routes optimally</div>
+      </div>
+      <div class="how-arrow">→</div>
+      <div class="how-node">
+        <div class="how-node-icon">⚡</div>
+        <div class="how-node-title">THE WEB</div>
+        <div class="how-node-desc">12+ APIs, parallel execution, cost-optimized</div>
+      </div>
+      <div class="how-arrow">→</div>
+      <div class="how-node how-web-node">
+        <div class="how-node-icon">🕸️</div>
+        <div class="how-node-title">WEAVE & RETURN</div>
+        <div class="how-node-desc">Unified response, 94% cheaper</div>
+      </div>
+      <div class="how-arrow">→</div>
+      <div class="how-node">
+        <div class="how-node-icon">✅</div>
+        <div class="how-node-title">YOUR ANSWER</div>
+        <div class="how-node-desc">Faster, smarter, fraction of the cost</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NETWORK NODES -->
+<section class="network-section" id="network">
+  <div class="section-max">
+    <div class="network-header">
+      <div class="section-eyebrow">// The Web Nodes</div>
+      <h2 class="section-title">Every Thread in the <span>Web</span></h2>
+      <p class="section-sub">SpiderNet OS maintains live connections to every major AI provider. Our routing engine selects the optimal node for every request in real-time.</p>
+    </div>
+    <div class="network-grid">
+      <div class="net-node"><div class="net-node-dot" style="background:#00ff88;animation-delay:0s"></div><div class="net-node-info"><div class="net-node-name">DeepSeek R2</div><div class="net-node-type">REASONING · CHINA</div><div class="net-node-speed">~$0.14/1M tokens</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#00e5ff;animation-delay:0.3s"></div><div class="net-node-info"><div class="net-node-name">Groq LPU</div><div class="net-node-type">SPEED · LPU CHIP</div><div class="net-node-speed">~800 tokens/sec</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#b44fff;animation-delay:0.6s"></div><div class="net-node-info"><div class="net-node-name">Claude 4.5 Opus</div><div class="net-node-type">REASONING · ANTHROPIC</div><div class="net-node-speed">~$15/1M tokens</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#4285f4;animation-delay:0.9s"></div><div class="net-node-info"><div class="net-node-name">Gemini 2.5 Pro</div><div class="net-node-type">MULTIMODAL · GOOGLE</div><div class="net-node-speed">~$7/1M tokens</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#1877f2;animation-delay:1.2s"></div><div class="net-node-info"><div class="net-node-name">Llama 4 Scout</div><div class="net-node-type">OPEN SOURCE · META</div><div class="net-node-speed">~$0.08/1M tokens</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#ff9800;animation-delay:1.5s"></div><div class="net-node-info"><div class="net-node-name">Qwen-Max</div><div class="net-node-type">CREATIVE · ALIBABA</div><div class="net-node-speed">~$0.40/1M tokens</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#e63946;animation-delay:1.8s"></div><div class="net-node-info"><div class="net-node-name">Doubao Pro</div><div class="net-node-type">AGENTIC · BYTEDANCE</div><div class="net-node-speed">~$0.12/1M tokens</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#ffd700;animation-delay:2.1s"></div><div class="net-node-info"><div class="net-node-name">MiniMax abab6.5</div><div class="net-node-type">VOICE · EMOTION</div><div class="net-node-speed">~8ms latency</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#00ff88;animation-delay:2.4s"></div><div class="net-node-info"><div class="net-node-name">Mistral Large</div><div class="net-node-type">EUROPEAN · OPEN</div><div class="net-node-speed">~$3/1M tokens</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#00e5ff;animation-delay:2.7s"></div><div class="net-node-info"><div class="net-node-name">Cohere Command R+</div><div class="net-node-type">RAG · ENTERPRISE</div><div class="net-node-speed">~$2.5/1M tokens</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#b44fff;animation-delay:3s"></div><div class="net-node-info"><div class="net-node-name">Vera Rubin (NVIDIA)</div><div class="net-node-type">NEXT-GEN · GPU</div><div class="net-node-speed">20× H100 speed</div></div></div>
+      <div class="net-node"><div class="net-node-dot" style="background:#ff9800;animation-delay:3.3s"></div><div class="net-node-info"><div class="net-node-name">+ More Weaving...</div><div class="net-node-type">EXPANDING · DAILY</div><div class="net-node-speed">Always growing</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- OPENWEB MODEL -->
+<section class="openweb-section" id="openweb">
+  <div class="openweb-inner">
+    <div class="openweb-visual">
+      <img src="openweb_logo_main.png" alt="OpenWeb Model" class="openweb-logo-big">
+    </div>
+    <div class="openweb-content">
+      <div class="section-eyebrow">// Open Source Foundation Model</div>
+      <h2 class="section-title">Introducing <span>OpenWeb</span><br>The Spider's Own Thread</h2>
+      <p class="section-sub">OpenWeb is our open-source foundation model — the spider's own silk. Trained on the collective intelligence of the web, optimized for API routing and token transport. Free forever. Community-owned. The antidote to the API Tax.</p>
+      <div class="openweb-features">
+        <div class="ow-feat">
+          <div class="ow-feat-icon">🕸️</div>
+          <div>
+            <div class="ow-feat-title">WEB-NATIVE ARCHITECTURE</div>
+            <div class="ow-feat-desc">Built from the ground up for API orchestration. Understands routing, cost optimization, and multi-model synthesis natively.</div>
+          </div>
+        </div>
+        <div class="ow-feat">
+          <div class="ow-feat-icon">🔓</div>
+          <div>
+            <div class="ow-feat-title">FULLY OPEN SOURCE</div>
+            <div class="ow-feat-desc">Apache 2.0 license. Weights available on HuggingFace. No usage restrictions. No API tax. The model belongs to the community.</div>
+          </div>
+        </div>
+        <div class="ow-feat">
+          <div class="ow-feat-icon">⚡</div>
+          <div>
+            <div class="ow-feat-title">GROQ LPU OPTIMIZED</div>
+            <div class="ow-feat-desc">Quantized for Groq's LPU architecture. 500+ tokens/sec on consumer hardware. The fastest open model for routing tasks.</div>
+          </div>
+        </div>
+        <div class="ow-feat">
+          <div class="ow-feat-icon">🌐</div>
+          <div>
+            <div class="ow-feat-title">COMMUNITY TRAINED</div>
+            <div class="ow-feat-desc">30% of SpiderNet OS revenue funds OpenWeb training. The more you use SpiderNet, the smarter OpenWeb gets.</div>
+          </div>
+        </div>
+      </div>
+      <a href="https://github.com/wyc77209-source/valent" class="btn-primary" style="display:inline-block;">⬇ DOWNLOAD OPENWEB</a>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto-section" id="manifesto">
+  <div class="section-max">
+    <div class="section-eyebrow" style="text-align:center">// The Spider's Code</div>
+    <img src="openweb_logo_dark.png" alt="SpiderNet Manifesto" class="manifesto-hero-img">
+    <div class="manifesto-quote">
+      "They built <span class="r">walls</span>. We weave a <span class="c">web</span>.<br>
+      They charge an <span class="r">API Tax</span>. We route for <span class="g">pennies</span>.<br>
+      They serve the <span class="r">shareholders</span>. We serve the <span class="c">builders</span>."
+    </div>
+    <div class="manifesto-body">
+      <p>We are not another cloud vendor. We are not a model lab. We are the <strong>Friendly Neighborhood AI Protocol</strong> — the Peter Parker of the compute world. Underfunded, underestimated, and driven by something the New Gods have forgotten: <strong>responsibility</strong>.</p>
+      <p>Uncle Ben taught us: with great compute comes great responsibility. So we made responsibility our business model. Free access for indie developers. Shared savings for everyone. 30% of revenue to open-source. The web belongs to all of us.</p>
+      <p>The DeAI revolution is not coming. It is already here. DeepSeek proved that open models can beat closed ones. Groq proved that speed doesn't require NVIDIA's blessing. Llama proved that Meta's models can be free. We are weaving all of these threads into a single, unbreakable web.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEAI SECTION -->
+<section class="deai-section" id="deai">
+  <div class="section-max">
+    <div class="section-eyebrow">// The Alliance</div>
+    <h2 class="section-title">The <span>DeAI</span> Revolution</h2>
+    <p class="section-sub">Decentralized AI is not a trend. It is the only path to a future where intelligence is a right, not a subscription. SpiderNet OS is the operating system of this revolution.</p>
+    <div class="deai-grid">
+      <div class="deai-card">
+        <div class="deai-icon">🔗</div>
+        <div class="deai-title">WEB3 SETTLEMENT</div>
+        <div class="deai-desc">Every token generates a micro-payment settled on-chain. No middlemen. No monthly invoices. Pure atomic value transfer. Cash is out. Token is king.</div>
+      </div>
+      <div class="deai-card">
+        <div class="deai-icon">🏥</div>
+        <div class="deai-title">MEDICAL PRIVACY COMPUTE</div>
+        <div class="deai-desc">NVIDIA Clara integration with Trusted Execution Environments. Medical institutions contribute data, receive inference tokens, never expose raw patient records. High-value tokens, maximum privacy.</div>
+      </div>
+      <div class="deai-card">
+        <div class="deai-icon">⚡</div>
+        <div class="deai-title">HETEROGENEOUS ROUTING</div>
+        <div class="deai-desc">Groq LPU for low-latency. Vera Rubin for complex reasoning. Clara TEE for private medical compute. SpiderNet OS automatically selects the optimal track for every request.</div>
+      </div>
+      <div class="deai-card">
+        <div class="deai-icon">🌍</div>
+        <div class="deai-title">EAST-WEST BRIDGE</div>
+        <div class="deai-desc">The most powerful models are in China. The best UX is in the West. SpiderNet OS bridges both worlds, routing between DeepSeek, Qwen, Doubao and Claude, Gemini, GPT seamlessly.</div>
+      </div>
+      <div class="deai-card">
+        <div class="deai-icon">🤖</div>
+        <div class="deai-title">SELF-EVOLVING AGENTS</div>
+        <div class="deai-desc">Deploy agents that learn from their own outputs. OpenWeb SDK 2.0 enables agents to modify their routing preferences, optimize their own cost structures, and evolve autonomously.</div>
+      </div>
+      <div class="deai-card">
+        <div class="deai-icon">🏆</div>
+        <div class="deai-title">COMPUTE REWARDS</div>
+        <div class="deai-desc">Contribute high-quality medical or scientific compute to the network, earn Oasis Protocol Rewards. The more valuable your contribution, the more tokens you mine. Quality over quantity.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-max">
+    <div class="pricing-header">
+      <div class="section-eyebrow">// The Spider's Pricing</div>
+      <h2 class="section-title">No <span>API Tax</span>. Ever.</h2>
+      <p class="section-sub">We only make money when you save money. Start free. Scale without limits. The web is for everyone.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">FREE TIER</div>
+        <div class="price-name">Web Crawler</div>
+        <div class="price-amount free">$0</div>
+        <div class="price-unit">forever, no credit card</div>
+        <ul class="price-features">
+          <li>100K tokens/month free</li>
+          <li>Access to 5 web nodes</li>
+          <li>OpenWeb model included</li>
+          <li>Basic routing optimization</li>
+          <li>Community support</li>
+        </ul>
+        <button class="price-btn free-btn">START WEAVING FREE</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-tier">PRO TIER</div>
+        <div class="price-name">Web Weaver</div>
+        <div class="price-amount pro">$29</div>
+        <div class="price-unit">/month · cancel anytime</div>
+        <ul class="price-features">
+          <li>10M tokens/month included</li>
+          <li>All 12+ web nodes</li>
+          <li>Advanced routing AI</li>
+          <li>MetaMask Web3 payment</li>
+          <li>n8n webhook integration</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="price-btn pro-btn" onclick="connectMetaMask()">⚡ PAY WITH ETH</button>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">ENTERPRISE</div>
+        <div class="price-name">Spider Sovereign</div>
+        <div class="price-amount enterprise">Custom</div>
+        <div class="price-unit">atomic token settlement</div>
+        <ul class="price-features">
+          <li>Unlimited tokens</li>
+          <li>Dedicated routing nodes</li>
+          <li>Medical privacy compute</li>
+          <li>On-chain micro-payments</li>
+          <li>Custom agent deployment</li>
+          <li>SLA + dedicated support</li>
+        </ul>
+        <button class="price-btn ent-btn">CONTACT THE SPIDER</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span class="r">Spider</span><span class="c">Net</span> OS</div>
+  <div class="footer-tagline">// WITH GREAT COMPUTE COMES GREAT RESPONSIBILITY</div>
+  <div class="footer-links">
+    <a href="oasis.html">Oasis Protocol</a>
+    <a href="genesis.html">Genesis Airdrop</a>
+    <a href="admin.html">Admin IDE</a>
+    <a href="nemoclaw_demo.html">NemoClaw Gateway</a>
+    <a href="SpiderNet_OS_Manifesto.md">Read the Manifesto</a>
+    <a href="https://github.com/wyc77209-source/valent">GitHub</a>
+  </div>
+  <div class="footer-copy">© 2026 SpiderNet OS / OpenWeb Foundation. Apache 2.0. The web belongs to everyone.</div>
+</footer>
+
+<script>
+/* ─── SPIDER WEB CANVAS ─── */
+const canvas = document.getElementById('web-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, nodes = [], animFrame;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function initNodes() {
+  nodes = [];
+  const count = Math.floor((W * H) / 18000);
+  for (let i = 0; i < count; i++) {
+    nodes.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 2 + 1,
+      color: Math.random() > 0.6 ? '#e63946' : Math.random() > 0.5 ? '#00e5ff' : '#b44fff'
+    });
+  }
+}
+
+function drawWeb() {
+  ctx.clearRect(0, 0, W, H);
+  // Draw connections
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 140) {
+        const alpha = (1 - dist/140) * 0.4;
+        ctx.beginPath();
+        ctx.strokeStyle = nodes[i].color.replace(')', `,${alpha})`).replace('rgb', 'rgba').replace('#e63946', `rgba(230,57,70,${alpha})`).replace('#00e5ff', `rgba(0,229,255,${alpha})`).replace('#b44fff', `rgba(180,79,255,${alpha})`);
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  // Draw nodes
+  nodes.forEach(n => {
+    ctx.beginPath();
+    const col = n.color === '#e63946' ? 'rgba(230,57,70,0.7)' : n.color === '#00e5ff' ? 'rgba(0,229,255,0.7)' : 'rgba(180,79,255,0.7)';
+    ctx.fillStyle = col;
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fill();
+    // Move
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > W) n.vx *= -1;
+    if (n.y < 0 || n.y > H) n.vy *= -1;
+  });
+  animFrame = requestAnimationFrame(drawWeb);
+}
+
+window.addEventListener('resize', () => { resize(); initNodes(); });
+resize(); initNodes(); drawWeb();
+
+/* ─── METAMASK ─── */
+async function connectMetaMask() {
+  if (!window.ethereum) {
+    alert('MetaMask not detected. Please install MetaMask to pay with ETH.');
+    window.open('https://metamask.io/download/', '_blank');
+    return;
+  }
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const account = accounts[0];
+    const RECEIVER = '0x76104C1542b0cAe1b2c34719FE0d922Ed21aD6e9';
+    const amountHex = '0x' + (0.029 * 1e18).toString(16).split('.')[0]; // 0.029 ETH ≈ $29
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{ from: account, to: RECEIVER, value: amountHex, gas: '0x5208' }]
+    });
+    showPaySuccess(txHash, account);
+  } catch (e) {
+    if (e.code === 4001) alert('Transaction rejected. No funds were sent.');
+    else alert('Error: ' + e.message);
+  }
+}
+
+function showPaySuccess(txHash, account) {
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  modal.innerHTML = `
+    <div style="background:#010204;border:1px solid rgba(0,255,136,0.3);border-radius:16px;padding:48px;max-width:480px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:16px;">🕸️</div>
+      <div style="font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:#00ff88;margin-bottom:8px;">WEB WOVEN. PAYMENT CONFIRMED.</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#475569;margin-bottom:24px;">Your SpiderNet OS Pro access is being activated...</div>
+      <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:16px;margin-bottom:24px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#475569;margin-bottom:4px;">TX HASH</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#00ff88;word-break:break-all;">${txHash}</div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#94a3b8;margin-bottom:24px;">
+        Your OpenWeb API Key is generating...<br>
+        <span style="color:#ffd700">OPENWEB-${account.slice(2,6).toUpperCase()}-${Math.random().toString(36).substr(2,8).toUpperCase()}</span>
+      </div>
+      <button onclick="this.closest('div[style*=fixed]').remove()" style="padding:12px 32px;background:#e63946;border:none;border-radius:6px;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#fff;cursor:pointer;">ENTER THE WEB →</button>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+/* ─── COUNTER ANIMATION ─── */
+function animateCounter(el, target, suffix, duration) {
+  const start = Date.now();
+  const startVal = 0;
+  const update = () => {
+    const elapsed = Date.now() - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(startVal + (parseFloat(target) - startVal) * eased);
+    el.textContent = current + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+    else el.textContent = target + suffix;
+  };
+  update();
+}
+
+// Trigger on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      animateCounter(document.getElementById('stat-tokens'), '2.4B', '+', 2000);
+      animateCounter(document.getElementById('stat-save'), '94', '%', 1500);
+      observer.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl) observer.observe(statsEl);
+</script>
+</body>
+</html>
