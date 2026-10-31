@@ -48,11 +48,15 @@ class ConnectionManager:
         self.active_connections.append(websocket)
 
     def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+        if websocket in self.active_connections:
+            self.active_connections.remove(websocket)
 
     async def broadcast(self, message: str):
-        for connection in self.active_connections:
-            await connection.send_text(message)
+        for connection in list(self.active_connections):
+            try:
+                await connection.send_text(message)
+            except Exception:
+                self.disconnect(connection)
 
 manager = ConnectionManager()
 
@@ -124,11 +128,14 @@ async def task_websocket(websocket: WebSocket, user_id: Optional[str] = None, wa
                 await asyncio.sleep(0.8) # 模拟每个 chunk 之间的延迟
 
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
         print(f"[WS] 客户端 '{user_id or 'anonymous'}' 已断开连接。")
     except Exception as e:
         print(f"[WS] 发生错误: {e}")
-        await websocket.send_json({"status": "error", "message": str(e)})
+        try:
+            await websocket.send_json({"status": "error", "message": str(e)})
+        except Exception:
+            pass
+    finally:
         manager.disconnect(websocket)
 
 # --- 5. 根端点 ---
